@@ -10,11 +10,23 @@ const CHART_DEFAULTS = {
 };
 
 // ═══════════════ STORAGE ═══════════════
-function save(){ localStorage.setItem('hf2_h',JSON.stringify(habits)); localStorage.setItem('hf2_c',JSON.stringify(completions)); localStorage.setItem('hf2_s',JSON.stringify(settings)); }
+const KEYS = { h:'hf_habits', c:'hf_completions', s:'hf_settings' };
+
+function save(){
+  localStorage.setItem(KEYS.h, JSON.stringify(habits));
+  localStorage.setItem(KEYS.c, JSON.stringify(completions));
+  localStorage.setItem(KEYS.s, JSON.stringify(settings));
+}
 function load(){
-  try{ habits=JSON.parse(localStorage.getItem('hf2_h'))||[]; }catch{ habits=[]; }
-  try{ completions=JSON.parse(localStorage.getItem('hf2_c'))||{}; }catch{ completions={}; }
-  try{ settings={...settings,...JSON.parse(localStorage.getItem('hf2_s'))}; }catch{}
+  // Eski va yangi kalitlarni ham tekshiradi (migratsiya)
+  const hRaw = localStorage.getItem(KEYS.h) || localStorage.getItem('hf2_h');
+  const cRaw = localStorage.getItem(KEYS.c) || localStorage.getItem('hf2_c');
+  const sRaw = localStorage.getItem(KEYS.s) || localStorage.getItem('hf2_s');
+  try{ habits = JSON.parse(hRaw) || []; }catch{ habits = []; }
+  try{ completions = JSON.parse(cRaw) || {}; }catch{ completions = {}; }
+  try{ settings = { ...settings, ...JSON.parse(sRaw) }; }catch{}
+  // Eski kalitlardan yangi kalitlarga ko'chirish
+  if(habits.length > 0) save();
 }
 
 // ═══════════════ HELPERS ═══════════════
@@ -471,11 +483,18 @@ function renderAll(){
 }
 
 // ═══════════════ DEMO SEED ═══════════════
+// Faqat birinchi marta ochilganda (localStorage bo'sh bo'lsa) ishlaydi
 function seedDemo(){
-  if(habits.length>0) return;
+  // Eski kalitlar ham yo'q bo'lsa, demo yukla
+  const alreadyHasData =
+    localStorage.getItem('hf_habits') ||
+    localStorage.getItem('hf2_h') ||
+    localStorage.getItem('hf_seed_done');
+  if(alreadyHasData) return;
+
   const demo=[
     {name:'Ertalabki yugurish',category:'fitness',color:'#22d87a',target:1,unit:'marta',desc:'30 daqiqa yugurish'},
-    {name:"Kitob o'qish",category:'learning',color:'#7c6af7',target:20,unit:'sahifa',desc:'Har kuni o\'qish'},
+    {name:"Kitob o'qish",category:'learning',color:'#7c6af7',target:20,unit:'sahifa',desc:"Har kuni o'qish"},
     {name:'Meditatsiya',category:'mindfulness',color:'#38d9f5',target:10,unit:'daqiqa',desc:'Tinchlanish va fokus'},
     {name:'Suv ichish',category:'health',color:'#ff9640',target:8,unit:'stakan',desc:'2 litr suv'},
     {name:"Ko'nikishlar",category:'productivity',color:'#f066c6',target:1,unit:'marta',desc:'Kunlik vazifalar'},
@@ -486,7 +505,9 @@ function seedDemo(){
     const ds=dstr(d);
     habits.forEach(h=>{ if(Math.random()>0.22) setCmp(h.id,ds,h.target); });
   }
-  save(); toast("Demo ma'lumotlar yuklandi! 🚀",'info');
+  localStorage.setItem('hf_seed_done','1');
+  save();
+  toast("Demo ma'lumotlar yuklandi! 🚀",'info');
 }
 
 // ═══════════════ DATE DISPLAY ═══════════════
