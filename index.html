@@ -1,709 +1,784 @@
 <!DOCTYPE html>
-<html lang="uz" data-theme="midnight">
+<html lang="uz" data-theme="light" data-accent="default">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <meta name="description" content="HabitFlow — Premium Odat Kuzatuvchi"/>
-  <title>HabitFlow</title>
-  <link rel="stylesheet" href="style.css"/>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;0,14..32,900;1,14..32,400&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+<meta name="theme-color" content="#fafaf9"/>
+<title>Lumio — Productivity, Reimagined</title>
+<meta name="description" content="A premium productivity suite for students and self-improvement enthusiasts."/>
+<link rel="stylesheet" href="style.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════
-     ONBOARDING OVERLAY
-══════════════════════════════════════ -->
-<div class="onboarding-overlay" id="onboarding">
-  <div class="onboarding-bg">
-    <div class="ob-orb ob-orb1"></div>
-    <div class="ob-orb ob-orb2"></div>
-    <div class="ob-orb ob-orb3"></div>
+<!-- LOADER -->
+<div class="loader" id="loader">
+  <div class="loader-logo">
+    <div class="loader-orb"></div>
+    <span>Lumio</span>
   </div>
-  <div class="onboarding-container">
+  <div class="loader-bar"><div id="loaderBar"></div></div>
+</div>
 
-    <!-- Step 1 -->
+
+
+<!-- ONBOARDING -->
+<div class="onboard hidden" id="onboard">
+  <div class="onboard-bg">
+    <div class="onboard-orb"></div>
+    <div class="onboard-orb"></div>
+    <div class="onboard-orb"></div>
+  </div>
+  <div class="onboard-box">
     <div class="ob-step active" data-step="1">
-      <div class="ob-icon-wrap"><span class="ob-emoji">⚡</span></div>
-      <h1 class="ob-title">HabitFlow'ga<br>Xush Kelibsiz</h1>
-      <p class="ob-desc">Oddiy, elegant va kuchli odat kuzatuvchi.<br>Maqsadlaringizga erishishda hamrohingiz.</p>
+      <div class="ob-emoji">✨</div>
+      <h1 class="ob-title serif">Lumio'ga<br>xush kelibsiz</h1>
+      <p class="ob-desc">Hayotingizni mukammal tashkil qiling.<br>Odatlar, vazifalar, fokus, maqsadlar — barchasi bir joyda.</p>
       <button class="ob-btn" onclick="obNext()">Boshlash <i class="fa-solid fa-arrow-right"></i></button>
     </div>
 
-    <!-- Step 2 -->
     <div class="ob-step" data-step="2">
-      <div class="ob-icon-wrap"><span class="ob-emoji">🎨</span></div>
-      <h2 class="ob-title">Mavzuni Tanlang</h2>
-      <p class="ob-desc">Sizga yoqadigan rangni tanlang</p>
-      <div class="ob-themes">
-        <button class="ob-theme-btn active" data-theme="midnight" onclick="obTheme(this,'midnight')">
-          <div class="ob-theme-dot" style="background:linear-gradient(135deg,#0a0a0f,#1a1a2e)"></div>
-          <span>Midnight</span>
-        </button>
-        <button class="ob-theme-btn" data-theme="minimal" onclick="obTheme(this,'minimal')">
-          <div class="ob-theme-dot" style="background:linear-gradient(135deg,#f8f9fa,#e9ecef)"></div>
-          <span>Minimal</span>
-        </button>
-        <button class="ob-theme-btn" data-theme="ocean" onclick="obTheme(this,'ocean')">
-          <div class="ob-theme-dot" style="background:linear-gradient(135deg,#0a1628,#0d3b6e)"></div>
-          <span>Ocean</span>
-        </button>
-        <button class="ob-theme-btn" data-theme="forest" onclick="obTheme(this,'forest')">
-          <div class="ob-theme-dot" style="background:linear-gradient(135deg,#0a1a0f,#1a3a2a)"></div>
-          <span>Forest</span>
-        </button>
-        <button class="ob-theme-btn" data-theme="sunset" onclick="obTheme(this,'sunset')">
-          <div class="ob-theme-dot" style="background:linear-gradient(135deg,#1a0a0a,#3a1a0a)"></div>
-          <span>Sunset</span>
-        </button>
-        <button class="ob-theme-btn" data-theme="neon" onclick="obTheme(this,'neon')">
-          <div class="ob-theme-dot" style="background:linear-gradient(135deg,#0a000f,#1a0030)"></div>
-          <span>Neon</span>
-        </button>
-      </div>
+      <div class="ob-emoji">👋</div>
+      <h2 class="ob-title">Sizni qanday chaqiramiz?</h2>
+      <p class="ob-desc">Ismingiz dastur ichida ishlatiladi</p>
+      <input type="text" class="ob-input" id="obName" placeholder="Ismingiz" maxlength="20"/>
       <button class="ob-btn" onclick="obNext()">Davom etish <i class="fa-solid fa-arrow-right"></i></button>
     </div>
 
-    <!-- Step 3 -->
     <div class="ob-step" data-step="3">
-      <div class="ob-icon-wrap"><span class="ob-emoji">🔔</span></div>
-      <h2 class="ob-title">Bildirishnomalar</h2>
-      <p class="ob-desc">Kunlik eslatmalar sizni yo'lda ushlab turadi</p>
-      <div class="ob-notif-card">
-        <i class="fa-solid fa-bell"></i>
-        <div>
-          <strong>Bildirishnomalarni yoqing</strong>
-          <small>Odatlaringizni unutmang</small>
-        </div>
-        <label class="toggle"><input type="checkbox" id="obNotif"/><span class="slider-track"></span></label>
+      <div class="ob-emoji">🎨</div>
+      <h2 class="ob-title">Mavzu tanlang</h2>
+      <p class="ob-desc">Sizga yoqadigan rang</p>
+      <div class="ob-themes">
+        <button class="ob-theme active" data-acc="default" onclick="obAccent(this,'default')">
+          <div class="ob-theme-dot" style="background:#1a1a1a"></div><span>Klassik</span>
+        </button>
+        <button class="ob-theme" data-acc="ocean" onclick="obAccent(this,'ocean')">
+          <div class="ob-theme-dot" style="background:#0284c7"></div><span>Okean</span>
+        </button>
+        <button class="ob-theme" data-acc="forest" onclick="obAccent(this,'forest')">
+          <div class="ob-theme-dot" style="background:#059669"></div><span>O'rmon</span>
+        </button>
+        <button class="ob-theme" data-acc="sunset" onclick="obAccent(this,'sunset')">
+          <div class="ob-theme-dot" style="background:#ea580c"></div><span>Quyosh</span>
+        </button>
+        <button class="ob-theme" data-acc="purple" onclick="obAccent(this,'purple')">
+          <div class="ob-theme-dot" style="background:#7c3aed"></div><span>Siyohrang</span>
+        </button>
+        <button class="ob-theme" data-acc="rose" onclick="obAccent(this,'rose')">
+          <div class="ob-theme-dot" style="background:#e11d48"></div><span>Atirgul</span>
+        </button>
       </div>
       <button class="ob-btn" onclick="obNext()">Davom etish <i class="fa-solid fa-arrow-right"></i></button>
     </div>
 
-    <!-- Step 4 -->
     <div class="ob-step" data-step="4">
-      <div class="ob-icon-wrap"><span class="ob-emoji">✨</span></div>
-      <h2 class="ob-title">Hammasi Tayyor!</h2>
-      <p class="ob-desc">Birinchi odatingizni qo'shing va<br>o'zgarish yo'lini boshlang</p>
-      <div class="ob-tips">
-        <div class="ob-tip"><i class="fa-solid fa-keyboard"></i><span><kbd>N</kbd> — Yangi odat</span></div>
-        <div class="ob-tip"><i class="fa-solid fa-magnifying-glass"></i><span><kbd>/</kbd> — Qidirish</span></div>
-        <div class="ob-tip"><i class="fa-solid fa-question"></i><span><kbd>?</kbd> — Yordam</span></div>
-      </div>
-      <button class="ob-btn ob-btn-finish" onclick="finishOnboarding()">
-        <i class="fa-solid fa-rocket"></i> Boshlash
-      </button>
+      <div class="ob-emoji">🚀</div>
+      <h2 class="ob-title">Hammasi tayyor!</h2>
+      <p class="ob-desc">Demo ma'lumotlar yuklandi.<br>Endi hayotingizni mukammal tashkil qilishni boshlang.</p>
+      <button class="ob-btn" onclick="obFinish()"><i class="fa-solid fa-check"></i> Boshlash</button>
     </div>
 
-    <!-- Steps indicator -->
     <div class="ob-dots">
-      <span class="ob-dot active"></span>
-      <span class="ob-dot"></span>
-      <span class="ob-dot"></span>
-      <span class="ob-dot"></span>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════
-     LOADING SCREEN
-══════════════════════════════════════ -->
-<div class="loading-screen" id="loadingScreen">
-  <div class="loading-logo">
-    <div class="loading-icon"><i class="fa-solid fa-bolt"></i></div>
-    <span>HabitFlow</span>
-  </div>
-  <div class="loading-bar-wrap"><div class="loading-bar" id="loadingBar"></div></div>
-</div>
-
-<!-- ══════════════════════════════════════
-     COMMAND PALETTE (Search Everywhere)
-══════════════════════════════════════ -->
-<div class="cmd-overlay" id="cmdOverlay">
-  <div class="cmd-palette">
-    <div class="cmd-input-wrap">
-      <i class="fa-solid fa-magnifying-glass"></i>
-      <input type="text" id="cmdInput" placeholder="Qidirish yoki buyruq kiriting..."/>
-      <kbd class="cmd-esc">Esc</kbd>
-    </div>
-    <div class="cmd-results" id="cmdResults"></div>
-    <div class="cmd-footer">
-      <span><kbd>↑↓</kbd> Navigatsiya</span>
-      <span><kbd>Enter</kbd> Tanlash</span>
-      <span><kbd>Esc</kbd> Yopish</span>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════
-     KEYBOARD SHORTCUTS MODAL
-══════════════════════════════════════ -->
-<div class="modal-overlay" id="shortcutsOverlay">
-  <div class="modal shortcuts-modal">
-    <div class="modal-header">
-      <div class="modal-title"><i class="fa-solid fa-keyboard"></i> Keyboard Shortcuts</div>
-      <button class="modal-close" onclick="closeShortcuts()"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    <div class="shortcuts-grid">
-      <div class="shortcut-group">
-        <div class="shortcut-group-title">Umumiy</div>
-        <div class="shortcut-item"><span>Qidiruv</span><div class="keys"><kbd>/</kbd></div></div>
-        <div class="shortcut-item"><span>Yangi odat</span><div class="keys"><kbd>N</kbd></div></div>
-        <div class="shortcut-item"><span>Yordam</span><div class="keys"><kbd>?</kbd></div></div>
-        <div class="shortcut-item"><span>Yopish</span><div class="keys"><kbd>Esc</kbd></div></div>
-      </div>
-      <div class="shortcut-group">
-        <div class="shortcut-group-title">Navigatsiya</div>
-        <div class="shortcut-item"><span>Dashboard</span><div class="keys"><kbd>G</kbd><kbd>D</kbd></div></div>
-        <div class="shortcut-item"><span>Odatlar</span><div class="keys"><kbd>G</kbd><kbd>H</kbd></div></div>
-        <div class="shortcut-item"><span>Tahlil</span><div class="keys"><kbd>G</kbd><kbd>A</kbd></div></div>
-        <div class="shortcut-item"><span>Xarita</span><div class="keys"><kbd>G</kbd><kbd>M</kbd></div></div>
-      </div>
+      <span class="ob-dot active"></span><span class="ob-dot"></span>
+      <span class="ob-dot"></span><span class="ob-dot"></span>
     </div>
   </div>
 </div>
 
 
-<!-- ══════════════════════════════════════
-     SIDEBAR
-══════════════════════════════════════ -->
+
+<!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
-  <div class="sidebar-header">
-    <div class="logo">
-      <div class="logo-icon"><i class="fa-solid fa-bolt"></i></div>
-      <span class="logo-text">HabitFlow</span>
+  <div class="sidebar-head">
+    <div class="brand">
+      <div class="brand-logo">L</div>
+      <span class="brand-name">Lumio</span>
     </div>
-    <button class="sidebar-close" id="sidebarClose"><i class="fa-solid fa-xmark"></i></button>
+    <button class="sidebar-close" onclick="closeSidebar()"><i class="fa-solid fa-xmark"></i></button>
   </div>
 
   <div class="sidebar-search" onclick="openCmd()">
     <i class="fa-solid fa-magnifying-glass"></i>
-    <span>Qidirish...</span>
-    <kbd>/</kbd>
+    <span>Qidirish</span>
+    <kbd>⌘K</kbd>
   </div>
 
   <nav class="sidebar-nav">
-    <div class="nav-label">Ana sahifalar</div>
-    <a href="#" class="nav-item active" data-page="dashboard">
-      <div class="nav-icon"><i class="fa-solid fa-gauge-high"></i></div>
-      <span>Dashboard</span>
-      <span class="nav-dot"></span>
-    </a>
-    <a href="#" class="nav-item" data-page="habits">
-      <div class="nav-icon"><i class="fa-solid fa-list-check"></i></div>
-      <span>Odatlar</span>
-      <span class="nav-dot"></span>
-    </a>
-    <a href="#" class="nav-item" data-page="widgets">
-      <div class="nav-icon"><i class="fa-solid fa-table-cells-large"></i></div>
-      <span>Widgetlar</span>
-      <span class="nav-dot"></span>
-    </a>
-    <div class="nav-label">Tahlil</div>
-    <a href="#" class="nav-item" data-page="analytics">
-      <div class="nav-icon"><i class="fa-solid fa-chart-pie"></i></div>
-      <span>Statistika</span>
-      <span class="nav-dot"></span>
-    </a>
-    <a href="#" class="nav-item" data-page="heatmap">
-      <div class="nav-icon"><i class="fa-solid fa-fire"></i></div>
-      <span>Faollik Xaritasi</span>
-      <span class="nav-dot"></span>
-    </a>
-    <div class="nav-label">Sozlash</div>
-    <a href="#" class="nav-item" data-page="settings">
-      <div class="nav-icon"><i class="fa-solid fa-sliders"></i></div>
-      <span>Sozlamalar</span>
-      <span class="nav-dot"></span>
-    </a>
+    <div class="nav-label">Boshqaruv</div>
+    <a class="nav-item active" data-page="dashboard"><i class="fa-solid fa-house"></i><span>Bosh sahifa</span></a>
+    <a class="nav-item" data-page="tasks"><i class="fa-solid fa-circle-check"></i><span>Vazifalar</span><span class="nav-badge" id="navTasksBadge">0</span></a>
+    <a class="nav-item" data-page="habits"><i class="fa-solid fa-bolt"></i><span>Odatlar</span></a>
+    <a class="nav-item" data-page="focus"><i class="fa-solid fa-circle-dot"></i><span>Fokus rejim</span></a>
+
+    <div class="nav-label">Ish</div>
+    <a class="nav-item" data-page="study"><i class="fa-solid fa-graduation-cap"></i><span>O'qish</span></a>
+    <a class="nav-item" data-page="goals"><i class="fa-solid fa-bullseye"></i><span>Maqsadlar</span></a>
+    <a class="nav-item" data-page="notes"><i class="fa-solid fa-note-sticky"></i><span>Qaydlar</span></a>
+
+    <div class="nav-label">Boshqa</div>
+    <a class="nav-item" data-page="apps"><i class="fa-solid fa-grid-2"></i><span>Mini ilovalar</span></a>
+    <a class="nav-item" data-page="achievements"><i class="fa-solid fa-trophy"></i><span>Yutuqlar</span></a>
+    <a class="nav-item" data-page="settings"><i class="fa-solid fa-gear"></i><span>Sozlamalar</span></a>
   </nav>
 
-  <div class="sidebar-footer">
-    <div class="streak-widget">
-      <div class="streak-fire">🔥</div>
-      <div class="streak-info">
-        <div class="streak-num" id="sidebarStreak">0</div>
-        <div class="streak-label">kun ketma-ket</div>
-        <div class="streak-bar"><div class="streak-bar-fill" id="streakBarFill" style="width:0%"></div></div>
+  <div class="sidebar-foot">
+    <div class="user-card" onclick="goPage('settings')">
+      <div class="avatar" id="userAvatar">U</div>
+      <div class="user-info">
+        <div class="user-name" id="userName">Foydalanuvchi</div>
+        <div class="user-level"><span id="userLevel">Daraja 1</span> · <span id="userXp">0 XP</span></div>
       </div>
     </div>
-    <button class="shortcut-hint-btn" onclick="openShortcuts()">
-      <kbd>?</kbd> Shortcuts
-    </button>
   </div>
 </aside>
 
-<!-- ══════════════════════════════════════
-     MAIN WRAPPER
-══════════════════════════════════════ -->
-<div class="main-wrapper" id="mainWrapper">
-  <!-- TOPBAR -->
+
+
+<!-- MAIN -->
+<div class="main">
   <header class="topbar">
-    <div class="topbar-left">
-      <button class="menu-btn" id="menuBtn"><i class="fa-solid fa-bars"></i></button>
-      <div class="topbar-title-wrap">
-        <div class="page-title" id="pageTitle">Dashboard</div>
-        <div class="page-subtitle" id="pageSubtitle">Ana sahifa</div>
-      </div>
+    <button class="menu-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+    <div class="topbar-title">
+      <h1 id="topbarTitle">Bosh sahifa</h1>
+      <small id="topbarDate"></small>
     </div>
-    <div class="topbar-center">
-      <button class="search-trigger" onclick="openCmd()">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <span>Qidirish...</span>
-        <kbd>/</kbd>
-      </button>
-    </div>
-    <div class="topbar-right">
-      <div class="date-chip"><i class="fa-regular fa-calendar"></i><span id="todayDate"></span></div>
-      <button class="notif-btn" id="notifBtn" title="Bildirishnomalar">
-        <i class="fa-regular fa-bell"></i>
-        <span class="notif-dot" id="notifDot" style="display:none"></span>
-      </button>
-      <button class="btn-add" id="openAddModal">
-        <i class="fa-solid fa-plus"></i> Yangi Odat
-      </button>
+    <div class="topbar-actions">
+      <button class="icon-btn" onclick="openCmd()" title="Qidirish (⌘K)"><i class="fa-solid fa-magnifying-glass"></i></button>
+      <button class="icon-btn" onclick="openModal('quickAdd')" title="Tezkor qo'shish (N)"><i class="fa-solid fa-plus"></i></button>
+      <button class="icon-btn" onclick="goPage('focus')" title="Fokus rejim (F)"><i class="fa-solid fa-circle-dot"></i></button>
+      <button class="icon-btn" onclick="toggleTheme()" title="Mavzu"><i class="fa-solid fa-moon" id="themeIcon"></i></button>
     </div>
   </header>
 
-  <!-- PAGES -->
-  <main class="content" id="mainContent">
+  <main class="content">
 
+  <!-- ═══════ DASHBOARD ═══════ -->
+  <section class="page active" id="page-dashboard">
+    <div class="dash-hero">
+      <div>
+        <div class="greet-time" id="greetTime"></div>
+        <div class="greet-title serif" id="greetTitle">Salom!</div>
+        <div class="greet-quote" id="quoteText"></div>
+        <div class="greet-quote-author" id="quoteAuthor"></div>
+      </div>
+      <div class="score-ring">
+        <svg width="130" height="130">
+          <circle class="ring-bg" cx="65" cy="65" r="58"/>
+          <circle class="ring-fg" cx="65" cy="65" r="58" id="scoreRing" stroke-dasharray="364.4" stroke-dashoffset="364.4"/>
+        </svg>
+        <div class="score-num">
+          <div class="score-val" id="scoreVal">0</div>
+          <div class="score-lbl">Productivity</div>
+        </div>
+      </div>
+    </div>
 
-    <!-- ════ DASHBOARD ════ -->
-    <section class="page active" id="page-dashboard">
-      <div class="stats-grid">
-        <div class="stat-card sc-blue">
-          <div class="stat-icon"><i class="fa-solid fa-list-check"></i></div>
-          <div class="stat-info">
-            <div class="stat-value" id="statTotal">0</div>
-            <div class="stat-label">Jami Odatlar</div>
-          </div>
-          <div class="stat-sparkline" id="spark0"></div>
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-card-head">
+          <div class="stat-card-icon">📋</div>
+          <div class="stat-card-trend" id="tasksTrend">+0%</div>
         </div>
-        <div class="stat-card sc-green">
-          <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
-          <div class="stat-info">
-            <div class="stat-value" id="statToday">0</div>
-            <div class="stat-label">Bugun Bajarildi</div>
-          </div>
-          <div class="stat-sparkline" id="spark1"></div>
+        <div class="stat-card-val" id="statTasks">0</div>
+        <div class="stat-card-lbl">Bugun bajarilgan</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-head">
+          <div class="stat-card-icon">⚡</div>
+          <div class="stat-card-trend"><i class="fa-solid fa-fire" style="color:var(--orange)"></i></div>
         </div>
-        <div class="stat-card sc-orange">
-          <div class="stat-icon"><i class="fa-solid fa-fire-flame-curved"></i></div>
-          <div class="stat-info">
-            <div class="stat-value" id="statStreak">0</div>
-            <div class="stat-label">Ketma-ket Kun</div>
-          </div>
-          <div class="stat-sparkline" id="spark2"></div>
+        <div class="stat-card-val" id="statStreak">0</div>
+        <div class="stat-card-lbl">Kunlik seriya</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-head">
+          <div class="stat-card-icon">⏱</div>
+          <div class="stat-card-trend" id="focusTrend">0h</div>
         </div>
-        <div class="stat-card sc-purple">
-          <div class="stat-icon"><i class="fa-solid fa-chart-simple"></i></div>
-          <div class="stat-info">
-            <div class="stat-value" id="statRate">0%</div>
-            <div class="stat-label">Bajarish Foizi</div>
+        <div class="stat-card-val" id="statFocus">0m</div>
+        <div class="stat-card-lbl">Fokus vaqti</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-head">
+          <div class="stat-card-icon">📚</div>
+          <div class="stat-card-trend" id="studyTrend">+0%</div>
+        </div>
+        <div class="stat-card-val" id="statStudy">0m</div>
+        <div class="stat-card-lbl">Tahsil vaqti</div>
+      </div>
+    </div>
+
+    <div class="dash-grid">
+      <div class="card">
+        <div class="card-head">
+          <h2 class="h2">Bugun</h2>
+          <button class="btn btn-ghost" onclick="goPage('tasks')">Hammasi <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+        <div class="today-list" id="dashTodayList"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2 class="h2">Taqvim</h2>
+        </div>
+        <div class="mini-cal-head">
+          <div class="mini-cal-month" id="miniCalMonth"></div>
+          <div class="mini-cal-nav">
+            <button onclick="miniCalNav(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <button onclick="miniCalNav(1)"><i class="fa-solid fa-chevron-right"></i></button>
           </div>
-          <div class="stat-sparkline" id="spark3"></div>
+        </div>
+        <div class="mini-cal-week"><span>Du</span><span>Se</span><span>Ch</span><span>Pa</span><span>Ju</span><span>Sh</span><span>Ya</span></div>
+        <div class="mini-cal-grid" id="miniCalGrid"></div>
+      </div>
+    </div>
+
+    <div class="widgets-row">
+      <div class="widget-card">
+        <div class="widget-head">
+          <span class="widget-label">🔥 Streak</span>
+        </div>
+        <div class="streak-big" id="wStreak">0<small>kun</small></div>
+        <div class="streak-bar"><div id="wStreakBar" style="width:0%"></div></div>
+        <div class="streak-meta">
+          <span>Eng yaxshi: <strong id="wBestStreak">0</strong></span>
+          <span id="wStreakTier">Yangi boshlovchi</span>
         </div>
       </div>
 
-      <div class="dashboard-grid">
-        <div class="card today-card">
-          <div class="card-header">
-            <div class="card-title"><i class="fa-solid fa-sun"></i> Bugungi Odatlar</div>
-            <span class="card-badge" id="todayProgress">0/0</span>
-          </div>
-          <div class="prog-wrap"><div class="prog-fill" id="todayBar" style="width:0%"></div></div>
-          <div class="today-list" id="todayList">
-            <div class="empty">
-              <div class="empty-icon"><i class="fa-solid fa-seedling"></i></div>
-              <p>Hali odat qo'shilmagan</p>
-            </div>
-          </div>
+      <div class="widget-card">
+        <div class="widget-head">
+          <span class="widget-label">⏱ Fokus</span>
         </div>
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title"><i class="fa-solid fa-chart-bar"></i> Haftalik Ko'rsatkich</div>
-          </div>
-          <canvas id="weeklyBarChart"></canvas>
-        </div>
+        <div class="focus-widget-time" id="wFocusTime">25:00</div>
+        <div class="focus-widget-meta">Pomodoro · Fokus</div>
+        <button class="focus-widget-btn" onclick="goPage('focus')"><i class="fa-solid fa-play"></i> Boshlash</button>
       </div>
 
-      <div class="charts-row">
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title"><i class="fa-solid fa-chart-line"></i> 30 Kunlik Trend</div>
-          </div>
-          <canvas id="trendLineChart"></canvas>
+      <div class="widget-card">
+        <div class="widget-head">
+          <span class="widget-label">💧 Suv</span>
+          <small id="waterCount" style="color:var(--text3);font-size:.78rem">0 / 8</small>
         </div>
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title"><i class="fa-solid fa-chart-pie"></i> Kategoriyalar</div>
-          </div>
-          <canvas id="categoryDonutChart"></canvas>
-        </div>
+        <div class="water-stat"><strong id="waterStat">0</strong><span>stakan bugun</span></div>
+        <div class="water-glasses" id="waterGlasses"></div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- ════ HABITS ════ -->
-    <section class="page" id="page-habits">
-      <div class="habits-toolbar">
-        <div class="search-box">
-          <i class="fa-solid fa-magnifying-glass"></i>
-          <input type="text" id="searchInput" placeholder="Odatlarni qidirish..."/>
-        </div>
-        <div class="filter-pills" id="filterPills">
-          <button class="fpill active" data-cat="all">Barchasi</button>
-          <button class="fpill" data-cat="health">🏥</button>
-          <button class="fpill" data-cat="fitness">💪</button>
-          <button class="fpill" data-cat="learning">📚</button>
-          <button class="fpill" data-cat="mindfulness">🧘</button>
-          <button class="fpill" data-cat="productivity">⚡</button>
-          <button class="fpill" data-cat="social">👥</button>
-        </div>
-        <select id="filterStatus" class="fpill" style="cursor:pointer;padding:.45rem .9rem">
-          <option value="all">Barchasi</option>
-          <option value="completed">✅ Bajarildi</option>
-          <option value="active">⏳ Kutilmoqda</option>
+
+
+  <!-- ═══════ TASKS ═══════ -->
+  <section class="page" id="page-tasks">
+    <div class="page-head">
+      <div>
+        <h1 class="h1 serif">Vazifalar</h1>
+        <div class="muted" id="tasksMuted">Bugungi vazifalaringiz</div>
+      </div>
+      <button class="btn btn-primary" onclick="openModal('task')"><i class="fa-solid fa-plus"></i> Vazifa</button>
+    </div>
+
+    <div class="tasks-toolbar">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="taskSearch" placeholder="Qidirish..." oninput="renderTasks()"/>
+      </div>
+      <div class="tabs">
+        <button class="tab active" data-view="list" onclick="setTaskView('list')">📋 Ro'yxat</button>
+        <button class="tab" data-view="kanban" onclick="setTaskView('kanban')">🗂 Kanban</button>
+      </div>
+      <div class="tabs">
+        <button class="tab active" data-tfilter="today" onclick="setTaskFilter('today')">Bugun</button>
+        <button class="tab" data-tfilter="upcoming" onclick="setTaskFilter('upcoming')">Kelayotgan</button>
+        <button class="tab" data-tfilter="all" onclick="setTaskFilter('all')">Hammasi</button>
+        <button class="tab" data-tfilter="done" onclick="setTaskFilter('done')">Bajarilgan</button>
+      </div>
+    </div>
+
+    <div id="tasksContainer"></div>
+  </section>
+
+  <!-- ═══════ HABITS ═══════ -->
+  <section class="page" id="page-habits">
+    <div class="page-head">
+      <div>
+        <h1 class="h1 serif">Odatlar</h1>
+        <div class="muted">Mukammallikni har kuni quring</div>
+      </div>
+      <button class="btn btn-primary" onclick="openModal('habit')"><i class="fa-solid fa-plus"></i> Odat</button>
+    </div>
+
+    <div class="habits-head">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="habitSearch" placeholder="Odat qidirish..." oninput="renderHabits()"/>
+      </div>
+      <div class="tabs">
+        <button class="tab active" data-hfreq="all" onclick="setHabitFreq('all')">Barchasi</button>
+        <button class="tab" data-hfreq="daily" onclick="setHabitFreq('daily')">Kunlik</button>
+        <button class="tab" data-hfreq="weekly" onclick="setHabitFreq('weekly')">Haftalik</button>
+        <button class="tab" data-hfreq="monthly" onclick="setHabitFreq('monthly')">Oylik</button>
+      </div>
+    </div>
+
+    <div class="habits-grid" id="habitsGrid"></div>
+
+    <div class="card mt-3">
+      <div class="card-head">
+        <h2 class="h2">📊 Yillik faollik</h2>
+        <select class="select" id="heatmapSelect" onchange="renderHeatmap()" style="width:auto;padding:6px 10px;font-size:.8rem">
+          <option value="all">Barcha odatlar</option>
         </select>
       </div>
-      <div class="habits-grid" id="habitsGrid"></div>
-    </section>
-
-    <!-- ════ WIDGETS ════ -->
-    <section class="page" id="page-widgets">
-      <div class="widgets-header">
-        <p class="widgets-desc">Widgetlarni boshqaruv panelida ko'rsatish uchun ustiga bosing</p>
+      <div class="heatmap-wrap"><div class="heatmap" id="heatmap"></div></div>
+      <div class="heatmap-legend">
+        <span>Kam</span>
+        <div class="heatmap-legend-boxes">
+          <span class="hm-cell" data-l="0"></span>
+          <span class="hm-cell" data-l="1"></span>
+          <span class="hm-cell" data-l="2"></span>
+          <span class="hm-cell" data-l="3"></span>
+          <span class="hm-cell" data-l="4"></span>
+        </div>
+        <span>Ko'p</span>
       </div>
-      <div class="widgets-grid">
-        <!-- Streak Widget -->
-        <div class="widget-card" id="w-streak">
-          <div class="widget-header">
-            <span class="widget-label">🔥 Streak</span>
-            <div class="widget-toggle-wrap"><label class="toggle"><input type="checkbox" class="widget-toggle" data-widget="streak" checked/><span class="slider-track"></span></label></div>
-          </div>
-          <div class="widget-body">
-            <div class="w-streak-num" id="wStreakNum">0</div>
-            <div class="w-streak-label">kun ketma-ket seriya</div>
-            <div class="w-streak-bar"><div class="w-streak-fill" id="wStreakFill" style="width:0%"></div></div>
-          </div>
+    </div>
+
+    <div class="card mt-3">
+      <div class="card-head">
+        <h2 class="h2">😊 Bugungi kayfiyat</h2>
+        <small class="tiny" id="moodToday"></small>
+      </div>
+      <div class="mood-grid">
+        <button class="mood-btn" onclick="setMood(1)">😢<small>Yomon</small></button>
+        <button class="mood-btn" onclick="setMood(2)">😕<small>Yomonroq</small></button>
+        <button class="mood-btn" onclick="setMood(3)">😐<small>O'rtacha</small></button>
+        <button class="mood-btn" onclick="setMood(4)">🙂<small>Yaxshi</small></button>
+        <button class="mood-btn" onclick="setMood(5)">😄<small>A'lo</small></button>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- ═══════ FOCUS LAUNCH ═══════ -->
+  <section class="page" id="page-focus">
+    <div class="page-head">
+      <div>
+        <h1 class="h1 serif">Fokus rejim</h1>
+        <div class="muted">Chuqur konsentratsiya, mukammal natija</div>
+      </div>
+    </div>
+
+    <div class="focus-launch-card">
+      <div class="focus-launch-icon"><i class="fa-solid fa-circle-dot"></i></div>
+      <h2 class="serif">Fokuslanishga tayyormisiz?</h2>
+      <p>Vaqtni tanlang va boshlash tugmasini bosing. Chiqish uchun ESC.</p>
+      <div class="focus-presets">
+        <div class="focus-preset" data-time="15" onclick="selectPreset(this,15)">
+          <div class="focus-preset-time">15<small style="font-size:.7rem;color:var(--text3)">m</small></div>
+          <div class="focus-preset-name">Tez ish</div>
+        </div>
+        <div class="focus-preset active" data-time="25" onclick="selectPreset(this,25)">
+          <div class="focus-preset-time">25<small style="font-size:.7rem;color:var(--text3)">m</small></div>
+          <div class="focus-preset-name">Pomodoro</div>
+        </div>
+        <div class="focus-preset" data-time="50" onclick="selectPreset(this,50)">
+          <div class="focus-preset-time">50<small style="font-size:.7rem;color:var(--text3)">m</small></div>
+          <div class="focus-preset-name">Chuqur ish</div>
+        </div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:.9rem" onclick="enterFocus()">
+        <i class="fa-solid fa-play"></i> Fokuslanishni boshlash
+      </button>
+    </div>
+
+    <div class="card mt-3">
+      <div class="card-head"><h2 class="h2">📈 Fokus tarixi</h2></div>
+      <div class="stats-row" style="margin:0">
+        <div class="stat-card">
+          <div class="stat-card-val" id="focusTotalSessions">0</div>
+          <div class="stat-card-lbl">Jami sessiya</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-val" id="focusTotalMinutes">0m</div>
+          <div class="stat-card-lbl">Jami vaqt</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-val" id="focusTodayMinutes">0m</div>
+          <div class="stat-card-lbl">Bugun</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-val" id="focusBestDay">0m</div>
+          <div class="stat-card-lbl">Eng yaxshi kun</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FULLSCREEN FOCUS -->
+  <div class="focus-mode" id="focusMode">
+    <div class="focus-bg"></div>
+    <div class="focus-particles"></div>
+    <button class="focus-exit" onclick="exitFocus()"><i class="fa-solid fa-xmark"></i> Chiqish</button>
+    <div class="focus-sounds">
+      <button class="sound-btn" data-sound="rain" onclick="toggleSound('rain', this)" title="Yomg'ir">🌧</button>
+      <button class="sound-btn" data-sound="forest" onclick="toggleSound('forest', this)" title="O'rmon">🌲</button>
+      <button class="sound-btn" data-sound="ocean" onclick="toggleSound('ocean', this)" title="Okean">🌊</button>
+      <button class="sound-btn" data-sound="cafe" onclick="toggleSound('cafe', this)" title="Kafe">☕</button>
+      <button class="sound-btn" data-sound="white" onclick="toggleSound('white', this)" title="Oq shovqin">⚪</button>
+    </div>
+    <div class="focus-content">
+      <div class="focus-quote" id="focusQuote"></div>
+      <div class="focus-mode-label" id="focusLabel">Fokus</div>
+      <div class="focus-timer-big" id="focusTimerBig">25:00</div>
+      <div class="focus-progress"><div id="focusProgress" style="width:0%"></div></div>
+      <div class="focus-controls">
+        <button class="focus-btn" onclick="resetFocus()" title="Reset"><i class="fa-solid fa-rotate-left"></i></button>
+        <button class="focus-btn focus-btn-main" id="focusPlayBtn" onclick="toggleFocus()"><i class="fa-solid fa-play"></i></button>
+        <button class="focus-btn" onclick="skipFocus()" title="O'tkazib yuborish"><i class="fa-solid fa-forward-step"></i></button>
+      </div>
+      <div class="focus-stats">
+        <div><strong id="focusSession">0</strong>Sessiya</div>
+        <div><strong id="focusToday">0m</strong>Bugun</div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- ═══════ STUDY ═══════ -->
+  <section class="page" id="page-study">
+    <div class="page-head">
+      <div>
+        <h1 class="h1 serif">O'qish</h1>
+        <div class="muted">Bilim — eng yaxshi sarmoya</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-secondary" onclick="openModal('exam')"><i class="fa-solid fa-calendar-day"></i> Imtihon</button>
+        <button class="btn btn-primary" onclick="openModal('subject')"><i class="fa-solid fa-plus"></i> Fan</button>
+      </div>
+    </div>
+
+    <div class="study-layout">
+      <div>
+        <div class="card mb-2">
+          <div class="card-head"><h2 class="h2">📚 Fanlar</h2></div>
+          <div class="subjects-grid" id="subjectsGrid"></div>
         </div>
 
-        <!-- Quote Widget -->
-        <div class="widget-card" id="w-quote">
-          <div class="widget-header">
-            <span class="widget-label">💬 Kunlik Iqtibos</span>
-            <div class="widget-toggle-wrap"><label class="toggle"><input type="checkbox" class="widget-toggle" data-widget="quote" checked/><span class="slider-track"></span></label></div>
+        <div class="card">
+          <div class="card-head">
+            <h2 class="h2">🎴 Flashcards</h2>
+            <button class="btn btn-secondary" onclick="openModal('flashcard')"><i class="fa-solid fa-plus"></i> Karta</button>
           </div>
-          <div class="widget-body">
-            <div class="w-quote-text" id="wQuoteText">"Katta narsalar kichik odatlardan boshlanadi."</div>
-            <div class="w-quote-author" id="wQuoteAuthor">— James Clear</div>
-            <button class="w-quote-refresh" onclick="refreshQuote()"><i class="fa-solid fa-rotate-right"></i></button>
-          </div>
-        </div>
-
-        <!-- Goal Progress Widget -->
-        <div class="widget-card" id="w-goal">
-          <div class="widget-header">
-            <span class="widget-label">🎯 Bugungi Maqsad</span>
-            <div class="widget-toggle-wrap"><label class="toggle"><input type="checkbox" class="widget-toggle" data-widget="goal" checked/><span class="slider-track"></span></label></div>
-          </div>
-          <div class="widget-body">
-            <div class="w-goal-ring">
-              <svg viewBox="0 0 80 80" class="w-ring-svg">
-                <circle cx="40" cy="40" r="34" class="ring-bg"/>
-                <circle cx="40" cy="40" r="34" class="ring-fill" id="goalRing" stroke-dasharray="213.6" stroke-dashoffset="213.6"/>
-              </svg>
-              <div class="w-ring-text"><span id="goalPct">0%</span></div>
+          <div class="flashcard-stage" id="flashStage">
+            <div class="flashcard" id="flashcard" onclick="this.classList.toggle('flipped')">
+              <div class="flashcard-side flashcard-front">
+                <div class="flashcard-label">Savol</div>
+                <div id="flashFront">Birinchi flashcard'ni qo'shing</div>
+              </div>
+              <div class="flashcard-side flashcard-back">
+                <div class="flashcard-label" style="color:var(--bg)">Javob</div>
+                <div id="flashBack">—</div>
+              </div>
             </div>
-            <div class="w-goal-label" id="goalLabel">0 / 0 bajarildi</div>
           </div>
-        </div>
-
-        <!-- Focus Timer Widget -->
-        <div class="widget-card widget-large" id="w-focus">
-          <div class="widget-header">
-            <span class="widget-label">⏱ Focus Timer</span>
-            <div class="widget-toggle-wrap"><label class="toggle"><input type="checkbox" class="widget-toggle" data-widget="focus" checked/><span class="slider-track"></span></label></div>
-          </div>
-          <div class="widget-body focus-body">
-            <div class="focus-timer-display" id="focusDisplay">25:00</div>
-            <div class="focus-mode-label" id="focusModeLabel">Focus</div>
-            <div class="focus-controls">
-              <button class="focus-btn" onclick="focusAction('reset')" title="Reset"><i class="fa-solid fa-rotate-left"></i></button>
-              <button class="focus-btn focus-main" id="focusPlayBtn" onclick="focusAction('toggle')"><i class="fa-solid fa-play"></i></button>
-              <button class="focus-btn" onclick="focusAction('skip')" title="O'tkazib yuborish"><i class="fa-solid fa-forward-step"></i></button>
-            </div>
-            <div class="focus-sessions">
-              <span id="focusSessions">0</span> sessiya bugun
-            </div>
-          </div>
-        </div>
-
-        <!-- Calendar Widget -->
-        <div class="widget-card widget-large" id="w-calendar">
-          <div class="widget-header">
-            <span class="widget-label">📅 Oylik Takvim</span>
-            <div class="widget-toggle-wrap"><label class="toggle"><input type="checkbox" class="widget-toggle" data-widget="calendar" checked/><span class="slider-track"></span></label></div>
-          </div>
-          <div class="widget-body">
-            <div class="w-cal-header">
-              <button onclick="calPrev()"><i class="fa-solid fa-chevron-left"></i></button>
-              <span id="calMonthLabel"></span>
-              <button onclick="calNext()"><i class="fa-solid fa-chevron-right"></i></button>
-            </div>
-            <div class="w-cal-days-header">
-              <span>Du</span><span>Se</span><span>Ch</span><span>Pa</span><span>Ju</span><span>Sh</span><span>Ya</span>
-            </div>
-            <div class="w-cal-grid" id="calGrid"></div>
-          </div>
-        </div>
-
-        <!-- Stats Summary Widget -->
-        <div class="widget-card" id="w-stats">
-          <div class="widget-header">
-            <span class="widget-label">📊 Haftalik Xulosa</span>
-            <div class="widget-toggle-wrap"><label class="toggle"><input type="checkbox" class="widget-toggle" data-widget="stats" checked/><span class="slider-track"></span></label></div>
-          </div>
-          <div class="widget-body">
-            <canvas id="widgetMiniChart" height="90"></canvas>
+          <div class="flex gap-1 mt-2" style="justify-content:center">
+            <button class="btn btn-ghost" onclick="prevFlash()"><i class="fa-solid fa-arrow-left"></i></button>
+            <span class="muted" id="flashCounter" style="display:flex;align-items:center;font-size:.8rem">0/0</span>
+            <button class="btn btn-ghost" onclick="nextFlash()"><i class="fa-solid fa-arrow-right"></i></button>
           </div>
         </div>
       </div>
-    </section>
 
-
-    <!-- ════ ANALYTICS ════ -->
-    <section class="page" id="page-analytics">
-      <div class="analytics-grid">
-        <div class="card col-span-2">
-          <div class="card-header">
-            <div class="card-title"><i class="fa-solid fa-chart-column"></i> 30 Kunlik Bajarish Taqqoslama</div>
-          </div>
-          <canvas id="habitCompareChart" height="110"></canvas>
-        </div>
-        <div class="card">
-          <div class="card-header"><div class="card-title"><i class="fa-solid fa-chart-pie"></i> Kategoriya</div></div>
-          <canvas id="categoryPieChart"></canvas>
-        </div>
-        <div class="card">
-          <div class="card-header"><div class="card-title"><i class="fa-solid fa-trophy"></i> Top 5 Odat</div></div>
-          <div class="rank-list" id="topHabitsList"></div>
-        </div>
-        <div class="card col-span-2">
-          <div class="card-header"><div class="card-title"><i class="fa-solid fa-chart-area"></i> 6 Oylik Taqqoslash</div></div>
-          <canvas id="monthlyCompareChart" height="90"></canvas>
-        </div>
-        <div class="card">
-          <div class="card-header"><div class="card-title"><i class="fa-solid fa-clock"></i> Vaqt Taqsimoti</div></div>
-          <canvas id="timeDistributionChart"></canvas>
-        </div>
-        <div class="card">
-          <div class="card-header"><div class="card-title"><i class="fa-solid fa-fire"></i> Streak Reytingi</div></div>
-          <div class="rank-list" id="streakRankingList"></div>
+      <div>
+        <div class="card mb-2">
+          <div class="card-head"><h2 class="h2">📅 Imtihonlar</h2></div>
+          <div id="examsList"></div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- ════ HEATMAP ════ -->
-    <section class="page" id="page-heatmap">
-      <div class="card" style="margin-bottom:1rem">
-        <div class="card-header">
-          <div class="card-title"><i class="fa-solid fa-fire-flame-curved"></i> Yillik Faollik Xaritasi</div>
-          <select id="heatmapSelect" class="fpill" style="cursor:pointer;padding:.4rem .8rem">
-            <option value="all">Barcha odatlar</option>
-          </select>
-        </div>
-        <div class="heatmap-legend">
-          <span>Kam</span>
-          <div class="leg-boxes">
-            <span class="l0"></span><span class="l1"></span>
-            <span class="l2"></span><span class="l3"></span><span class="l4"></span>
-          </div>
-          <span>Ko'p</span>
-        </div>
-        <div class="heatmap-wrap"><div class="heatmap-grid" id="heatmapGrid"></div></div>
+  <!-- ═══════ GOALS ═══════ -->
+  <section class="page" id="page-goals">
+    <div class="page-head">
+      <div>
+        <h1 class="h1 serif">Maqsadlar</h1>
+        <div class="muted">Hayotingizni shakllantiring</div>
       </div>
-      <div class="heatmap-mini-stats">
-        <div class="mini-stat-card"><div class="ms-icon ms-blue"><i class="fa-solid fa-calendar-check"></i></div><div><div class="ms-val" id="heatDays">0</div><div class="ms-label">Faol kunlar</div></div></div>
-        <div class="mini-stat-card"><div class="ms-icon ms-orange"><i class="fa-solid fa-fire"></i></div><div><div class="ms-val" id="heatCurrent">0</div><div class="ms-label">Joriy seriya</div></div></div>
-        <div class="mini-stat-card"><div class="ms-icon ms-yellow"><i class="fa-solid fa-medal"></i></div><div><div class="ms-val" id="heatLongest">0</div><div class="ms-label">Eng uzun</div></div></div>
-        <div class="mini-stat-card"><div class="ms-icon ms-green"><i class="fa-solid fa-percent"></i></div><div><div class="ms-val" id="heatRate">0%</div><div class="ms-label">Umumiy foiz</div></div></div>
+      <button class="btn btn-primary" onclick="openModal('goal')"><i class="fa-solid fa-plus"></i> Maqsad</button>
+    </div>
+
+    <div class="tabs mb-2" style="display:flex">
+      <button class="tab active" data-gtype="all" onclick="setGoalType('all')">Hammasi</button>
+      <button class="tab" data-gtype="short" onclick="setGoalType('short')">Qisqa muddatli</button>
+      <button class="tab" data-gtype="long" onclick="setGoalType('long')">Uzoq muddatli</button>
+      <button class="tab" data-gtype="done" onclick="setGoalType('done')">Bajarilgan</button>
+    </div>
+
+    <div class="goals-grid" id="goalsGrid"></div>
+  </section>
+
+
+
+  <!-- ═══════ NOTES ═══════ -->
+  <section class="page" id="page-notes">
+    <div class="page-head">
+      <div>
+        <h1 class="h1 serif">Qaydlar</h1>
+        <div class="muted">Fikrlaringizni qog'ozga tushiring</div>
       </div>
-    </section>
+      <button class="btn btn-primary" onclick="newNote()"><i class="fa-solid fa-plus"></i> Yangi qayd</button>
+    </div>
 
-    <!-- ════ SETTINGS ════ -->
-    <section class="page" id="page-settings">
-      <div class="settings-grid">
-        <div class="card col-span-2">
-          <div class="card-header"><div class="card-title"><i class="fa-solid fa-palette"></i> Rang Mavzusi</div></div>
-          <div class="theme-showcase">
-            <button class="theme-card active" data-theme="midnight">
-              <div class="theme-preview-lg" style="background:linear-gradient(135deg,#0a0a0f 0%,#1a1a2e 50%,#16213e 100%)">
-                <div class="tp-sidebar"></div><div class="tp-content"><div class="tp-bar"></div><div class="tp-bar tp-bar-short"></div></div>
-              </div>
-              <div class="theme-name">Midnight Black</div>
-              <div class="theme-check"><i class="fa-solid fa-check"></i></div>
-            </button>
-            <button class="theme-card" data-theme="minimal">
-              <div class="theme-preview-lg" style="background:linear-gradient(135deg,#f8f9fa 0%,#e9ecef 100%)">
-                <div class="tp-sidebar" style="background:rgba(0,0,0,0.06)"></div><div class="tp-content"><div class="tp-bar" style="background:rgba(0,0,0,0.1)"></div><div class="tp-bar tp-bar-short" style="background:rgba(0,0,0,0.07)"></div></div>
-              </div>
-              <div class="theme-name">Minimal White</div>
-              <div class="theme-check"><i class="fa-solid fa-check"></i></div>
-            </button>
-            <button class="theme-card" data-theme="ocean">
-              <div class="theme-preview-lg" style="background:linear-gradient(135deg,#0a1628 0%,#0d3b6e 100%)">
-                <div class="tp-sidebar"></div><div class="tp-content"><div class="tp-bar"></div><div class="tp-bar tp-bar-short"></div></div>
-              </div>
-              <div class="theme-name">Ocean Blue</div>
-              <div class="theme-check"><i class="fa-solid fa-check"></i></div>
-            </button>
-            <button class="theme-card" data-theme="forest">
-              <div class="theme-preview-lg" style="background:linear-gradient(135deg,#0a1a0f 0%,#1a3a2a 100%)">
-                <div class="tp-sidebar"></div><div class="tp-content"><div class="tp-bar"></div><div class="tp-bar tp-bar-short"></div></div>
-              </div>
-              <div class="theme-name">Forest Green</div>
-              <div class="theme-check"><i class="fa-solid fa-check"></i></div>
-            </button>
-            <button class="theme-card" data-theme="sunset">
-              <div class="theme-preview-lg" style="background:linear-gradient(135deg,#1a0a0a 0%,#3a1a0a 50%,#2a0a1a 100%)">
-                <div class="tp-sidebar"></div><div class="tp-content"><div class="tp-bar"></div><div class="tp-bar tp-bar-short"></div></div>
-              </div>
-              <div class="theme-name">Sunset Orange</div>
-              <div class="theme-check"><i class="fa-solid fa-check"></i></div>
-            </button>
-            <button class="theme-card" data-theme="neon">
-              <div class="theme-preview-lg" style="background:linear-gradient(135deg,#0a000f 0%,#1a0030 100%)">
-                <div class="tp-sidebar"></div><div class="tp-content"><div class="tp-bar"></div><div class="tp-bar tp-bar-short"></div></div>
-              </div>
-              <div class="theme-name">Purple Neon</div>
-              <div class="theme-check"><i class="fa-solid fa-check"></i></div>
-            </button>
-          </div>
+    <div class="notes-layout">
+      <div class="notes-sidebar">
+        <div class="search-box mb-2" style="max-width:none;border-radius:10px">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="noteSearch" placeholder="Qidirish..." oninput="renderNotes()"/>
         </div>
-
-        <div class="card">
-          <div class="card-header"><div class="card-title"><i class="fa-solid fa-bell"></i> Bildirishnomalar</div></div>
-          <div class="setting-row"><label>Kunlik eslatma vaqti</label><input type="time" id="reminderTime" value="09:00"/></div>
-          <div class="setting-row"><label>Bildirishnomalar</label><label class="toggle"><input type="checkbox" id="enableReminders"/><span class="slider-track"></span></label></div>
-          <div class="setting-row"><label>Ovozli signal</label><label class="toggle"><input type="checkbox" id="enableSound"/><span class="slider-track"></span></label></div>
-        </div>
-
-        <div class="card">
-          <div class="card-header"><div class="card-title"><i class="fa-solid fa-display"></i> Ko'rinish</div></div>
-          <div class="setting-row"><label>Animatsiyalar</label><label class="toggle"><input type="checkbox" id="enableAnimations" checked/><span class="slider-track"></span></label></div>
-          <div class="setting-row"><label>Blur effektlar</label><label class="toggle"><input type="checkbox" id="enableBlur" checked/><span class="slider-track"></span></label></div>
-          <div class="setting-row"><label>Compact rejim</label><label class="toggle"><input type="checkbox" id="compactMode"/><span class="slider-track"></span></label></div>
-        </div>
-
-        <div class="card">
-          <div class="card-header"><div class="card-title"><i class="fa-solid fa-database"></i> Ma'lumotlar</div></div>
-          <div class="data-btns">
-            <button class="btn-secondary" id="exportBtn"><i class="fa-solid fa-download"></i> JSON Eksport</button>
-            <button class="btn-secondary" id="importBtn"><i class="fa-solid fa-upload"></i> JSON Import</button>
-            <input type="file" id="importFile" accept=".json" style="display:none"/>
-            <button class="btn-danger" id="clearAllBtn"><i class="fa-solid fa-trash"></i> Hammasini o'chirish</button>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header"><div class="card-title"><i class="fa-solid fa-circle-info"></i> Dastur haqida</div></div>
-          <div class="about-box">
-            <strong>HabitFlow</strong>
-            <span class="version-badge"><i class="fa-solid fa-bolt"></i> v3.0 Premium</span>
-            <p>Apple + Notion dizayn tili bilan yaratilgan mukammal odat kuzatuvchi.</p>
-            <p style="color:var(--text3);font-size:.76rem;margin-top:.5rem">Barcha ma'lumotlar qurilmangizda xavfsiz saqlanadi.</p>
-          </div>
+        <div class="notes-list" id="notesList"></div>
+      </div>
+      <div class="notes-editor" id="notesEditor">
+        <div class="empty-state">
+          <div class="empty-state-icon">📝</div>
+          <h3>Hech qanday qayd tanlanmagan</h3>
+          <p>Yangi qayd yarating yoki ro'yxatdan tanlang</p>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
+
+  <!-- ═══════ MINI APPS ═══════ -->
+  <section class="page" id="page-apps">
+    <div class="page-head">
+      <div>
+        <h1 class="h1 serif">Mini ilovalar</h1>
+        <div class="muted">Foydali asboblar</div>
+      </div>
+    </div>
+
+    <div class="mini-apps-grid">
+      <button class="mini-app-card" onclick="openMiniApp('calc')">
+        <div class="mini-app-icon" style="background:var(--blue-soft);color:var(--blue)">🧮</div>
+        <div>
+          <div class="mini-app-name">Kalkulyator</div>
+          <div class="mini-app-desc">Ilmiy hisoblash</div>
+        </div>
+      </button>
+      <button class="mini-app-card" onclick="openMiniApp('stopwatch')">
+        <div class="mini-app-icon" style="background:var(--green-soft);color:var(--green)">⏱</div>
+        <div>
+          <div class="mini-app-name">Sekundomer</div>
+          <div class="mini-app-desc">Aniq vaqt o'lchash</div>
+        </div>
+      </button>
+      <button class="mini-app-card" onclick="openMiniApp('timer')">
+        <div class="mini-app-icon" style="background:var(--orange-soft);color:var(--orange)">⏲</div>
+        <div>
+          <div class="mini-app-name">Taymer</div>
+          <div class="mini-app-desc">Hisob orqaga</div>
+        </div>
+      </button>
+      <button class="mini-app-card" onclick="openMiniApp('whitenoise')">
+        <div class="mini-app-icon" style="background:var(--purple-soft);color:var(--purple)">🎵</div>
+        <div>
+          <div class="mini-app-name">Oq shovqin</div>
+          <div class="mini-app-desc">Konsentratsiya uchun</div>
+        </div>
+      </button>
+      <button class="mini-app-card" onclick="openMiniApp('converter')">
+        <div class="mini-app-icon" style="background:var(--yellow-soft);color:var(--yellow)">🔄</div>
+        <div>
+          <div class="mini-app-name">Konverter</div>
+          <div class="mini-app-desc">Birliklarni o'girish</div>
+        </div>
+      </button>
+      <button class="mini-app-card" onclick="openMiniApp('sleep')">
+        <div class="mini-app-icon" style="background:var(--blue-soft);color:var(--blue)">😴</div>
+        <div>
+          <div class="mini-app-name">Uyqu kuzatuvi</div>
+          <div class="mini-app-desc">Sog'lom uyqu rejimi</div>
+        </div>
+      </button>
+      <button class="mini-app-card" onclick="openMiniApp('expense')">
+        <div class="mini-app-icon" style="background:var(--green-soft);color:var(--green)">💰</div>
+        <div>
+          <div class="mini-app-name">Xarajatlar</div>
+          <div class="mini-app-desc">Pul boshqaruvi</div>
+        </div>
+      </button>
+      <button class="mini-app-card" onclick="openMiniApp('journal')">
+        <div class="mini-app-icon" style="background:var(--red-soft);color:var(--red)">📔</div>
+        <div>
+          <div class="mini-app-name">Kundalik</div>
+          <div class="mini-app-desc">Kunlik fikrlar</div>
+        </div>
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══════ ACHIEVEMENTS ═══════ -->
+  <section class="page" id="page-achievements">
+    <div class="page-head">
+      <div>
+        <h1 class="h1 serif">Yutuqlar</h1>
+        <div class="muted">Sizning safaringiz</div>
+      </div>
+    </div>
+
+    <div class="card mb-2" style="display:flex;align-items:center;gap:1.5rem">
+      <div style="width:80px;height:80px;background:linear-gradient(135deg,var(--accent),var(--purple));border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:2rem" id="bigAvatar">U</div>
+      <div style="flex:1">
+        <h2 class="h2" id="bigUserName">Foydalanuvchi</h2>
+        <div class="muted" id="bigLevel">Daraja 1 · Yangi boshlovchi</div>
+        <div style="height:8px;background:var(--border);border-radius:99px;margin-top:8px;overflow:hidden">
+          <div id="xpBar" style="height:100%;background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:99px;width:0%;transition:width 1s"></div>
+        </div>
+        <div class="tiny mt-1" id="xpText">0 / 100 XP</div>
+      </div>
+    </div>
+
+    <h2 class="h2 mb-2">🏆 Yutuqlar</h2>
+    <div class="ach-grid" id="achievementsGrid"></div>
+  </section>
+
+
+
+  <!-- ═══════ SETTINGS ═══════ -->
+  <section class="page" id="page-settings">
+    <div class="page-head">
+      <div>
+        <h1 class="h1 serif">Sozlamalar</h1>
+        <div class="muted">O'z istagingizcha sozlang</div>
+      </div>
+    </div>
+
+    <div class="settings-grid">
+      <div class="card">
+        <div class="card-head"><h2 class="h2">👤 Profil</h2></div>
+        <div class="form-group">
+          <label class="form-label">Ismingiz</label>
+          <input class="input" id="setName" oninput="updateName(this.value)"/>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2 class="h2">🌙 Mavzu</h2></div>
+        <div class="theme-cards">
+          <button class="theme-card" data-th="light" onclick="setTheme('light')">
+            <div class="theme-card-preview" style="background:linear-gradient(135deg,#fafaf9,#ededec)"></div>
+            <div class="theme-card-name">☀️ Yorug'</div>
+          </button>
+          <button class="theme-card" data-th="dark" onclick="setTheme('dark')">
+            <div class="theme-card-preview" style="background:linear-gradient(135deg,#0a0a0a,#1c1c1c)"></div>
+            <div class="theme-card-name">🌙 Qora</div>
+          </button>
+        </div>
+        <div class="muted mt-2 mb-1" style="font-size:.78rem">Asosiy rang</div>
+        <div class="accent-cards">
+          <button class="accent-card" data-acc="default" style="background:#1a1a1a" onclick="setAccent('default')"></button>
+          <button class="accent-card" data-acc="ocean" style="background:#0284c7" onclick="setAccent('ocean')"></button>
+          <button class="accent-card" data-acc="forest" style="background:#059669" onclick="setAccent('forest')"></button>
+          <button class="accent-card" data-acc="sunset" style="background:#ea580c" onclick="setAccent('sunset')"></button>
+          <button class="accent-card" data-acc="purple" style="background:#7c3aed" onclick="setAccent('purple')"></button>
+          <button class="accent-card" data-acc="rose" style="background:#e11d48" onclick="setAccent('rose')"></button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2 class="h2">🔔 Bildirishnomalar</h2></div>
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-name">Eslatmalar</div>
+            <div class="setting-desc">Brauzer xabarnomalari</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="setNotif" onchange="toggleNotif(this.checked)"/><span class="toggle-slider"></span></label>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-name">Ovozlar</div>
+            <div class="setting-desc">Action ovozli effektlar</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="setSound"/><span class="toggle-slider"></span></label>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-name">Animatsiyalar</div>
+            <div class="setting-desc">Smooth transitions</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="setAnim" checked/><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2 class="h2">💾 Ma'lumotlar</h2></div>
+        <button class="btn btn-secondary mb-1" style="width:100%;justify-content:flex-start" onclick="exportAll()">
+          <i class="fa-solid fa-download"></i> Eksport (JSON)
+        </button>
+        <button class="btn btn-secondary mb-1" style="width:100%;justify-content:flex-start" onclick="document.getElementById('importFile').click()">
+          <i class="fa-solid fa-upload"></i> Import (JSON)
+        </button>
+        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importFromFile(event)"/>
+        <button class="btn btn-danger" style="width:100%;justify-content:flex-start" onclick="confirmReset()">
+          <i class="fa-solid fa-trash"></i> Hammasini o'chirish
+        </button>
+      </div>
+
+      <div class="card" style="grid-column:span 2">
+        <div class="card-head"><h2 class="h2">⌨️ Klaviatura yorliqlari</h2></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem 2rem">
+          <div class="setting-row"><span class="setting-name">Qidirish</span><kbd>⌘K</kbd></div>
+          <div class="setting-row"><span class="setting-name">Yangi vazifa</span><kbd>N</kbd></div>
+          <div class="setting-row"><span class="setting-name">Fokus rejim</span><kbd>F</kbd></div>
+          <div class="setting-row"><span class="setting-name">Mavzu</span><kbd>T</kbd></div>
+          <div class="setting-row"><span class="setting-name">Bosh sahifa</span><kbd>G</kbd> + <kbd>D</kbd></div>
+          <div class="setting-row"><span class="setting-name">Vazifalar</span><kbd>G</kbd> + <kbd>T</kbd></div>
+          <div class="setting-row"><span class="setting-name">Odatlar</span><kbd>G</kbd> + <kbd>H</kbd></div>
+          <div class="setting-row"><span class="setting-name">Yopish / chiqish</span><kbd>Esc</kbd></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-3 muted" style="font-size:.8rem">
+      Lumio v1.0 · Made with ❤️ for productivity
+    </div>
+  </section>
 
   </main>
 </div>
 
-<!-- ════ ADD/EDIT HABIT MODAL ════ -->
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="modalTitle">Yangi Odat Qo'shish</div>
-      <button class="modal-close" id="modalClose"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    <form id="habitForm">
-      <input type="hidden" id="editHabitId"/>
-      <div class="form-group">
-        <label class="form-label">Odat Nomi *</label>
-        <input class="form-input" type="text" id="habitName" placeholder="Masalan: Ertalabki yugurish" required/>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Kategoriya</label>
-          <select class="form-select" id="habitCategory">
-            <option value="health">🏥 Sog'liq</option>
-            <option value="fitness">💪 Sport</option>
-            <option value="learning">📚 O'rganish</option>
-            <option value="mindfulness">🧘 Mindfulness</option>
-            <option value="productivity">⚡ Samaradorlik</option>
-            <option value="social">👥 Ijtimoiy</option>
-            <option value="other">✨ Boshqa</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Rang</label>
-          <div class="color-picker" id="colorPicker">
-            <span class="c-opt sel" data-c="#6366f1" style="background:#6366f1"></span>
-            <span class="c-opt" data-c="#22d87a" style="background:#22d87a"></span>
-            <span class="c-opt" data-c="#f59e0b" style="background:#f59e0b"></span>
-            <span class="c-opt" data-c="#ef4444" style="background:#ef4444"></span>
-            <span class="c-opt" data-c="#06b6d4" style="background:#06b6d4"></span>
-            <span class="c-opt" data-c="#ec4899" style="background:#ec4899"></span>
-            <span class="c-opt" data-c="#84cc16" style="background:#84cc16"></span>
-            <span class="c-opt" data-c="#f97316" style="background:#f97316"></span>
-          </div>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Kunlik Maqsad</label>
-          <input class="form-input" type="number" id="habitTarget" min="1" max="999" value="1"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Birlik</label>
-          <input class="form-input" type="text" id="habitUnit" placeholder="marta, daqiqa..."/>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Tavsif</label>
-        <textarea class="form-textarea" id="habitDesc" rows="2" placeholder="Bu odat haqida..."></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Eslatma Vaqti</label>
-        <input class="form-input" type="time" id="habitReminder"/>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn-secondary" id="cancelModal">Bekor qilish</button>
-        <button type="submit" class="btn-primary"><i class="fa-solid fa-floppy-disk"></i> Saqlash</button>
-      </div>
-    </form>
-  </div>
+
+
+<!-- ═══════ MODALS ═══════ -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this) closeModal()">
+  <div class="modal" id="modalContent"></div>
 </div>
 
-<!-- ════ CONFIRM MODAL ════ -->
-<div class="modal-overlay" id="confirmOverlay">
-  <div class="modal" style="max-width:360px">
-    <div class="confirm-body">
-      <div class="confirm-icon-wrap"><i class="fa-solid fa-triangle-exclamation"></i></div>
-      <h3 id="confirmTitle">Ishonchingiz komilmi?</h3>
-      <p id="confirmMsg">Bu amalni ortga qaytarib bo'lmaydi.</p>
-      <div style="display:flex;gap:.6rem;justify-content:center;margin-top:1.2rem">
-        <button class="btn-secondary" id="confirmCancel">Bekor qilish</button>
-        <button class="btn-danger" id="confirmOk"><i class="fa-solid fa-trash"></i> O'chirish</button>
-      </div>
+<!-- ═══════ COMMAND PALETTE ═══════ -->
+<div class="cmd-overlay" id="cmdOverlay" onclick="if(event.target===this) closeCmd()">
+  <div class="cmd-palette">
+    <div class="cmd-input-wrap">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="cmdInput" placeholder="Buyruq yoki sahifa qidirish..." oninput="renderCmd(this.value)"/>
+      <kbd>esc</kbd>
+    </div>
+    <div class="cmd-results" id="cmdResults"></div>
+    <div class="cmd-foot">
+      <span><kbd>↑</kbd><kbd>↓</kbd> tanlash</span>
+      <span><kbd>↵</kbd> ochish</span>
+      <span><kbd>esc</kbd> yopish</span>
     </div>
   </div>
 </div>
 
-<!-- TOAST -->
+<!-- ═══════ TOAST ═══════ -->
 <div class="toast-wrap" id="toastWrap"></div>
 
 <script src="app.js"></script>
