@@ -1,28 +1,190 @@
 <!DOCTYPE html>
-<html lang="uz" data-theme="dark">
+<html lang="uz" data-theme="midnight">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>HabitFlow — Premium Odat Kuzatuvchi</title>
+  <meta name="description" content="HabitFlow — Premium Odat Kuzatuvchi"/>
+  <title>HabitFlow</title>
   <link rel="stylesheet" href="style.css"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;0,14..32,900;1,14..32,400&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 </head>
 <body>
 
-<!-- ═══════════ SIDEBAR ═══════════ -->
+<!-- ══════════════════════════════════════
+     ONBOARDING OVERLAY
+══════════════════════════════════════ -->
+<div class="onboarding-overlay" id="onboarding">
+  <div class="onboarding-bg">
+    <div class="ob-orb ob-orb1"></div>
+    <div class="ob-orb ob-orb2"></div>
+    <div class="ob-orb ob-orb3"></div>
+  </div>
+  <div class="onboarding-container">
+
+    <!-- Step 1 -->
+    <div class="ob-step active" data-step="1">
+      <div class="ob-icon-wrap"><span class="ob-emoji">⚡</span></div>
+      <h1 class="ob-title">HabitFlow'ga<br>Xush Kelibsiz</h1>
+      <p class="ob-desc">Oddiy, elegant va kuchli odat kuzatuvchi.<br>Maqsadlaringizga erishishda hamrohingiz.</p>
+      <button class="ob-btn" onclick="obNext()">Boshlash <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="ob-step" data-step="2">
+      <div class="ob-icon-wrap"><span class="ob-emoji">🎨</span></div>
+      <h2 class="ob-title">Mavzuni Tanlang</h2>
+      <p class="ob-desc">Sizga yoqadigan rangni tanlang</p>
+      <div class="ob-themes">
+        <button class="ob-theme-btn active" data-theme="midnight" onclick="obTheme(this,'midnight')">
+          <div class="ob-theme-dot" style="background:linear-gradient(135deg,#0a0a0f,#1a1a2e)"></div>
+          <span>Midnight</span>
+        </button>
+        <button class="ob-theme-btn" data-theme="minimal" onclick="obTheme(this,'minimal')">
+          <div class="ob-theme-dot" style="background:linear-gradient(135deg,#f8f9fa,#e9ecef)"></div>
+          <span>Minimal</span>
+        </button>
+        <button class="ob-theme-btn" data-theme="ocean" onclick="obTheme(this,'ocean')">
+          <div class="ob-theme-dot" style="background:linear-gradient(135deg,#0a1628,#0d3b6e)"></div>
+          <span>Ocean</span>
+        </button>
+        <button class="ob-theme-btn" data-theme="forest" onclick="obTheme(this,'forest')">
+          <div class="ob-theme-dot" style="background:linear-gradient(135deg,#0a1a0f,#1a3a2a)"></div>
+          <span>Forest</span>
+        </button>
+        <button class="ob-theme-btn" data-theme="sunset" onclick="obTheme(this,'sunset')">
+          <div class="ob-theme-dot" style="background:linear-gradient(135deg,#1a0a0a,#3a1a0a)"></div>
+          <span>Sunset</span>
+        </button>
+        <button class="ob-theme-btn" data-theme="neon" onclick="obTheme(this,'neon')">
+          <div class="ob-theme-dot" style="background:linear-gradient(135deg,#0a000f,#1a0030)"></div>
+          <span>Neon</span>
+        </button>
+      </div>
+      <button class="ob-btn" onclick="obNext()">Davom etish <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="ob-step" data-step="3">
+      <div class="ob-icon-wrap"><span class="ob-emoji">🔔</span></div>
+      <h2 class="ob-title">Bildirishnomalar</h2>
+      <p class="ob-desc">Kunlik eslatmalar sizni yo'lda ushlab turadi</p>
+      <div class="ob-notif-card">
+        <i class="fa-solid fa-bell"></i>
+        <div>
+          <strong>Bildirishnomalarni yoqing</strong>
+          <small>Odatlaringizni unutmang</small>
+        </div>
+        <label class="toggle"><input type="checkbox" id="obNotif"/><span class="slider-track"></span></label>
+      </div>
+      <button class="ob-btn" onclick="obNext()">Davom etish <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="ob-step" data-step="4">
+      <div class="ob-icon-wrap"><span class="ob-emoji">✨</span></div>
+      <h2 class="ob-title">Hammasi Tayyor!</h2>
+      <p class="ob-desc">Birinchi odatingizni qo'shing va<br>o'zgarish yo'lini boshlang</p>
+      <div class="ob-tips">
+        <div class="ob-tip"><i class="fa-solid fa-keyboard"></i><span><kbd>N</kbd> — Yangi odat</span></div>
+        <div class="ob-tip"><i class="fa-solid fa-magnifying-glass"></i><span><kbd>/</kbd> — Qidirish</span></div>
+        <div class="ob-tip"><i class="fa-solid fa-question"></i><span><kbd>?</kbd> — Yordam</span></div>
+      </div>
+      <button class="ob-btn ob-btn-finish" onclick="finishOnboarding()">
+        <i class="fa-solid fa-rocket"></i> Boshlash
+      </button>
+    </div>
+
+    <!-- Steps indicator -->
+    <div class="ob-dots">
+      <span class="ob-dot active"></span>
+      <span class="ob-dot"></span>
+      <span class="ob-dot"></span>
+      <span class="ob-dot"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     LOADING SCREEN
+══════════════════════════════════════ -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="loading-logo">
+    <div class="loading-icon"><i class="fa-solid fa-bolt"></i></div>
+    <span>HabitFlow</span>
+  </div>
+  <div class="loading-bar-wrap"><div class="loading-bar" id="loadingBar"></div></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     COMMAND PALETTE (Search Everywhere)
+══════════════════════════════════════ -->
+<div class="cmd-overlay" id="cmdOverlay">
+  <div class="cmd-palette">
+    <div class="cmd-input-wrap">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="cmdInput" placeholder="Qidirish yoki buyruq kiriting..."/>
+      <kbd class="cmd-esc">Esc</kbd>
+    </div>
+    <div class="cmd-results" id="cmdResults"></div>
+    <div class="cmd-footer">
+      <span><kbd>↑↓</kbd> Navigatsiya</span>
+      <span><kbd>Enter</kbd> Tanlash</span>
+      <span><kbd>Esc</kbd> Yopish</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KEYBOARD SHORTCUTS MODAL
+══════════════════════════════════════ -->
+<div class="modal-overlay" id="shortcutsOverlay">
+  <div class="modal shortcuts-modal">
+    <div class="modal-header">
+      <div class="modal-title"><i class="fa-solid fa-keyboard"></i> Keyboard Shortcuts</div>
+      <button class="modal-close" onclick="closeShortcuts()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="shortcuts-grid">
+      <div class="shortcut-group">
+        <div class="shortcut-group-title">Umumiy</div>
+        <div class="shortcut-item"><span>Qidiruv</span><div class="keys"><kbd>/</kbd></div></div>
+        <div class="shortcut-item"><span>Yangi odat</span><div class="keys"><kbd>N</kbd></div></div>
+        <div class="shortcut-item"><span>Yordam</span><div class="keys"><kbd>?</kbd></div></div>
+        <div class="shortcut-item"><span>Yopish</span><div class="keys"><kbd>Esc</kbd></div></div>
+      </div>
+      <div class="shortcut-group">
+        <div class="shortcut-group-title">Navigatsiya</div>
+        <div class="shortcut-item"><span>Dashboard</span><div class="keys"><kbd>G</kbd><kbd>D</kbd></div></div>
+        <div class="shortcut-item"><span>Odatlar</span><div class="keys"><kbd>G</kbd><kbd>H</kbd></div></div>
+        <div class="shortcut-item"><span>Tahlil</span><div class="keys"><kbd>G</kbd><kbd>A</kbd></div></div>
+        <div class="shortcut-item"><span>Xarita</span><div class="keys"><kbd>G</kbd><kbd>M</kbd></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     SIDEBAR
+══════════════════════════════════════ -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <div class="logo">
       <div class="logo-icon"><i class="fa-solid fa-bolt"></i></div>
-      <span>HabitFlow</span>
+      <span class="logo-text">HabitFlow</span>
     </div>
     <button class="sidebar-close" id="sidebarClose"><i class="fa-solid fa-xmark"></i></button>
   </div>
 
+  <div class="sidebar-search" onclick="openCmd()">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span>Qidirish...</span>
+    <kbd>/</kbd>
+  </div>
+
   <nav class="sidebar-nav">
-    <div class="nav-section-label">Ana Sahifalar</div>
+    <div class="nav-label">Ana sahifalar</div>
     <a href="#" class="nav-item active" data-page="dashboard">
       <div class="nav-icon"><i class="fa-solid fa-gauge-high"></i></div>
       <span>Dashboard</span>
@@ -33,7 +195,12 @@
       <span>Odatlar</span>
       <span class="nav-dot"></span>
     </a>
-    <div class="nav-section-label">Tahlil</div>
+    <a href="#" class="nav-item" data-page="widgets">
+      <div class="nav-icon"><i class="fa-solid fa-table-cells-large"></i></div>
+      <span>Widgetlar</span>
+      <span class="nav-dot"></span>
+    </a>
+    <div class="nav-label">Tahlil</div>
     <a href="#" class="nav-item" data-page="analytics">
       <div class="nav-icon"><i class="fa-solid fa-chart-pie"></i></div>
       <span>Statistika</span>
@@ -44,7 +211,7 @@
       <span>Faollik Xaritasi</span>
       <span class="nav-dot"></span>
     </a>
-    <div class="nav-section-label">Sozlash</div>
+    <div class="nav-label">Sozlash</div>
     <a href="#" class="nav-item" data-page="settings">
       <div class="nav-icon"><i class="fa-solid fa-sliders"></i></div>
       <span>Sozlamalar</span>
@@ -57,283 +224,405 @@
       <div class="streak-fire">🔥</div>
       <div class="streak-info">
         <div class="streak-num" id="sidebarStreak">0</div>
-        <div class="streak-label">kun ketma-ket seriya</div>
+        <div class="streak-label">kun ketma-ket</div>
         <div class="streak-bar"><div class="streak-bar-fill" id="streakBarFill" style="width:0%"></div></div>
       </div>
     </div>
+    <button class="shortcut-hint-btn" onclick="openShortcuts()">
+      <kbd>?</kbd> Shortcuts
+    </button>
   </div>
 </aside>
 
-<!-- ═══════════ MAIN ═══════════ -->
-<div class="main-wrapper">
-
+<!-- ══════════════════════════════════════
+     MAIN WRAPPER
+══════════════════════════════════════ -->
+<div class="main-wrapper" id="mainWrapper">
   <!-- TOPBAR -->
   <header class="topbar">
     <div class="topbar-left">
       <button class="menu-btn" id="menuBtn"><i class="fa-solid fa-bars"></i></button>
-      <div>
+      <div class="topbar-title-wrap">
         <div class="page-title" id="pageTitle">Dashboard</div>
-        <div class="breadcrumb"><i class="fa-solid fa-house"></i> <span id="breadcrumb">Ana sahifa</span></div>
+        <div class="page-subtitle" id="pageSubtitle">Ana sahifa</div>
       </div>
+    </div>
+    <div class="topbar-center">
+      <button class="search-trigger" onclick="openCmd()">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <span>Qidirish...</span>
+        <kbd>/</kbd>
+      </button>
     </div>
     <div class="topbar-right">
       <div class="date-chip"><i class="fa-regular fa-calendar"></i><span id="todayDate"></span></div>
+      <button class="notif-btn" id="notifBtn" title="Bildirishnomalar">
+        <i class="fa-regular fa-bell"></i>
+        <span class="notif-dot" id="notifDot" style="display:none"></span>
+      </button>
       <button class="btn-add" id="openAddModal">
-        <div class="plus-icon"><i class="fa-solid fa-plus"></i></div>
-        Odat Qo'shish
+        <i class="fa-solid fa-plus"></i> Yangi Odat
       </button>
     </div>
   </header>
 
-  <main class="content">
+  <!-- PAGES -->
+  <main class="content" id="mainContent">
 
 
-  <!-- ════════ DASHBOARD PAGE ════════ -->
-  <section class="page active" id="page-dashboard">
-    <div class="stats-grid">
-      <div class="stat-card sc-blue">
-        <div class="stat-icon"><i class="fa-solid fa-list-check"></i></div>
-        <div class="stat-info">
-          <div class="stat-value" id="statTotal">0</div>
-          <div class="stat-label">Jami Odatlar</div>
+    <!-- ════ DASHBOARD ════ -->
+    <section class="page active" id="page-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card sc-blue">
+          <div class="stat-icon"><i class="fa-solid fa-list-check"></i></div>
+          <div class="stat-info">
+            <div class="stat-value" id="statTotal">0</div>
+            <div class="stat-label">Jami Odatlar</div>
+          </div>
+          <div class="stat-sparkline" id="spark0"></div>
+        </div>
+        <div class="stat-card sc-green">
+          <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+          <div class="stat-info">
+            <div class="stat-value" id="statToday">0</div>
+            <div class="stat-label">Bugun Bajarildi</div>
+          </div>
+          <div class="stat-sparkline" id="spark1"></div>
+        </div>
+        <div class="stat-card sc-orange">
+          <div class="stat-icon"><i class="fa-solid fa-fire-flame-curved"></i></div>
+          <div class="stat-info">
+            <div class="stat-value" id="statStreak">0</div>
+            <div class="stat-label">Ketma-ket Kun</div>
+          </div>
+          <div class="stat-sparkline" id="spark2"></div>
+        </div>
+        <div class="stat-card sc-purple">
+          <div class="stat-icon"><i class="fa-solid fa-chart-simple"></i></div>
+          <div class="stat-info">
+            <div class="stat-value" id="statRate">0%</div>
+            <div class="stat-label">Bajarish Foizi</div>
+          </div>
+          <div class="stat-sparkline" id="spark3"></div>
         </div>
       </div>
-      <div class="stat-card sc-green">
-        <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
-        <div class="stat-info">
-          <div class="stat-value" id="statToday">0</div>
-          <div class="stat-label">Bugun Bajarildi</div>
-        </div>
-      </div>
-      <div class="stat-card sc-orange">
-        <div class="stat-icon"><i class="fa-solid fa-fire-flame-curved"></i></div>
-        <div class="stat-info">
-          <div class="stat-value" id="statStreak">0</div>
-          <div class="stat-label">Ketma-ket Kun</div>
-        </div>
-      </div>
-      <div class="stat-card sc-purple">
-        <div class="stat-icon"><i class="fa-solid fa-chart-simple"></i></div>
-        <div class="stat-info">
-          <div class="stat-value" id="statRate">0%</div>
-          <div class="stat-label">Bajarish Foizi</div>
-        </div>
-      </div>
-    </div>
 
-    <div class="dashboard-grid">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><i class="fa-solid fa-sun"></i> Bugungi Odatlar</div>
-          <span class="card-badge" id="todayProgress">0/0</span>
+      <div class="dashboard-grid">
+        <div class="card today-card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-sun"></i> Bugungi Odatlar</div>
+            <span class="card-badge" id="todayProgress">0/0</span>
+          </div>
+          <div class="prog-wrap"><div class="prog-fill" id="todayBar" style="width:0%"></div></div>
+          <div class="today-list" id="todayList">
+            <div class="empty">
+              <div class="empty-icon"><i class="fa-solid fa-seedling"></i></div>
+              <p>Hali odat qo'shilmagan</p>
+            </div>
+          </div>
         </div>
-        <div class="prog-wrap"><div class="prog-fill" id="todayBar" style="width:0%"></div></div>
-        <div class="today-list" id="todayList">
-          <div class="empty">
-            <div class="empty-icon"><i class="fa-solid fa-seedling"></i></div>
-            <p>Hali odat qo'shilmagan</p>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-chart-bar"></i> Haftalik Ko'rsatkich</div>
+          </div>
+          <canvas id="weeklyBarChart"></canvas>
+        </div>
+      </div>
+
+      <div class="charts-row">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-chart-line"></i> 30 Kunlik Trend</div>
+          </div>
+          <canvas id="trendLineChart"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-chart-pie"></i> Kategoriyalar</div>
+          </div>
+          <canvas id="categoryDonutChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ HABITS ════ -->
+    <section class="page" id="page-habits">
+      <div class="habits-toolbar">
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="searchInput" placeholder="Odatlarni qidirish..."/>
+        </div>
+        <div class="filter-pills" id="filterPills">
+          <button class="fpill active" data-cat="all">Barchasi</button>
+          <button class="fpill" data-cat="health">🏥</button>
+          <button class="fpill" data-cat="fitness">💪</button>
+          <button class="fpill" data-cat="learning">📚</button>
+          <button class="fpill" data-cat="mindfulness">🧘</button>
+          <button class="fpill" data-cat="productivity">⚡</button>
+          <button class="fpill" data-cat="social">👥</button>
+        </div>
+        <select id="filterStatus" class="fpill" style="cursor:pointer;padding:.45rem .9rem">
+          <option value="all">Barchasi</option>
+          <option value="completed">✅ Bajarildi</option>
+          <option value="active">⏳ Kutilmoqda</option>
+        </select>
+      </div>
+      <div class="habits-grid" id="habitsGrid"></div>
+    </section>
+
+    <!-- ════ WIDGETS ════ -->
+    <section class="page" id="page-widgets">
+      <div class="widgets-header">
+        <p class="widgets-desc">Widgetlarni boshqaruv panelida ko'rsatish uchun ustiga bosing</p>
+      </div>
+      <div class="widgets-grid">
+        <!-- Streak Widget -->
+        <div class="widget-card" id="w-streak">
+          <div class="widget-header">
+            <span class="widget-label">🔥 Streak</span>
+            <div class="widget-toggle-wrap"><label class="toggle"><input type="checkbox" class="widget-toggle" data-widget="streak" checked/><span class="slider-track"></span></label></div>
+          </div>
+          <div class="widget-body">
+            <div class="w-streak-num" id="wStreakNum">0</div>
+            <div class="w-streak-label">kun ketma-ket seriya</div>
+            <div class="w-streak-bar"><div class="w-streak-fill" id="wStreakFill" style="width:0%"></div></div>
+          </div>
+        </div>
+
+        <!-- Quote Widget -->
+        <div class="widget-card" id="w-quote">
+          <div class="widget-header">
+            <span class="widget-label">💬 Kunlik Iqtibos</span>
+            <div class="widget-toggle-wrap"><label class="toggle"><input type="checkbox" class="widget-toggle" data-widget="quote" checked/><span class="slider-track"></span></label></div>
+          </div>
+          <div class="widget-body">
+            <div class="w-quote-text" id="wQuoteText">"Katta narsalar kichik odatlardan boshlanadi."</div>
+            <div class="w-quote-author" id="wQuoteAuthor">— James Clear</div>
+            <button class="w-quote-refresh" onclick="refreshQuote()"><i class="fa-solid fa-rotate-right"></i></button>
+          </div>
+        </div>
+
+        <!-- Goal Progress Widget -->
+        <div class="widget-card" id="w-goal">
+          <div class="widget-header">
+            <span class="widget-label">🎯 Bugungi Maqsad</span>
+            <div class="widget-toggle-wrap"><label class="toggle"><input type="checkbox" class="widget-toggle" data-widget="goal" checked/><span class="slider-track"></span></label></div>
+          </div>
+          <div class="widget-body">
+            <div class="w-goal-ring">
+              <svg viewBox="0 0 80 80" class="w-ring-svg">
+                <circle cx="40" cy="40" r="34" class="ring-bg"/>
+                <circle cx="40" cy="40" r="34" class="ring-fill" id="goalRing" stroke-dasharray="213.6" stroke-dashoffset="213.6"/>
+              </svg>
+              <div class="w-ring-text"><span id="goalPct">0%</span></div>
+            </div>
+            <div class="w-goal-label" id="goalLabel">0 / 0 bajarildi</div>
+          </div>
+        </div>
+
+        <!-- Focus Timer Widget -->
+        <div class="widget-card widget-large" id="w-focus">
+          <div class="widget-header">
+            <span class="widget-label">⏱ Focus Timer</span>
+            <div class="widget-toggle-wrap"><label class="toggle"><input type="checkbox" class="widget-toggle" data-widget="focus" checked/><span class="slider-track"></span></label></div>
+          </div>
+          <div class="widget-body focus-body">
+            <div class="focus-timer-display" id="focusDisplay">25:00</div>
+            <div class="focus-mode-label" id="focusModeLabel">Focus</div>
+            <div class="focus-controls">
+              <button class="focus-btn" onclick="focusAction('reset')" title="Reset"><i class="fa-solid fa-rotate-left"></i></button>
+              <button class="focus-btn focus-main" id="focusPlayBtn" onclick="focusAction('toggle')"><i class="fa-solid fa-play"></i></button>
+              <button class="focus-btn" onclick="focusAction('skip')" title="O'tkazib yuborish"><i class="fa-solid fa-forward-step"></i></button>
+            </div>
+            <div class="focus-sessions">
+              <span id="focusSessions">0</span> sessiya bugun
+            </div>
+          </div>
+        </div>
+
+        <!-- Calendar Widget -->
+        <div class="widget-card widget-large" id="w-calendar">
+          <div class="widget-header">
+            <span class="widget-label">📅 Oylik Takvim</span>
+            <div class="widget-toggle-wrap"><label class="toggle"><input type="checkbox" class="widget-toggle" data-widget="calendar" checked/><span class="slider-track"></span></label></div>
+          </div>
+          <div class="widget-body">
+            <div class="w-cal-header">
+              <button onclick="calPrev()"><i class="fa-solid fa-chevron-left"></i></button>
+              <span id="calMonthLabel"></span>
+              <button onclick="calNext()"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+            <div class="w-cal-days-header">
+              <span>Du</span><span>Se</span><span>Ch</span><span>Pa</span><span>Ju</span><span>Sh</span><span>Ya</span>
+            </div>
+            <div class="w-cal-grid" id="calGrid"></div>
+          </div>
+        </div>
+
+        <!-- Stats Summary Widget -->
+        <div class="widget-card" id="w-stats">
+          <div class="widget-header">
+            <span class="widget-label">📊 Haftalik Xulosa</span>
+            <div class="widget-toggle-wrap"><label class="toggle"><input type="checkbox" class="widget-toggle" data-widget="stats" checked/><span class="slider-track"></span></label></div>
+          </div>
+          <div class="widget-body">
+            <canvas id="widgetMiniChart" height="90"></canvas>
           </div>
         </div>
       </div>
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><i class="fa-solid fa-chart-bar"></i> Haftalik Ko'rsatkich</div>
-        </div>
-        <canvas id="weeklyBarChart"></canvas>
-      </div>
-    </div>
-
-    <div class="charts-row">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><i class="fa-solid fa-chart-line"></i> 30 Kunlik Trend</div>
-        </div>
-        <canvas id="trendLineChart"></canvas>
-      </div>
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><i class="fa-solid fa-chart-pie"></i> Kategoriyalar</div>
-        </div>
-        <canvas id="categoryDonutChart"></canvas>
-      </div>
-    </div>
-  </section>
-
-  <!-- ════════ HABITS PAGE ════════ -->
-  <section class="page" id="page-habits">
-    <div class="habits-toolbar">
-      <div class="search-box">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" id="searchInput" placeholder="Odat qidirish..."/>
-      </div>
-      <div class="filter-pills" id="filterPills">
-        <button class="filter-pill active" data-cat="all">Barchasi</button>
-        <button class="filter-pill" data-cat="health">🏥 Sog'liq</button>
-        <button class="filter-pill" data-cat="fitness">💪 Sport</button>
-        <button class="filter-pill" data-cat="learning">📚 O'rganish</button>
-        <button class="filter-pill" data-cat="mindfulness">🧘 Mindfulness</button>
-        <button class="filter-pill" data-cat="productivity">⚡ Samaradorlik</button>
-      </div>
-      <select id="filterStatus" class="filter-pill" style="cursor:pointer">
-        <option value="all">Barchasi</option>
-        <option value="completed">✅ Bajarildi</option>
-        <option value="active">⏳ Bajarilmadi</option>
-      </select>
-    </div>
-    <div class="habits-grid" id="habitsGrid">
-      <div class="empty full">
-        <div class="empty-icon"><i class="fa-solid fa-clipboard-list"></i></div>
-        <p>Hali odat qo'shilmagan</p>
-        <button class="btn-primary" id="emptyAddBtn" style="margin-top:.5rem"><i class="fa-solid fa-plus"></i> Birinchi odatni qo'shing</button>
-      </div>
-    </div>
-  </section>
+    </section>
 
 
-  <!-- ════════ ANALYTICS PAGE ════════ -->
-  <section class="page" id="page-analytics">
-    <div class="analytics-grid">
-      <div class="card col-span-2">
-        <div class="card-header">
-          <div class="card-title"><i class="fa-solid fa-chart-column"></i> Odatlar bo'yicha 30 Kunlik Bajarish</div>
+    <!-- ════ ANALYTICS ════ -->
+    <section class="page" id="page-analytics">
+      <div class="analytics-grid">
+        <div class="card col-span-2">
+          <div class="card-header">
+            <div class="card-title"><i class="fa-solid fa-chart-column"></i> 30 Kunlik Bajarish Taqqoslama</div>
+          </div>
+          <canvas id="habitCompareChart" height="110"></canvas>
         </div>
-        <canvas id="habitCompareChart" height="110"></canvas>
-      </div>
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><i class="fa-solid fa-chart-pie"></i> Kategoriya Taqsimoti</div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i class="fa-solid fa-chart-pie"></i> Kategoriya</div></div>
+          <canvas id="categoryPieChart"></canvas>
         </div>
-        <canvas id="categoryPieChart"></canvas>
-      </div>
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><i class="fa-solid fa-trophy"></i> Top 5 Odat</div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i class="fa-solid fa-trophy"></i> Top 5 Odat</div></div>
+          <div class="rank-list" id="topHabitsList"></div>
         </div>
-        <div class="rank-list" id="topHabitsList"></div>
-      </div>
-      <div class="card col-span-2">
-        <div class="card-header">
-          <div class="card-title"><i class="fa-solid fa-chart-area"></i> 6 Oylik Taqqoslash</div>
+        <div class="card col-span-2">
+          <div class="card-header"><div class="card-title"><i class="fa-solid fa-chart-area"></i> 6 Oylik Taqqoslash</div></div>
+          <canvas id="monthlyCompareChart" height="90"></canvas>
         </div>
-        <canvas id="monthlyCompareChart" height="90"></canvas>
-      </div>
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><i class="fa-solid fa-clock"></i> Vaqt Taqsimoti</div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i class="fa-solid fa-clock"></i> Vaqt Taqsimoti</div></div>
+          <canvas id="timeDistributionChart"></canvas>
         </div>
-        <canvas id="timeDistributionChart"></canvas>
-      </div>
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title"><i class="fa-solid fa-fire"></i> Streak Reytingi</div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i class="fa-solid fa-fire"></i> Streak Reytingi</div></div>
+          <div class="rank-list" id="streakRankingList"></div>
         </div>
-        <div class="rank-list" id="streakRankingList"></div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ════════ HEATMAP PAGE ════════ -->
-  <section class="page" id="page-heatmap">
-    <div class="card" style="margin-bottom:1rem">
-      <div class="card-header">
-        <div class="card-title"><i class="fa-solid fa-fire-flame-curved"></i> Yillik Faollik Xaritasi</div>
-        <select id="heatmapSelect" class="filter-pill" style="cursor:pointer">
-          <option value="all">Barcha odatlar</option>
-        </select>
-      </div>
-      <div class="heatmap-legend">
-        <span>Kam</span>
-        <div class="leg-boxes">
-          <span class="l0"></span><span class="l1"></span>
-          <span class="l2"></span><span class="l3"></span><span class="l4"></span>
+    <!-- ════ HEATMAP ════ -->
+    <section class="page" id="page-heatmap">
+      <div class="card" style="margin-bottom:1rem">
+        <div class="card-header">
+          <div class="card-title"><i class="fa-solid fa-fire-flame-curved"></i> Yillik Faollik Xaritasi</div>
+          <select id="heatmapSelect" class="fpill" style="cursor:pointer;padding:.4rem .8rem">
+            <option value="all">Barcha odatlar</option>
+          </select>
         </div>
-        <span>Ko'p</span>
+        <div class="heatmap-legend">
+          <span>Kam</span>
+          <div class="leg-boxes">
+            <span class="l0"></span><span class="l1"></span>
+            <span class="l2"></span><span class="l3"></span><span class="l4"></span>
+          </div>
+          <span>Ko'p</span>
+        </div>
+        <div class="heatmap-wrap"><div class="heatmap-grid" id="heatmapGrid"></div></div>
       </div>
-      <div class="heatmap-wrap">
-        <div class="heatmap-grid" id="heatmapGrid"></div>
+      <div class="heatmap-mini-stats">
+        <div class="mini-stat-card"><div class="ms-icon ms-blue"><i class="fa-solid fa-calendar-check"></i></div><div><div class="ms-val" id="heatDays">0</div><div class="ms-label">Faol kunlar</div></div></div>
+        <div class="mini-stat-card"><div class="ms-icon ms-orange"><i class="fa-solid fa-fire"></i></div><div><div class="ms-val" id="heatCurrent">0</div><div class="ms-label">Joriy seriya</div></div></div>
+        <div class="mini-stat-card"><div class="ms-icon ms-yellow"><i class="fa-solid fa-medal"></i></div><div><div class="ms-val" id="heatLongest">0</div><div class="ms-label">Eng uzun</div></div></div>
+        <div class="mini-stat-card"><div class="ms-icon ms-green"><i class="fa-solid fa-percent"></i></div><div><div class="ms-val" id="heatRate">0%</div><div class="ms-label">Umumiy foiz</div></div></div>
       </div>
-    </div>
-    <div class="heatmap-mini-stats">
-      <div class="mini-stat-card">
-        <div class="ms-icon" style="background:rgba(124,106,247,.15);color:var(--accent)"><i class="fa-solid fa-calendar-check"></i></div>
-        <div><div class="ms-val" id="heatDays">0</div><div class="ms-label">Faol kunlar</div></div>
-      </div>
-      <div class="mini-stat-card">
-        <div class="ms-icon" style="background:rgba(255,150,64,.15);color:var(--orange)"><i class="fa-solid fa-fire"></i></div>
-        <div><div class="ms-val" id="heatCurrent">0</div><div class="ms-label">Joriy seriya</div></div>
-      </div>
-      <div class="mini-stat-card">
-        <div class="ms-icon" style="background:rgba(255,209,102,.15);color:var(--yellow)"><i class="fa-solid fa-medal"></i></div>
-        <div><div class="ms-val" id="heatLongest">0</div><div class="ms-label">Eng uzun seriya</div></div>
-      </div>
-      <div class="mini-stat-card">
-        <div class="ms-icon" style="background:rgba(34,216,122,.15);color:var(--green)"><i class="fa-solid fa-percent"></i></div>
-        <div><div class="ms-val" id="heatRate">0%</div><div class="ms-label">Umumiy foiz</div></div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ════════ SETTINGS PAGE ════════ -->
-  <section class="page" id="page-settings">
-    <div class="settings-grid">
-      <div class="card">
-        <div class="card-header"><div class="card-title"><i class="fa-solid fa-palette"></i> Mavzu</div></div>
-        <div class="theme-grid">
-          <button class="theme-opt active" data-theme="dark">
-            <div class="theme-preview" style="background:linear-gradient(135deg,#07080f,#1a1d3a)"></div>
-            <span>Qorong'i</span>
-          </button>
-          <button class="theme-opt" data-theme="light">
-            <div class="theme-preview" style="background:linear-gradient(135deg,#f0f2ff,#e0e4ff)"></div>
-            <span>Yorug'</span>
-          </button>
-          <button class="theme-opt" data-theme="aurora">
-            <div class="theme-preview" style="background:linear-gradient(135deg,#050a14,#0a2040)"></div>
-            <span>Aurora</span>
-          </button>
-          <button class="theme-opt" data-theme="rose">
-            <div class="theme-preview" style="background:linear-gradient(135deg,#120810,#2a0a20)"></div>
-            <span>Rose</span>
-          </button>
+    <!-- ════ SETTINGS ════ -->
+    <section class="page" id="page-settings">
+      <div class="settings-grid">
+        <div class="card col-span-2">
+          <div class="card-header"><div class="card-title"><i class="fa-solid fa-palette"></i> Rang Mavzusi</div></div>
+          <div class="theme-showcase">
+            <button class="theme-card active" data-theme="midnight">
+              <div class="theme-preview-lg" style="background:linear-gradient(135deg,#0a0a0f 0%,#1a1a2e 50%,#16213e 100%)">
+                <div class="tp-sidebar"></div><div class="tp-content"><div class="tp-bar"></div><div class="tp-bar tp-bar-short"></div></div>
+              </div>
+              <div class="theme-name">Midnight Black</div>
+              <div class="theme-check"><i class="fa-solid fa-check"></i></div>
+            </button>
+            <button class="theme-card" data-theme="minimal">
+              <div class="theme-preview-lg" style="background:linear-gradient(135deg,#f8f9fa 0%,#e9ecef 100%)">
+                <div class="tp-sidebar" style="background:rgba(0,0,0,0.06)"></div><div class="tp-content"><div class="tp-bar" style="background:rgba(0,0,0,0.1)"></div><div class="tp-bar tp-bar-short" style="background:rgba(0,0,0,0.07)"></div></div>
+              </div>
+              <div class="theme-name">Minimal White</div>
+              <div class="theme-check"><i class="fa-solid fa-check"></i></div>
+            </button>
+            <button class="theme-card" data-theme="ocean">
+              <div class="theme-preview-lg" style="background:linear-gradient(135deg,#0a1628 0%,#0d3b6e 100%)">
+                <div class="tp-sidebar"></div><div class="tp-content"><div class="tp-bar"></div><div class="tp-bar tp-bar-short"></div></div>
+              </div>
+              <div class="theme-name">Ocean Blue</div>
+              <div class="theme-check"><i class="fa-solid fa-check"></i></div>
+            </button>
+            <button class="theme-card" data-theme="forest">
+              <div class="theme-preview-lg" style="background:linear-gradient(135deg,#0a1a0f 0%,#1a3a2a 100%)">
+                <div class="tp-sidebar"></div><div class="tp-content"><div class="tp-bar"></div><div class="tp-bar tp-bar-short"></div></div>
+              </div>
+              <div class="theme-name">Forest Green</div>
+              <div class="theme-check"><i class="fa-solid fa-check"></i></div>
+            </button>
+            <button class="theme-card" data-theme="sunset">
+              <div class="theme-preview-lg" style="background:linear-gradient(135deg,#1a0a0a 0%,#3a1a0a 50%,#2a0a1a 100%)">
+                <div class="tp-sidebar"></div><div class="tp-content"><div class="tp-bar"></div><div class="tp-bar tp-bar-short"></div></div>
+              </div>
+              <div class="theme-name">Sunset Orange</div>
+              <div class="theme-check"><i class="fa-solid fa-check"></i></div>
+            </button>
+            <button class="theme-card" data-theme="neon">
+              <div class="theme-preview-lg" style="background:linear-gradient(135deg,#0a000f 0%,#1a0030 100%)">
+                <div class="tp-sidebar"></div><div class="tp-content"><div class="tp-bar"></div><div class="tp-bar tp-bar-short"></div></div>
+              </div>
+              <div class="theme-name">Purple Neon</div>
+              <div class="theme-check"><i class="fa-solid fa-check"></i></div>
+            </button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i class="fa-solid fa-bell"></i> Bildirishnomalar</div></div>
+          <div class="setting-row"><label>Kunlik eslatma vaqti</label><input type="time" id="reminderTime" value="09:00"/></div>
+          <div class="setting-row"><label>Bildirishnomalar</label><label class="toggle"><input type="checkbox" id="enableReminders"/><span class="slider-track"></span></label></div>
+          <div class="setting-row"><label>Ovozli signal</label><label class="toggle"><input type="checkbox" id="enableSound"/><span class="slider-track"></span></label></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i class="fa-solid fa-display"></i> Ko'rinish</div></div>
+          <div class="setting-row"><label>Animatsiyalar</label><label class="toggle"><input type="checkbox" id="enableAnimations" checked/><span class="slider-track"></span></label></div>
+          <div class="setting-row"><label>Blur effektlar</label><label class="toggle"><input type="checkbox" id="enableBlur" checked/><span class="slider-track"></span></label></div>
+          <div class="setting-row"><label>Compact rejim</label><label class="toggle"><input type="checkbox" id="compactMode"/><span class="slider-track"></span></label></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i class="fa-solid fa-database"></i> Ma'lumotlar</div></div>
+          <div class="data-btns">
+            <button class="btn-secondary" id="exportBtn"><i class="fa-solid fa-download"></i> JSON Eksport</button>
+            <button class="btn-secondary" id="importBtn"><i class="fa-solid fa-upload"></i> JSON Import</button>
+            <input type="file" id="importFile" accept=".json" style="display:none"/>
+            <button class="btn-danger" id="clearAllBtn"><i class="fa-solid fa-trash"></i> Hammasini o'chirish</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i class="fa-solid fa-circle-info"></i> Dastur haqida</div></div>
+          <div class="about-box">
+            <strong>HabitFlow</strong>
+            <span class="version-badge"><i class="fa-solid fa-bolt"></i> v3.0 Premium</span>
+            <p>Apple + Notion dizayn tili bilan yaratilgan mukammal odat kuzatuvchi.</p>
+            <p style="color:var(--text3);font-size:.76rem;margin-top:.5rem">Barcha ma'lumotlar qurilmangizda xavfsiz saqlanadi.</p>
+          </div>
         </div>
       </div>
-      <div class="card">
-        <div class="card-header"><div class="card-title"><i class="fa-solid fa-bell"></i> Eslatmalar</div></div>
-        <div class="setting-row">
-          <label>Kunlik eslatma</label>
-          <input type="time" id="reminderTime" value="09:00"/>
-        </div>
-        <div class="setting-row">
-          <label>Bildirishnomalar</label>
-          <label class="toggle"><input type="checkbox" id="enableReminders"/><span class="slider-track"></span></label>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header"><div class="card-title"><i class="fa-solid fa-database"></i> Ma'lumotlar</div></div>
-        <div class="data-btns">
-          <button class="btn-secondary" id="exportBtn"><i class="fa-solid fa-download"></i> Eksport (JSON)</button>
-          <button class="btn-secondary" id="importBtn"><i class="fa-solid fa-upload"></i> Import (JSON)</button>
-          <input type="file" id="importFile" accept=".json" style="display:none"/>
-          <button class="btn-danger" id="clearAllBtn"><i class="fa-solid fa-trash"></i> Barcha ma'lumotlarni o'chirish</button>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header"><div class="card-title"><i class="fa-solid fa-circle-info"></i> Dastur haqida</div></div>
-        <div class="about-box">
-          <strong>HabitFlow</strong>
-          <span class="version-badge"><i class="fa-solid fa-bolt"></i> v2.0 Premium</span>
-          <p>Mukammal odat kuzatuvchi — barcha ma'lumotlar qurilmangizda xavfsiz saqlanadi.</p>
-          <p style="font-size:.78rem;color:var(--text3);margin-top:.5rem">Made with ❤️ for better habits</p>
-        </div>
-      </div>
-    </div>
-  </section>
+    </section>
 
   </main>
 </div>
 
-
-<!-- ════════ ADD/EDIT MODAL ════════ -->
+<!-- ════ ADD/EDIT HABIT MODAL ════ -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <div class="modal-header">
@@ -362,14 +651,14 @@
         <div class="form-group">
           <label class="form-label">Rang</label>
           <div class="color-picker" id="colorPicker">
-            <span class="c-opt sel" data-c="#7c6af7" style="background:#7c6af7"></span>
+            <span class="c-opt sel" data-c="#6366f1" style="background:#6366f1"></span>
             <span class="c-opt" data-c="#22d87a" style="background:#22d87a"></span>
-            <span class="c-opt" data-c="#ff9640" style="background:#ff9640"></span>
-            <span class="c-opt" data-c="#ff5f6d" style="background:#ff5f6d"></span>
-            <span class="c-opt" data-c="#38d9f5" style="background:#38d9f5"></span>
-            <span class="c-opt" data-c="#f066c6" style="background:#f066c6"></span>
-            <span class="c-opt" data-c="#a3e635" style="background:#a3e635"></span>
-            <span class="c-opt" data-c="#ffd166" style="background:#ffd166"></span>
+            <span class="c-opt" data-c="#f59e0b" style="background:#f59e0b"></span>
+            <span class="c-opt" data-c="#ef4444" style="background:#ef4444"></span>
+            <span class="c-opt" data-c="#06b6d4" style="background:#06b6d4"></span>
+            <span class="c-opt" data-c="#ec4899" style="background:#ec4899"></span>
+            <span class="c-opt" data-c="#84cc16" style="background:#84cc16"></span>
+            <span class="c-opt" data-c="#f97316" style="background:#f97316"></span>
           </div>
         </div>
       </div>
@@ -399,14 +688,14 @@
   </div>
 </div>
 
-<!-- ════════ CONFIRM MODAL ════════ -->
+<!-- ════ CONFIRM MODAL ════ -->
 <div class="modal-overlay" id="confirmOverlay">
   <div class="modal" style="max-width:360px">
     <div class="confirm-body">
       <div class="confirm-icon-wrap"><i class="fa-solid fa-triangle-exclamation"></i></div>
       <h3 id="confirmTitle">Ishonchingiz komilmi?</h3>
       <p id="confirmMsg">Bu amalni ortga qaytarib bo'lmaydi.</p>
-      <div style="display:flex;gap:.6rem;justify-content:center">
+      <div style="display:flex;gap:.6rem;justify-content:center;margin-top:1.2rem">
         <button class="btn-secondary" id="confirmCancel">Bekor qilish</button>
         <button class="btn-danger" id="confirmOk"><i class="fa-solid fa-trash"></i> O'chirish</button>
       </div>
