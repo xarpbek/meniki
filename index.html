@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HabitFlow — Odat Kuzatuvchi</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <i class="fa-solid fa-chart-line"></i>
+        <span>HabitFlow</span>
+      </div>
+      <button class="sidebar-close" id="sidebarClose"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-page="dashboard">
+        <i class="fa-solid fa-gauge-high"></i><span>Dashboard</span>
+      </a>
+      <a href="#" class="nav-item" data-page="habits">
+        <i class="fa-solid fa-list-check"></i><span>Odatlar</span>
+      </a>
+      <a href="#" class="nav-item" data-page="analytics">
+        <i class="fa-solid fa-chart-pie"></i><span>Tahlil</span>
+      </a>
+      <a href="#" class="nav-item" data-page="heatmap">
+        <i class="fa-solid fa-fire"></i><span>Faollik Xaritasi</span>
+      </a>
+      <a href="#" class="nav-item" data-page="settings">
+        <i class="fa-solid fa-gear"></i><span>Sozlamalar</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="streak-badge">
+        <i class="fa-solid fa-fire-flame-curved"></i>
+        <div>
+          <span id="sidebarStreak">0</span> kun ketma-ket
+          <small>Eng uzun seriya</small>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-wrapper">
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <button class="menu-btn" id="menuBtn"><i class="fa-solid fa-bars"></i></button>
+      <div class="topbar-center">
+        <h1 class="page-title" id="pageTitle">Dashboard</h1>
+      </div>
+      <div class="topbar-right">
+        <span class="date-badge" id="todayDate"></span>
+        <button class="btn-primary" id="openAddModal">
+          <i class="fa-solid fa-plus"></i> Odat Qo'shish
+        </button>
+      </div>
+    </header>
+
+    <!-- PAGES -->
+    <main class="content">
+
+      <!-- ===== DASHBOARD PAGE ===== -->
+      <section class="page active" id="page-dashboard">
+        <!-- Stats Row -->
+        <div class="stats-grid">
+          <div class="stat-card card-blue">
+            <div class="stat-icon"><i class="fa-solid fa-list-check"></i></div>
+            <div class="stat-info">
+              <span class="stat-value" id="statTotal">0</span>
+              <span class="stat-label">Jami Odatlar</span>
+            </div>
+          </div>
+          <div class="stat-card card-green">
+            <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+            <div class="stat-info">
+              <span class="stat-value" id="statToday">0</span>
+              <span class="stat-label">Bugun Bajarildi</span>
+            </div>
+          </div>
+          <div class="stat-card card-orange">
+            <div class="stat-icon"><i class="fa-solid fa-fire"></i></div>
+            <div class="stat-info">
+              <span class="stat-value" id="statStreak">0</span>
+              <span class="stat-label">Ketma-ket Kun</span>
+            </div>
+          </div>
+          <div class="stat-card card-purple">
+            <div class="stat-icon"><i class="fa-solid fa-percent"></i></div>
+            <div class="stat-info">
+              <span class="stat-value" id="statRate">0%</span>
+              <span class="stat-label">Bajarish Foizi</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Today's habits + Weekly chart -->
+        <div class="dashboard-grid">
+          <div class="card today-card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-sun"></i> Bugungi Odatlar</h3>
+              <span class="badge" id="todayProgress">0/0</span>
+            </div>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar" id="todayProgressBar" style="width:0%"></div>
+            </div>
+            <div class="habit-list" id="todayHabitList">
+              <div class="empty-state">
+                <i class="fa-solid fa-seedling"></i>
+                <p>Hali odat qo'shilmagan</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card chart-card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-chart-bar"></i> Haftalik Bajarish</h3>
+            </div>
+            <canvas id="weeklyBarChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Bottom charts row -->
+        <div class="charts-row">
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-chart-line"></i> 30 Kunlik Trend</h3>
+            </div>
+            <canvas id="trendLineChart"></canvas>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-chart-pie"></i> Kategoriyalar</h3>
+            </div>
+            <canvas id="categoryDonutChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== HABITS PAGE ===== -->
+      <section class="page" id="page-habits">
+        <div class="habits-toolbar">
+          <div class="search-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchInput" placeholder="Odat qidirish..." />
+          </div>
+          <div class="filter-group">
+            <select id="filterCategory">
+              <option value="all">Barcha Kategoriyalar</option>
+              <option value="health">Sog'liq</option>
+              <option value="fitness">Sport</option>
+              <option value="learning">O'rganish</option>
+              <option value="mindfulness">Mindfulness</option>
+              <option value="productivity">Samaradorlik</option>
+              <option value="social">Ijtimoiy</option>
+              <option value="other">Boshqa</option>
+            </select>
+            <select id="filterStatus">
+              <option value="all">Barchasi</option>
+              <option value="active">Faol</option>
+              <option value="completed">Bugun bajarildi</option>
+            </select>
+          </div>
+        </div>
+        <div class="habits-grid" id="habitsGrid">
+          <div class="empty-state full">
+            <i class="fa-solid fa-clipboard-list"></i>
+            <p>Hali odat qo'shilmagan</p>
+            <button class="btn-primary" id="emptyAddBtn"><i class="fa-solid fa-plus"></i> Birinchi odatni qo'shing</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== ANALYTICS PAGE ===== -->
+      <section class="page" id="page-analytics">
+        <div class="analytics-grid">
+          <div class="card span-2">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-chart-column"></i> Odatlar bo'yicha Bajarish Foizi</h3>
+            </div>
+            <canvas id="habitCompareChart" height="120"></canvas>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-chart-pie"></i> Kategoriya Taqsimoti</h3>
+            </div>
+            <canvas id="categoryPieChart"></canvas>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-trophy"></i> Eng Yaxshi Odatlar</h3>
+            </div>
+            <div class="top-habits-list" id="topHabitsList"></div>
+          </div>
+          <div class="card span-2">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-chart-area"></i> Oylik Taqqoslash</h3>
+            </div>
+            <canvas id="monthlyCompareChart" height="100"></canvas>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-clock"></i> Kunlik Vaqt Taqsimoti</h3>
+            </div>
+            <canvas id="timeDistributionChart"></canvas>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-star"></i> Streak Reytingi</h3>
+            </div>
+            <div class="streak-list" id="streakRankingList"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== HEATMAP PAGE ===== -->
+      <section class="page" id="page-heatmap">
+        <div class="card heatmap-section">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-fire"></i> Yillik Faollik Xaritasi</h3>
+            <select id="heatmapHabitSelect">
+              <option value="all">Barcha odatlar</option>
+            </select>
+          </div>
+          <div class="heatmap-legend">
+            <span>Kam</span>
+            <div class="legend-boxes">
+              <span class="heat-0"></span>
+              <span class="heat-1"></span>
+              <span class="heat-2"></span>
+              <span class="heat-3"></span>
+              <span class="heat-4"></span>
+            </div>
+            <span>Ko'p</span>
+          </div>
+          <div class="heatmap-container" id="heatmapContainer"></div>
+        </div>
+        <div class="heatmap-stats-row">
+          <div class="card mini-stat">
+            <i class="fa-solid fa-calendar-check"></i>
+            <div>
+              <span id="heatTotalDays">0</span>
+              <small>Faol kunlar</small>
+            </div>
+          </div>
+          <div class="card mini-stat">
+            <i class="fa-solid fa-fire"></i>
+            <div>
+              <span id="heatCurrentStreak">0</span>
+              <small>Joriy seriya</small>
+            </div>
+          </div>
+          <div class="card mini-stat">
+            <i class="fa-solid fa-medal"></i>
+            <div>
+              <span id="heatLongestStreak">0</span>
+              <small>Eng uzun seriya</small>
+            </div>
+          </div>
+          <div class="card mini-stat">
+            <i class="fa-solid fa-percent"></i>
+            <div>
+              <span id="heatCompletionRate">0%</span>
+              <small>Umumiy foiz</small>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== SETTINGS PAGE ===== -->
+      <section class="page" id="page-settings">
+        <div class="settings-grid">
+          <div class="card">
+            <div class="card-header"><h3><i class="fa-solid fa-palette"></i> Mavzu</h3></div>
+            <div class="theme-options">
+              <button class="theme-btn active" data-theme="dark" id="themeDark">
+                <i class="fa-solid fa-moon"></i> Qorong'i
+              </button>
+              <button class="theme-btn" data-theme="light" id="themeLight">
+                <i class="fa-solid fa-sun"></i> Yorug'
+              </button>
+              <button class="theme-btn" data-theme="ocean" id="themeOcean">
+                <i class="fa-solid fa-water"></i> Okean
+              </button>
+              <button class="theme-btn" data-theme="forest" id="themeForest">
+                <i class="fa-solid fa-tree"></i> O'rmon
+              </button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3><i class="fa-solid fa-bell"></i> Eslatmalar</h3></div>
+            <div class="setting-item">
+              <label>Kunlik eslatma vaqti</label>
+              <input type="time" id="reminderTime" value="09:00" />
+            </div>
+            <div class="setting-item">
+              <label>Eslatmalarni yoqish</label>
+              <label class="toggle">
+                <input type="checkbox" id="enableReminders" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3><i class="fa-solid fa-database"></i> Ma'lumotlar</h3></div>
+            <div class="data-actions">
+              <button class="btn-secondary" id="exportBtn">
+                <i class="fa-solid fa-download"></i> Eksport (JSON)
+              </button>
+              <button class="btn-secondary" id="importBtn">
+                <i class="fa-solid fa-upload"></i> Import (JSON)
+              </button>
+              <input type="file" id="importFile" accept=".json" style="display:none" />
+              <button class="btn-danger" id="clearAllBtn">
+                <i class="fa-solid fa-trash"></i> Barcha ma'lumotlarni o'chirish
+              </button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3><i class="fa-solid fa-circle-info"></i> Dastur haqida</h3></div>
+            <div class="about-info">
+              <p><strong>HabitFlow v1.0</strong></p>
+              <p>Mukammal odat kuzatuvchi dastur</p>
+              <p>Barcha ma'lumotlar qurilmangizda saqlanadi</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ADD/EDIT HABIT MODAL -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="habitModal">
+      <div class="modal-header">
+        <h2 id="modalTitle">Yangi Odat Qo'shish</h2>
+        <button class="modal-close" id="modalClose"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="habitForm">
+        <input type="hidden" id="editHabitId" />
+        <div class="form-group">
+          <label>Odat Nomi *</label>
+          <input type="text" id="habitName" placeholder="Masalan: Ertalabki yugurish" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Kategoriya</label>
+            <select id="habitCategory">
+              <option value="health">🏥 Sog'liq</option>
+              <option value="fitness">💪 Sport</option>
+              <option value="learning">📚 O'rganish</option>
+              <option value="mindfulness">🧘 Mindfulness</option>
+              <option value="productivity">⚡ Samaradorlik</option>
+              <option value="social">👥 Ijtimoiy</option>
+              <option value="other">✨ Boshqa</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Rang</label>
+            <div class="color-picker" id="colorPicker">
+              <span class="color-opt selected" data-color="#6366f1" style="background:#6366f1"></span>
+              <span class="color-opt" data-color="#22c55e" style="background:#22c55e"></span>
+              <span class="color-opt" data-color="#f59e0b" style="background:#f59e0b"></span>
+              <span class="color-opt" data-color="#ef4444" style="background:#ef4444"></span>
+              <span class="color-opt" data-color="#06b6d4" style="background:#06b6d4"></span>
+              <span class="color-opt" data-color="#ec4899" style="background:#ec4899"></span>
+              <span class="color-opt" data-color="#84cc16" style="background:#84cc16"></span>
+              <span class="color-opt" data-color="#f97316" style="background:#f97316"></span>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Maqsad (kunlik)</label>
+            <input type="number" id="habitTarget" min="1" max="100" value="1" />
+          </div>
+          <div class="form-group">
+            <label>Birlik</label>
+            <input type="text" id="habitUnit" placeholder="marta, daqiqa, sahifa..." />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Tavsif (ixtiyoriy)</label>
+          <textarea id="habitDesc" rows="2" placeholder="Bu odat haqida qisqacha..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Eslatma vaqti</label>
+          <input type="time" id="habitReminder" />
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" id="cancelModal">Bekor qilish</button>
+          <button type="submit" class="btn-primary" id="saveHabitBtn">
+            <i class="fa-solid fa-floppy-disk"></i> Saqlash
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- CONFIRM MODAL -->
+  <div class="modal-overlay" id="confirmOverlay">
+    <div class="modal confirm-modal">
+      <div class="confirm-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+      <h3 id="confirmTitle">Ishonchingiz komilmi?</h3>
+      <p id="confirmMsg">Bu amalni ortga qaytarib bo'lmaydi.</p>
+      <div class="modal-actions">
+        <button class="btn-secondary" id="confirmCancel">Bekor qilish</button>
+        <button class="btn-danger" id="confirmOk">O'chirish</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
