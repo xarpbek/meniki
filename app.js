@@ -4232,3 +4232,259 @@ window.fireReminder = fireReminder;
 window.ensureNotificationPermission = ensureNotificationPermission;
 
 console.log('🔔 Lumio Reminders v1.0 loaded');
+
+
+
+// ════════════════════════════════════════════
+// PWA SMART INSTALL — iOS, Android, Desktop
+// ════════════════════════════════════════════
+
+const PWA = {
+  // Detect platforms
+  isIOS: () => /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream,
+  isMacSafari: () => /^((?!chrome|android).)*safari/i.test(navigator.userAgent) && !/iPad|iPhone|iPod/.test(navigator.userAgent),
+  isAndroid: () => /Android/i.test(navigator.userAgent),
+  isMobile: () => /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent),
+  isStandalone: () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true,
+  isChromium: () => /Chrome|Chromium|CriOS|Edg|OPR/.test(navigator.userAgent),
+};
+
+// Show iOS install instructions modal
+function showIOSInstallGuide() {
+  const c = document.getElementById('modalContent');
+  if (!c) return;
+  c.innerHTML = `
+    <div class="ios-install-modal">
+      <div class="ios-install-icon">L</div>
+      <div class="ios-install-title">Lumio'ni o'rnating</div>
+      <div class="ios-install-subtitle">iPhone yoki iPad'ingizga ilovadek qo'shing — ofline ishlaydi va home screen'da ikonka bo'ladi</div>
+
+      <div class="ios-install-steps">
+        <div class="ios-install-step">
+          <div class="ios-step-num">1</div>
+          <div class="ios-step-text">
+            Pastdagi <span class="ios-share-icon"></span> <strong>Share</strong> tugmasini bosing
+          </div>
+        </div>
+        <div class="ios-install-step">
+          <div class="ios-step-num">2</div>
+          <div class="ios-step-text">
+            Pastga aylantiring va <span class="ios-step-icon">📱</span> <strong>"Add to Home Screen"</strong> ni tanlang
+          </div>
+        </div>
+        <div class="ios-install-step">
+          <div class="ios-step-num">3</div>
+          <div class="ios-step-text">
+            <strong>"Add"</strong> tugmasini bosing — Lumio home screen'ingizga qo'shiladi! ✨
+          </div>
+        </div>
+      </div>
+
+      <div class="android-install-banner-tip">
+        <i class="fa-solid fa-circle-info"></i>
+        <div>
+          <strong>Maslahat:</strong> Faqat <strong>Safari brauzerida</strong> ishlaydi.
+          Chrome yoki boshqa brauzerda ochsangiz, avval Safari'da oching.
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:center;margin-top:1rem">
+        <button class="btn btn-primary" onclick="closeModal()">Tushundim ✓</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+// Show Android/Desktop install (uses native prompt)
+async function triggerNativeInstall() {
+  if (window.deferredPrompt) {
+    try {
+      window.deferredPrompt.prompt();
+      const { outcome } = await window.deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        toast('🎉 Lumio o\'rnatildi!', 'success');
+        try { fx?.play?.('achievement'); } catch {}
+      }
+      window.deferredPrompt = null;
+      const banner = document.getElementById('installBanner');
+      if (banner) banner.classList.remove('show');
+    } catch (e) {
+      console.warn('Install error:', e);
+    }
+  } else {
+    // Fallback for browsers that don't support beforeinstallprompt yet
+    showInstallGuide();
+  }
+}
+
+// Universal install entry point — picks the right flow
+function showInstallGuide() {
+  if (PWA.isStandalone()) {
+    toast('✓ Lumio allaqachon o\'rnatilgan!', 'success');
+    return;
+  }
+  if (PWA.isIOS() || PWA.isMacSafari()) {
+    showIOSInstallGuide();
+  } else if (window.deferredPrompt) {
+    triggerNativeInstall();
+  } else {
+    showGenericInstallGuide();
+  }
+}
+
+// Generic instructions (Chrome desktop, Edge, Firefox, etc.)
+function showGenericInstallGuide() {
+  const c = document.getElementById('modalContent');
+  if (!c) return;
+  const isMobile = PWA.isMobile();
+  c.innerHTML = `
+    <div class="ios-install-modal">
+      <div class="ios-install-icon">L</div>
+      <div class="ios-install-title">Lumio'ni o'rnating</div>
+      <div class="ios-install-subtitle">${isMobile ? 'Telefoningizga' : 'Kompyuteringizga'} ilovadek qo'shing</div>
+
+      <div class="ios-install-steps">
+        <div class="ios-install-step">
+          <div class="ios-step-num">1</div>
+          <div class="ios-step-text">
+            Brauzer manzil satrining yonidagi <span class="ios-step-icon">⋮</span> <strong>menyu</strong> tugmasini bosing
+          </div>
+        </div>
+        <div class="ios-install-step">
+          <div class="ios-step-num">2</div>
+          <div class="ios-step-text">
+            <strong>"${isMobile ? 'Add to Home Screen' : 'Install Lumio'}"</strong> ni tanlang
+          </div>
+        </div>
+        <div class="ios-install-step">
+          <div class="ios-step-num">3</div>
+          <div class="ios-step-text">
+            <strong>"Install"</strong> ni bosing — Lumio mustaqil ilovadek ochiladi
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:center;margin-top:1rem">
+        <button class="btn btn-primary" onclick="closeModal()">Tushundim ✓</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+// Auto-show floating tip on first mobile visit (after 30s)
+function maybeShowMobileTip() {
+  if (PWA.isStandalone()) return;
+  if (!PWA.isMobile()) return;
+  if (localStorage.getItem('lumio_install_tip_dismissed')) return;
+  const used = localStorage.getItem('lumio_visits') || '0';
+  const visits = parseInt(used) + 1;
+  localStorage.setItem('lumio_visits', String(visits));
+  if (visits < 2) return; // Only after 2nd visit
+
+  setTimeout(() => {
+    const tip = document.createElement('div');
+    tip.className = 'pwa-tip-floater';
+    tip.innerHTML = `<i class="fa-solid fa-mobile-screen"></i><span>Lumio'ni o'rnatish <small>(home screen'ga qo'shish)</small></span>`;
+    tip.onclick = () => {
+      tip.remove();
+      showInstallGuide();
+    };
+    document.body.appendChild(tip);
+    setTimeout(() => tip.classList.add('show'), 100);
+    // Auto-dismiss after 8s
+    setTimeout(() => {
+      tip.classList.remove('show');
+      setTimeout(() => tip.remove(), 400);
+      localStorage.setItem('lumio_install_tip_dismissed', '1');
+    }, 8000);
+  }, 25000);
+}
+
+// Smart install banner trigger
+function maybeShowInstallBanner() {
+  if (PWA.isStandalone()) return;
+  if (localStorage.getItem('lumio_install_banner_dismissed')) return;
+  const banner = document.getElementById('installBanner');
+  if (!banner) return;
+
+  // For Chromium browsers — show only when prompt is available (after 2 min)
+  if (window.deferredPrompt) {
+    setTimeout(() => banner.classList.add('show'), 60000);
+  }
+}
+
+// Listen for install prompt
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  window.deferredPrompt = e;
+  setTimeout(() => maybeShowInstallBanner(), 30000);
+});
+
+// Detect successful install
+window.addEventListener('appinstalled', () => {
+  toast('🎉 Lumio o\'rnatildi! Endi home screen\'dan oching', 'success');
+  try { window.confetti?.celebrate(); } catch {}
+  try { fx?.play?.('achievement'); } catch {}
+  localStorage.setItem('lumio_installed', '1');
+  const banner = document.getElementById('installBanner');
+  if (banner) banner.classList.remove('show');
+});
+
+// Handle banner dismissal — remember it
+{
+  setTimeout(() => {
+    const closeBtn = document.querySelector('#installBanner .icon-btn:last-child');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        localStorage.setItem('lumio_install_banner_dismissed', '1');
+      });
+    }
+  }, 1000);
+}
+
+// Override the existing installPWA function with smart routing
+window.installPWA = function() {
+  showInstallGuide();
+};
+
+// Expose
+window.showInstallGuide = showInstallGuide;
+window.showIOSInstallGuide = showIOSInstallGuide;
+window.PWA = PWA;
+
+// Initialize on DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+  // Mark as standalone if running in PWA mode
+  if (PWA.isStandalone()) {
+    document.documentElement.classList.add('standalone');
+    document.body.classList.add('pwa-mode');
+  }
+
+  // Show floating tip on mobile first-time users
+  setTimeout(maybeShowMobileTip, 1500);
+
+  // Add an "Install Lumio" item to settings (if not already standalone)
+  setTimeout(() => {
+    if (PWA.isStandalone()) return;
+    const settingsContent = document.querySelector('#page-settings .settings-grid');
+    if (settingsContent && !document.getElementById('pwaInstallCard')) {
+      const card = document.createElement('div');
+      card.id = 'pwaInstallCard';
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="card-head"><h2 class="h2">📱 Ilova sifatida o'rnatish</h2></div>
+        <p class="muted mb-2" style="font-size:.86rem;line-height:1.5">
+          Lumio'ni telefon yoki kompyuteringizga ilovadek o'rnating. Ofline ishlaydi va tezroq ochiladi.
+        </p>
+        <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="showInstallGuide()">
+          <i class="fa-solid fa-download"></i> O'rnatish bo'yicha ko'rsatma
+        </button>
+      `;
+      settingsContent.insertBefore(card, settingsContent.firstChild);
+    }
+  }, 2000);
+});
+
+console.log('📱 Lumio PWA install module loaded. Standalone:', PWA.isStandalone());
