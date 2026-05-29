@@ -2724,3 +2724,256 @@ canvas[data-confetti] {
   0%, 100% { opacity: 0.5; }
   50% { opacity: 0.8; }
 }
+
+
+
+/* ════════════════════════════════════════════
+   v1.2 FIX — Habits page mobile responsive
+════════════════════════════════════════════ */
+
+/* Tablet va kichik kompyuterlarda 2 ustun */
+@media (max-width: 900px) {
+  #page-habits .habits-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+/* Mobil — bitta ustun + barcha tuzatishlar */
+@media (max-width: 720px) {
+  /* 1 ustun, kichikroq gap */
+  #page-habits .habits-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  /* Habit kartani moslash */
+  #page-habits .habit-card {
+    padding: 14px;
+    gap: 10px;
+    border-radius: 14px;
+  }
+
+  /* MUHIM: Edit/Delete tugmalari telefonda HAR DOIM ko'rinsin */
+  #page-habits .habit-card .habit-actions {
+    opacity: 1 !important;
+  }
+  #page-habits .habit-actions .icon-btn,
+  #page-habits .habit-actions .ic-btn,
+  #page-habits .habit-actions button {
+    width: 32px; height: 32px;
+    background: var(--glass2);
+    border-radius: 8px;
+    color: var(--text2);
+  }
+
+  /* Habit name katta, ko'rinarli */
+  #page-habits .habit-name { font-size: 0.95rem; line-height: 1.3; }
+  #page-habits .habit-cat { font-size: 0.7rem; }
+
+  /* Habit icon — biroz kichikroq */
+  #page-habits .habit-icon {
+    width: 36px; height: 36px;
+    font-size: 0.95rem;
+    border-radius: 10px;
+  }
+
+  /* Progress ring — joyni kam egallasin */
+  #page-habits .progress-ring {
+    width: 42px; height: 42px;
+  }
+  #page-habits .progress-ring svg {
+    width: 42px; height: 42px;
+  }
+  #page-habits .progress-ring-text {
+    font-size: 10px;
+  }
+
+  /* Mini hafta kichikroq, lekin barmoqqa qulay */
+  #page-habits .habit-mini-week {
+    gap: 4px;
+  }
+  #page-habits .mini-day {
+    aspect-ratio: 1;
+    font-size: 9px;
+    font-weight: 700;
+    border-radius: 5px;
+    min-height: 26px;
+  }
+
+  /* Streak - 30k stats compact */
+  #page-habits .habit-card .habit-streak {
+    font-size: 0.78rem;
+  }
+
+  /* Habit tugmalari — kattaroq tap target */
+  #page-habits .habit-btn {
+    padding: 11px;
+    font-size: 0.86rem;
+    min-height: 44px;
+    border-radius: 11px;
+    font-weight: 700;
+  }
+  /* Edit/delete tugmalar inline qatorda — yetarli joy bo'lsin */
+  #page-habits .habit-card > div:last-child {
+    gap: 8px;
+  }
+  #page-habits .habit-card > div:last-child .habit-btn:not(:first-child) {
+    flex: 0 0 44px !important;
+    width: 44px !important;
+    min-width: 44px;
+  }
+
+  /* Toolbar moslashish */
+  #page-habits .habits-head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  #page-habits .habits-head .search-box {
+    max-width: none;
+    width: 100%;
+  }
+  #page-habits .tabs {
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 3px;
+  }
+  #page-habits .tabs::-webkit-scrollbar { display: none; }
+  #page-habits .tabs .tab {
+    flex-shrink: 0;
+    white-space: nowrap;
+    font-size: 0.78rem;
+    padding: 7px 12px;
+  }
+
+  /* Habits page-head clean */
+  #page-habits .page-head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-bottom: 1rem;
+  }
+  #page-habits .page-head > div:first-child {
+    text-align: left;
+  }
+  #page-habits .page-head .btn {
+    width: 100%;
+    justify-content: center;
+    padding: 11px;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  /* Template button mobile */
+  #page-habits .tpl-button {
+    width: 100%;
+    justify-content: center;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+  }
+
+  /* HEATMAP mobile */
+  #page-habits .heatmap-wrap {
+    margin: 0 -14px;
+    padding: 0 14px 12px;
+  }
+  #page-habits .heatmap {
+    min-width: 580px;
+    gap: 2px;
+  }
+  #page-habits .hm-week { gap: 2px; }
+  #page-habits .hm-cell {
+    width: 11px; height: 11px;
+    border-radius: 2px;
+  }
+  #page-habits .heatmap-legend {
+    font-size: 11px;
+    gap: 4px;
+    margin-top: 8px;
+  }
+  #page-habits .heatmap-legend-boxes span {
+    width: 9px; height: 9px;
+  }
+
+  /* Heatmap card head — select chiqishini moslash */
+  #page-habits .card-head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  #page-habits .card-head .select {
+    width: 100% !important;
+    font-size: 0.85rem;
+    padding: 8px 12px !important;
+  }
+
+  /* Mood grid — mobile uchun moslash */
+  #page-habits .mood-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    max-width: 100%;
+    margin: 1rem 0;
+  }
+  #page-habits .mood-btn {
+    font-size: 1.4rem;
+    border-radius: 12px;
+    padding: 10px 4px;
+  }
+  #page-habits .mood-btn small {
+    font-size: 0.6rem;
+    margin-top: 2px;
+  }
+
+  /* Cards padding tighter */
+  #page-habits .card {
+    padding: 14px;
+    margin-bottom: 12px;
+    border-radius: 14px;
+  }
+  #page-habits .h2 {
+    font-size: 0.92rem;
+  }
+
+  /* Hide hover-only elements gracefully */
+  #page-habits .habit-card .habit-actions {
+    margin-left: auto;
+  }
+}
+
+/* Juda kichik telefonlar (iPhone SE, mini) */
+@media (max-width: 380px) {
+  #page-habits .habit-card {
+    padding: 12px;
+  }
+  #page-habits .habit-icon {
+    width: 32px; height: 32px;
+    font-size: 0.85rem;
+  }
+  #page-habits .habit-name {
+    font-size: 0.88rem;
+  }
+  #page-habits .progress-ring {
+    width: 38px; height: 38px;
+  }
+  #page-habits .progress-ring svg {
+    width: 38px; height: 38px;
+  }
+  #page-habits .mini-day {
+    min-height: 22px;
+    font-size: 8px;
+  }
+  #page-habits .habit-btn {
+    font-size: 0.8rem;
+    padding: 10px;
+  }
+  #page-habits .mood-btn {
+    font-size: 1.2rem;
+  }
+  #page-habits .mood-btn small {
+    display: none; /* Juda kichik ekranlarda label yashirinadi */
+  }
+}
