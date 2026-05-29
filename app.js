@@ -3409,3 +3409,411 @@ window.cpCopy = cpCopy;
 window.mdRender = mdRender;
 window.stopWC = stopWC;
 window.$ = $;
+
+
+
+// ════════════════════════════════════════════
+// LUMIO POLISH v1.1 — Performance & UX
+// ════════════════════════════════════════════
+
+// ── Debounce utility ──
+function debounce(fn, ms = 250) {
+  let t;
+  return function(...args) {
+    clearTimeout(t);
+    t = setTimeout(() => fn.apply(this, args), ms);
+  };
+}
+function throttle(fn, ms = 100) {
+  let last = 0, t;
+  return function(...args) {
+    const now = Date.now();
+    const remaining = ms - (now - last);
+    if (remaining <= 0) {
+      last = now;
+      fn.apply(this, args);
+    } else {
+      clearTimeout(t);
+      t = setTimeout(() => { last = Date.now(); fn.apply(this, args); }, remaining);
+    }
+  };
+}
+
+// ── Debounce search inputs (was firing on every keystroke) ──
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    const inputs = [
+      { id: 'taskSearch', fn: () => window.renderTasks?.() },
+      { id: 'habitSearch', fn: () => window.renderHabits?.() },
+      { id: 'noteSearch', fn: () => window.renderNotes?.() },
+    ];
+    inputs.forEach(({ id, fn }) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.removeAttribute('oninput');
+        el.addEventListener('input', debounce(fn, 200));
+      }
+    });
+
+    // Prefer passive listeners for scroll performance
+    document.addEventListener('touchstart', () => {}, { passive: true });
+    document.addEventListener('touchmove', () => {}, { passive: true });
+  }, 2000);
+});
+
+// ── Auto-save on visibility change (saves data if user closes tab) ──
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') {
+    try { save(); } catch {}
+  }
+});
+
+window.addEventListener('beforeunload', () => {
+  try { save(); } catch {}
+});
+
+// ── In-app TOUR (interactive help) ──
+const TOUR_STEPS = [
+  { selector: '#sidebar .nav-item.active', title: 'Bosh sahifa', text: 'Bu yerda kunlik xulosa, statistika, va widgetlaringiz bor.', position: 'right' },
+  { selector: '[data-page="tasks"]', title: 'Vazifalar', text: "Kanban yoki ro'yxat ko'rinishida vazifalarni boshqaring. Ovoz orqali ham qo'shsa bo'ladi!", position: 'right' },
+  { selector: '[data-page="habits"]', title: 'Odatlar', text: 'Streak, heatmap va kayfiyat tracker. Mukammal odatlar shu yerda quriladi.', position: 'right' },
+  { selector: '[data-page="focus"]', title: 'Fokus rejim', text: 'Pomodoro + 6 ambient ovoz bilan chuqur konsentratsiya.', position: 'right' },
+  { selector: '#openAddModal, .btn-primary', title: "Tezkor qo'shish", text: "Bu yerdan istalgan element qo'shing — vazifa, odat, maqsad, qayd.", position: 'bottom' },
+  { selector: '#sidebar .sidebar-search', title: 'Qidiruv', text: "Cmd/Ctrl+K bilan istalgan joyga tezkor o'ting yoki narsani qidiring.", position: 'right' },
+  { selector: '.user-card', title: 'Profilingiz', text: "XP, daraja va achievements. Vazifalar, odatlar bajaring va Lumi (sevimli pet) bilan o'sib boring!", position: 'right' },
+];
+
+let tourIdx = 0;
+let tourActive = false;
+
+function startTour() {
+  tourIdx = 0;
+  tourActive = true;
+  showTourStep();
+}
+
+function showTourStep() {
+  if (tourIdx >= TOUR_STEPS.length) return endTour();
+  const step = TOUR_STEPS[tourIdx];
+  
+  // Remove old highlight
+  document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
+
+  // Add highlight to target
+  const target = document.querySelector(step.selector);
+  if (target) {
+    target.classList.add('tour-highlight');
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // Show popup
+  let overlay = document.getElementById('tourOverlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'tourOverlay';
+    overlay.className = 'tour-overlay';
+    document.body.appendChild(overlay);
+  }
+  overlay.innerHTML = `
+    <div class="tour-popup">
+      <h3>${step.title}</h3>
+      <p>${step.text}</p>
+      <div class="tour-popup-actions">
+        <button class="btn btn-secondary" onclick="endTour()">${tourIdx === TOUR_STEPS.length - 1 ? 'Tugatish' : "O'tkazish"}</button>
+        ${tourIdx > 0 ? `<button class="btn btn-secondary" onclick="prevTour()"><i class="fa-solid fa-arrow-left"></i></button>` : ''}
+        <button class="btn btn-primary" onclick="nextTour()">${tourIdx === TOUR_STEPS.length - 1 ? '✓ Tugatish' : 'Keyingi'} <i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+      <div class="tour-popup-progress">${tourIdx + 1} / ${TOUR_STEPS.length}</div>
+    </div>
+  `;
+  overlay.classList.add('show');
+}
+
+function nextTour() { tourIdx++; showTourStep(); }
+function prevTour() { tourIdx = Math.max(0, tourIdx - 1); showTourStep(); }
+function endTour() {
+  tourActive = false;
+  document.querySelectorAll('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
+  const overlay = document.getElementById('tourOverlay');
+  if (overlay) overlay.classList.remove('show');
+  if (state) {
+    state.settings = state.settings || {};
+    state.settings.tourCompleted = true;
+    save();
+  }
+}
+
+window.startTour = startTour;
+window.nextTour = nextTour;
+window.prevTour = prevTour;
+window.endTour = endTour;
+
+// ── Show tour after onboarding finishes (only once) ──
+const _origObFinish = window.obFinish;
+if (typeof _origObFinish === 'function') {
+  window.obFinish = function() {
+    _origObFinish();
+    setTimeout(() => {
+      if (!state.settings?.tourCompleted) {
+        if (confirm('Lumio bilan qisqacha tanishish turini boshlashingiz mumkin. Boshlaymizmi?')) {
+          startTour();
+        } else {
+          state.settings = state.settings || {};
+          state.settings.tourCompleted = true;
+          save();
+        }
+      }
+    }, 1200);
+  };
+}
+
+// ── Better toast deduplication ──
+const _origToast = window.toast || toast;
+let lastToast = { msg: '', time: 0 };
+window.toast = function(msg, type, icon) {
+  const now = Date.now();
+  if (lastToast.msg === msg && now - lastToast.time < 1500) return;
+  lastToast = { msg, time: now };
+  _origToast(msg, type, icon);
+};
+
+// ── Smooth number animation ──
+function animateNumber(el, from, to, duration = 800) {
+  if (!el) return;
+  const start = Date.now();
+  const diff = to - from;
+  function step() {
+    const elapsed = Date.now() - start;
+    const t = Math.min(1, elapsed / duration);
+    // ease-out cubic
+    const eased = 1 - Math.pow(1 - t, 3);
+    const val = Math.round(from + diff * eased);
+    el.textContent = val + (el.dataset.suffix || '');
+    if (t < 1) requestAnimationFrame(step);
+  }
+  step();
+}
+window.animateNumber = animateNumber;
+
+// ── Smarter render of dashboard (animate stat cards) ──
+const _origRenderDashboard = window.renderDashboard || renderDashboard;
+const _animatedStats = { tasks: 0, streak: 0, focus: 0, study: 0, score: 0 };
+window.renderDashboard = function() {
+  _origRenderDashboard();
+  // Animate the stat numbers if they changed (only once per dashboard mount)
+  setTimeout(() => {
+    const ids = [
+      { id: 'statTasks', key: 'tasks' },
+      { id: 'statStreak', key: 'streak' },
+      { id: 'scoreVal', key: 'score' },
+    ];
+    ids.forEach(({ id, key }) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const target = parseInt(el.textContent) || 0;
+      if (_animatedStats[key] !== target) {
+        animateNumber(el, _animatedStats[key], target, 700);
+        _animatedStats[key] = target;
+      }
+    });
+  }, 50);
+};
+
+// ── Smart greeting based on day of week ──
+const DAY_GREETINGS = [
+  "Ajoyib yakshanba!",        // 0
+  "Yangi hafta — yangi imkoniyatlar 🚀",  // 1
+  "Seshanba — produktiv kun",   // 2
+  "Hafta o'rtasi, davom eting!", // 3
+  "Payshanba — maqsadga yaqinroq", // 4
+  "Juma — yakunlash kuni",      // 5
+  "Shanba — dam olish va o'sish", // 6
+];
+
+const _origSetGreeting = window.setGreeting || setGreeting;
+window.setGreeting = function() {
+  _origSetGreeting();
+  const dayMsg = DAY_GREETINGS[new Date().getDay()];
+  const subtitle = document.getElementById('greetTime');
+  if (subtitle && dayMsg) {
+    subtitle.textContent = subtitle.textContent + ' · ' + dayMsg;
+  }
+};
+
+// ── Help button in topbar ──
+function addHelpButton() {
+  const actions = document.querySelector('.topbar-actions');
+  if (!actions || document.getElementById('helpBtn')) return;
+  const btn = document.createElement('button');
+  btn.className = 'icon-btn help-btn';
+  btn.id = 'helpBtn';
+  btn.title = 'Yordam (?)';
+  btn.innerHTML = '<i class="fa-solid fa-question"></i>';
+  btn.onclick = () => startTour();
+  // Insert before theme button
+  const themeBtn = actions.querySelector('button:last-child');
+  if (themeBtn) actions.insertBefore(btn, themeBtn);
+  else actions.appendChild(btn);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(addHelpButton, 1000);
+});
+
+// ── Install prompt smarter (only show if user uses app for a while) ──
+let _installShown = false;
+const _showInstall = () => {
+  const banner = document.getElementById('installBanner');
+  if (banner && !_installShown && window.deferredPrompt) {
+    banner.classList.add('show');
+    _installShown = true;
+  }
+};
+// Show after 2 minutes of usage
+setTimeout(_showInstall, 120000);
+
+// ── Performance: avoid heavy re-renders on hidden pages ──
+const _heavyRenderers = ['renderHeatmap', 'renderAdvancedAnalytics', 'renderFullCalendar'];
+_heavyRenderers.forEach(name => {
+  const orig = window[name];
+  if (typeof orig === 'function') {
+    window[name] = function(...args) {
+      // Skip if doc is hidden
+      if (document.visibilityState === 'hidden') return;
+      return orig.apply(this, args);
+    };
+  }
+});
+
+// ── Smarter date formatting ──
+window.fmtDate = function(d, locale = 'uz-UZ') {
+  if (!d) return '';
+  const date = typeof d === 'string' ? new Date(d) : d;
+  if (isNaN(date.getTime())) return '';
+  return date.toLocaleDateString(locale, { day: 'numeric', month: 'short' });
+};
+
+window.fmtDateTime = function(d, locale = 'uz-UZ') {
+  if (!d) return '';
+  const date = typeof d === 'string' ? new Date(d) : d;
+  if (isNaN(date.getTime())) return '';
+  return date.toLocaleDateString(locale, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+};
+
+// ── Smarter relative time (e.g. "2 hours ago") ──
+window.timeAgo = function(d) {
+  if (!d) return '';
+  const date = typeof d === 'string' ? new Date(d) : d;
+  const diff = (Date.now() - date.getTime()) / 1000;
+  if (diff < 60) return 'hozirgina';
+  if (diff < 3600) return `${Math.floor(diff/60)} daq oldin`;
+  if (diff < 86400) return `${Math.floor(diff/3600)} soat oldin`;
+  if (diff < 604800) return `${Math.floor(diff/86400)} kun oldin`;
+  return fmtDate(date);
+};
+
+// ── Better error handling globally ──
+window.addEventListener('error', e => {
+  console.warn('[Lumio]', e.message);
+  // Don't show toast for every error to avoid spam
+});
+
+window.addEventListener('unhandledrejection', e => {
+  console.warn('[Lumio Promise]', e.reason);
+});
+
+// ── Smooth scroll on hash navigation ──
+document.addEventListener('click', e => {
+  const a = e.target.closest('a[href^="#"]');
+  if (a && a.hash) {
+    const target = document.querySelector(a.hash);
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+});
+
+// ── Detect first-time user and offer demo data ──
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    if (!state) return;
+    if (state.onboarded && state.tasks?.length === 0 && state.habits?.length === 0 &&
+        state.notes?.length === 0 && !state.settings?.demoOffered) {
+      state.settings = state.settings || {};
+      state.settings.demoOffered = true;
+      save();
+      setTimeout(() => {
+        if (confirm('Lumio bo\'sh ko\'rinadi. Demo ma\'lumotlarni yuklash uchun ruxsat berasizmi? (vazifa, odat va boshqalar)')) {
+          if (typeof seedDemo === 'function') {
+            seedDemo();
+            location.reload();
+          }
+        }
+      }, 1500);
+    }
+  }, 3000);
+});
+
+// ── Make confetti on level-up automatic ──
+{
+  const _addXpForLvlUp = window.addXp;
+  if (_addXpForLvlUp) {
+    window.addXp = function(amount, reason) {
+      const oldLevel = state?.user?.level || 1;
+      _addXpForLvlUp(amount, reason);
+      const newLevel = state?.user?.level || 1;
+      if (newLevel > oldLevel && window.confetti?.celebrate) {
+        setTimeout(() => window.confetti.celebrate(), 200);
+      }
+    };
+  }
+}
+
+// ── Better text resize ──
+function _adjustFontSize() {
+  const w = window.innerWidth;
+  if (w < 380) document.documentElement.style.fontSize = '13px';
+  else if (w < 480) document.documentElement.style.fontSize = '14px';
+  else document.documentElement.style.fontSize = '15px';
+}
+_adjustFontSize();
+window.addEventListener('resize', throttle(_adjustFontSize, 200));
+
+// ── PWA: theme color sync ──
+function syncThemeColor() {
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (!meta) return;
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  meta.setAttribute('content', isDark ? '#0a0a0a' : '#fafaf9');
+}
+const _origSetTheme = window.setTheme;
+if (_origSetTheme) {
+  window.setTheme = function(t) {
+    _origSetTheme(t);
+    syncThemeColor();
+  };
+}
+syncThemeColor();
+
+// ── Online/offline status indicator ──
+function updateOnlineStatus() {
+  if (!navigator.onLine) {
+    if (typeof toast === 'function') toast('Offline rejim — barcha ma\'lumotlar lokalda saqlanmoqda', 'info');
+  }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+
+// ── Lazy load Chart.js usage check ──
+if (typeof Chart !== 'undefined') {
+  Chart.defaults.font.family = "'Inter', -apple-system, BlinkMacSystemFont, sans-serif";
+  Chart.defaults.font.size = 11;
+  Chart.defaults.plugins.tooltip.padding = 10;
+  Chart.defaults.plugins.tooltip.cornerRadius = 8;
+  Chart.defaults.plugins.tooltip.titleFont = { weight: '600', size: 12 };
+  Chart.defaults.plugins.tooltip.bodyFont = { size: 11 };
+  Chart.defaults.borderColor = 'rgba(0,0,0,0.06)';
+}
+
+console.log('✨ Lumio v1.1 polish loaded');
