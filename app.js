@@ -5425,3 +5425,57 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 console.log('✨ Lumio v1.2 Final — all 10 polish improvements loaded');
+
+
+
+// ════════════════════════════════════════════
+// SW UPDATE DETECTION (v3) — auto-prompt new version
+// ════════════════════════════════════════════
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').then(reg => {
+    reg.update();
+    setInterval(() => reg.update(), 60000);
+    reg.addEventListener('updatefound', () => {
+      const newSW = reg.installing;
+      if (!newSW) return;
+      newSW.addEventListener('statechange', () => {
+        if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+          showUpdateBanner(newSW);
+        }
+      });
+    });
+  }).catch(() => {});
+
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (refreshing) return;
+    refreshing = true;
+    window.location.reload();
+  });
+}
+
+function showUpdateBanner(newSW) {
+  const existing = document.getElementById('lumioUpdateBanner');
+  if (existing) existing.remove();
+  const banner = document.createElement('div');
+  banner.id = 'lumioUpdateBanner';
+  banner.style.cssText = 'position:fixed;bottom:1rem;left:50%;transform:translateX(-50%) translateY(150%);background:var(--accent);color:var(--bg);padding:12px 18px;border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.25);z-index:8000;display:flex;align-items:center;gap:12px;max-width:90%;transition:transform .35s cubic-bezier(.34,1.56,.64,1);font-family:inherit';
+  banner.innerHTML = '<i class="fa-solid fa-arrow-rotate-right" style="font-size:1.2rem"></i><div style="flex:1"><div style="font-weight:700;font-size:.9rem">Yangi versiya tayyor!</div><div style="font-size:.75rem;opacity:.85">Yangilash uchun bosing</div></div><button id="lumioUpdateBtn" style="background:rgba(255,255,255,.2);border:none;color:inherit;padding:7px 14px;border-radius:8px;font-weight:700;font-size:.82rem;cursor:pointer;font-family:inherit">Yangilash</button><button id="lumioUpdateClose" style="background:none;border:none;color:inherit;cursor:pointer;font-size:1rem;padding:4px;opacity:.7">×</button>';
+  document.body.appendChild(banner);
+  setTimeout(() => banner.style.transform = 'translateX(-50%) translateY(0)', 100);
+  document.getElementById('lumioUpdateBtn').onclick = () => {
+    newSW.postMessage('SKIP_WAITING');
+  };
+  document.getElementById('lumioUpdateClose').onclick = () => {
+    banner.style.transform = 'translateX(-50%) translateY(150%)';
+    setTimeout(() => banner.remove(), 400);
+  };
+}
+
+window.addEventListener('focus', () => {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistration().then(r => r && r.update());
+  }
+});
+
+console.log('🔄 SW auto-update enabled');
