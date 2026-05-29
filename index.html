@@ -7,10 +7,12 @@
 <title>Lumio — Productivity, Reimagined</title>
 <meta name="description" content="A premium productivity suite for students and self-improvement enthusiasts."/>
 <link rel="stylesheet" href="style.css"/>
+<link rel="manifest" href="manifest.json"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="confetti.js"></script>
 </head>
 <body>
 
@@ -118,6 +120,17 @@
     <a class="nav-item" data-page="study"><i class="fa-solid fa-graduation-cap"></i><span>O'qish</span></a>
     <a class="nav-item" data-page="goals"><i class="fa-solid fa-bullseye"></i><span>Maqsadlar</span></a>
     <a class="nav-item" data-page="notes"><i class="fa-solid fa-note-sticky"></i><span>Qaydlar</span></a>
+    <a class="nav-item" data-page="calendar"><i class="fa-solid fa-calendar"></i><span>Taqvim</span></a>
+
+    <div class="nav-label">Sog'liq</div>
+    <a class="nav-item" data-page="workout"><i class="fa-solid fa-dumbbell"></i><span>Sport</span></a>
+    <a class="nav-item" data-page="meals"><i class="fa-solid fa-utensils"></i><span>Ovqatlanish</span></a>
+    <a class="nav-item" data-page="meditation"><i class="fa-solid fa-spa"></i><span>Meditatsiya</span></a>
+    <a class="nav-item" data-page="reading"><i class="fa-solid fa-book"></i><span>Kitoblar</span></a>
+
+    <div class="nav-label">AI & Tahlil</div>
+    <a class="nav-item" data-page="insights"><i class="fa-solid fa-wand-magic-sparkles"></i><span>AI maslahatlar</span></a>
+    <a class="nav-item" data-page="analytics"><i class="fa-solid fa-chart-line"></i><span>Statistika</span></a>
 
     <div class="nav-label">Boshqa</div>
     <a class="nav-item" data-page="apps"><i class="fa-solid fa-grid-2"></i><span>Mini ilovalar</span></a>
@@ -158,7 +171,8 @@
 
   <!-- ═══════ DASHBOARD ═══════ -->
   <section class="page active" id="page-dashboard">
-    <div class="dash-hero">
+    <div class="dash-hero" id="dashHero">
+      <div class="dash-hero-bg"></div>
       <div>
         <div class="greet-time" id="greetTime"></div>
         <div class="greet-title serif" id="greetTitle">Salom!</div>
@@ -238,16 +252,24 @@
     </div>
 
     <div class="widgets-row">
-      <div class="widget-card">
+      <div class="widget-card pet-widget" id="petWidget" onclick="openPetModal()">
+        <div class="pet-emoji" id="petEmoji">🐱</div>
+        <div class="pet-info">
+          <div class="pet-name" id="petName">Lumi</div>
+          <div class="pet-status" id="petStatus">Salom!</div>
+          <div class="pet-bars">
+            <div class="pet-bar happy"><span>😊</span><div class="pet-bar-track"><div class="pet-bar-fill" id="petHappyBar" style="width:80%"></div></div></div>
+            <div class="pet-bar energy"><span>⚡</span><div class="pet-bar-track"><div class="pet-bar-fill" id="petEnergyBar" style="width:80%"></div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="widget-card quests-card">
         <div class="widget-head">
-          <span class="widget-label">🔥 Streak</span>
+          <span class="widget-label">🎯 Kunlik kvestlar</span>
+          <small id="questsCount" style="color:var(--text3);font-size:.75rem">0/3</small>
         </div>
-        <div class="streak-big" id="wStreak">0<small>kun</small></div>
-        <div class="streak-bar"><div id="wStreakBar" style="width:0%"></div></div>
-        <div class="streak-meta">
-          <span>Eng yaxshi: <strong id="wBestStreak">0</strong></span>
-          <span id="wStreakTier">Yangi boshlovchi</span>
-        </div>
+        <div id="questsList"></div>
       </div>
 
       <div class="widget-card">
@@ -272,7 +294,162 @@
 
 
 
-  <!-- ═══════ TASKS ═══════ -->
+  <!-- ═══════ CALENDAR ═══════ -->
+  <section class="page" id="page-calendar">
+    <div class="page-head">
+      <div>
+        <h1 class="h1 serif">Taqvim</h1>
+        <div class="muted">Hammasi bir joyda</div>
+      </div>
+      <button class="btn btn-primary" onclick="openModal('task')"><i class="fa-solid fa-plus"></i> Hodisa</button>
+    </div>
+    <div class="card">
+      <div class="cal-toolbar">
+        <button class="icon-btn" onclick="calNav(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+        <h2 id="calTitle">Yanvar 2025</h2>
+        <button class="icon-btn" onclick="calNav(1)"><i class="fa-solid fa-chevron-right"></i></button>
+        <button class="btn btn-secondary" onclick="calNav(0)">Bugun</button>
+      </div>
+      <div class="cal-grid-full">
+        <div class="cal-day-name">Du</div><div class="cal-day-name">Se</div><div class="cal-day-name">Ch</div>
+        <div class="cal-day-name">Pa</div><div class="cal-day-name">Ju</div><div class="cal-day-name">Sh</div><div class="cal-day-name">Ya</div>
+      </div>
+      <div class="cal-grid-full" id="calGrid"></div>
+    </div>
+  </section>
+
+  <!-- ═══════ WORKOUT ═══════ -->
+  <section class="page" id="page-workout">
+    <div class="page-head">
+      <div>
+        <h1 class="h1 serif">Sport</h1>
+        <div class="muted">Tana sog'lom — fikr tiniq</div>
+      </div>
+      <button class="btn btn-primary" onclick="openModal('workout')"><i class="fa-solid fa-plus"></i> Mashq</button>
+    </div>
+    <div class="meal-summary">
+      <div class="meal-stat"><strong id="wkSessions">0</strong><span>Bu hafta</span></div>
+      <div class="meal-stat"><strong id="wkMinutes">0m</strong><span>Bu hafta</span></div>
+      <div class="meal-stat"><strong id="wkTotal">0</strong><span>Jami sessiya</span></div>
+      <div class="meal-stat"><strong id="wkStreak">0</strong><span>Streak</span></div>
+    </div>
+    <div class="workout-grid" id="workoutGrid"></div>
+  </section>
+
+  <!-- ═══════ MEALS ═══════ -->
+  <section class="page" id="page-meals">
+    <div class="page-head">
+      <div>
+        <h1 class="h1 serif">Ovqatlanish</h1>
+        <div class="muted">Sog'lom ovqat — sog'lom hayot</div>
+      </div>
+      <button class="btn btn-primary" onclick="openModal('meal')"><i class="fa-solid fa-plus"></i> Ovqat</button>
+    </div>
+    <div class="meal-summary">
+      <div class="meal-stat"><strong id="mealCal">0</strong><span>Kaloriya</span></div>
+      <div class="meal-stat"><strong id="mealProt">0g</strong><span>Oqsil</span></div>
+      <div class="meal-stat"><strong id="mealCarb">0g</strong><span>Uglevod</span></div>
+      <div class="meal-stat"><strong id="mealFat">0g</strong><span>Yog'</span></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2 class="h2">Bugungi ovqatlar</h2></div>
+      <div class="meal-list" id="mealList"></div>
+    </div>
+  </section>
+
+  <!-- ═══════ MEDITATION ═══════ -->
+  <section class="page" id="page-meditation">
+    <div class="page-head">
+      <div>
+        <h1 class="h1 serif">Meditatsiya</h1>
+        <div class="muted">Nafas — hozirgi daqiqaga qaytish</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <h2 class="h2">Nafas mashqi</h2>
+        <select class="select" id="breathPattern" style="width:auto;padding:6px 10px" onchange="setBreathPattern()">
+          <option value="478">4-7-8 Tinchlantiruvchi</option>
+          <option value="box">Box (4-4-4-4)</option>
+          <option value="deep">Chuqur (5-5)</option>
+        </select>
+      </div>
+      <div class="med-circle">
+        <div class="breath-orb" id="breathOrb">Nafas oling</div>
+      </div>
+      <div class="med-stats">
+        <div class="med-stat"><strong id="medCycle">0</strong><span>Sikl</span></div>
+        <div class="med-stat"><strong id="medMinutes">0:00</strong><span>Vaqt</span></div>
+        <div class="med-stat"><strong id="medTotal">0m</strong><span>Jami</span></div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:1.5rem">
+        <button class="btn btn-primary" id="medBtn" onclick="toggleBreath()"><i class="fa-solid fa-play"></i> Boshlash</button>
+        <button class="btn btn-secondary" onclick="resetBreath()"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ READING ═══════ -->
+  <section class="page" id="page-reading">
+    <div class="page-head">
+      <div>
+        <h1 class="h1 serif">Kitoblar</h1>
+        <div class="muted">Bilim — eng yaxshi sarmoya</div>
+      </div>
+      <button class="btn btn-primary" onclick="openModal('book')"><i class="fa-solid fa-plus"></i> Kitob</button>
+    </div>
+    <div class="tabs mb-2">
+      <button class="tab active" data-bfilter="all" onclick="setBookFilter('all')">Hammasi</button>
+      <button class="tab" data-bfilter="reading" onclick="setBookFilter('reading')">O'qilmoqda</button>
+      <button class="tab" data-bfilter="queue" onclick="setBookFilter('queue')">Navbatda</button>
+      <button class="tab" data-bfilter="done" onclick="setBookFilter('done')">Tugatilgan</button>
+    </div>
+    <div class="book-grid" id="bookGrid"></div>
+  </section>
+
+  <!-- ═══════ INSIGHTS (AI) ═══════ -->
+  <section class="page" id="page-insights">
+    <div class="page-head">
+      <div>
+        <h1 class="h1 serif">AI Maslahatlar</h1>
+        <div class="muted">Sizning samaradorligingiz haqida ma'lumotlar</div>
+      </div>
+      <button class="btn btn-secondary" onclick="renderInsights()"><i class="fa-solid fa-rotate"></i> Yangilash</button>
+    </div>
+    <div id="insightsList"></div>
+  </section>
+
+  <!-- ═══════ ANALYTICS ═══════ -->
+  <section class="page" id="page-analytics">
+    <div class="page-head">
+      <div>
+        <h1 class="h1 serif">Statistika</h1>
+        <div class="muted">Sizning produktivlik tarixi</div>
+      </div>
+    </div>
+    <div class="meal-summary">
+      <div class="meal-stat"><strong id="anWeekTasks">0</strong><span>Vazifalar (hafta)</span></div>
+      <div class="meal-stat"><strong id="anWeekFocus">0m</strong><span>Fokus (hafta)</span></div>
+      <div class="meal-stat"><strong id="anAvgScore">0</strong><span>O'rtacha score</span></div>
+      <div class="meal-stat"><strong id="anBestDay">—</strong><span>Eng samarali kun</span></div>
+    </div>
+    <div class="card mb-2">
+      <div class="card-head"><h2 class="h2">📊 Haftalik aktivlik</h2></div>
+      <canvas id="anWeekChart" height="80"></canvas>
+    </div>
+    <div class="dash-grid">
+      <div class="card">
+        <div class="card-head"><h2 class="h2">⏱ Fokus tarixi</h2></div>
+        <canvas id="anFocusChart" height="120"></canvas>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2 class="h2">😊 Kayfiyat trendi</h2></div>
+        <canvas id="anMoodChart" height="120"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ TASKS (existing) ═══════ -->
   <section class="page" id="page-tasks">
     <div class="page-head">
       <div>
@@ -287,6 +464,7 @@
         <i class="fa-solid fa-magnifying-glass"></i>
         <input type="text" id="taskSearch" placeholder="Qidirish..." oninput="renderTasks()"/>
       </div>
+      <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()" title="Ovozli kiritish (V)"><i class="fa-solid fa-microphone"></i></button>
       <div class="tabs">
         <button class="tab active" data-view="list" onclick="setTaskView('list')">📋 Ro'yxat</button>
         <button class="tab" data-view="kanban" onclick="setTaskView('kanban')">🗂 Kanban</button>
@@ -311,6 +489,8 @@
       </div>
       <button class="btn btn-primary" onclick="openModal('habit')"><i class="fa-solid fa-plus"></i> Odat</button>
     </div>
+
+    <button class="tpl-button" onclick="openModal('habitTemplates')"><i class="fa-solid fa-sparkles"></i> Shablonlardan tanlash</button>
 
     <div class="habits-head">
       <div class="search-box">
@@ -515,6 +695,8 @@
       <button class="btn btn-primary" onclick="openModal('goal')"><i class="fa-solid fa-plus"></i> Maqsad</button>
     </div>
 
+    <button class="tpl-button" onclick="openModal('goalTemplates')"><i class="fa-solid fa-sparkles"></i> SMART maqsad shablonlari</button>
+
     <div class="tabs mb-2" style="display:flex">
       <button class="tab active" data-gtype="all" onclick="setGoalType('all')">Hammasi</button>
       <button class="tab" data-gtype="short" onclick="setGoalType('short')">Qisqa muddatli</button>
@@ -621,6 +803,55 @@
           <div class="mini-app-desc">Kunlik fikrlar</div>
         </div>
       </button>
+      <button class="mini-app-card" onclick="openMiniApp('qr')">
+        <div class="mini-app-icon" style="background:var(--blue-soft);color:var(--blue)">📱</div>
+        <div>
+          <div class="mini-app-name">QR Generator</div>
+          <div class="mini-app-desc">Tezkor QR yaratish</div>
+        </div>
+      </button>
+      <button class="mini-app-card" onclick="openMiniApp('password')">
+        <div class="mini-app-icon" style="background:var(--purple-soft);color:var(--purple)">🔐</div>
+        <div>
+          <div class="mini-app-name">Parol generator</div>
+          <div class="mini-app-desc">Xavfsiz parollar</div>
+        </div>
+      </button>
+      <button class="mini-app-card" onclick="openMiniApp('bmi')">
+        <div class="mini-app-icon" style="background:var(--green-soft);color:var(--green)">⚖</div>
+        <div>
+          <div class="mini-app-name">BMI Kalkulyator</div>
+          <div class="mini-app-desc">Tana massa indeksi</div>
+        </div>
+      </button>
+      <button class="mini-app-card" onclick="openMiniApp('tip')">
+        <div class="mini-app-icon" style="background:var(--orange-soft);color:var(--orange)">💵</div>
+        <div>
+          <div class="mini-app-name">Tip Kalkulyator</div>
+          <div class="mini-app-desc">Chayrak hisoblagich</div>
+        </div>
+      </button>
+      <button class="mini-app-card" onclick="openMiniApp('worldclock')">
+        <div class="mini-app-icon" style="background:var(--blue-soft);color:var(--blue)">🌍</div>
+        <div>
+          <div class="mini-app-name">Jahon vaqti</div>
+          <div class="mini-app-desc">5 ta shahar</div>
+        </div>
+      </button>
+      <button class="mini-app-card" onclick="openMiniApp('color')">
+        <div class="mini-app-icon" style="background:var(--purple-soft);color:var(--purple)">🎨</div>
+        <div>
+          <div class="mini-app-name">Color Picker</div>
+          <div class="mini-app-desc">Rang tanlovchi</div>
+        </div>
+      </button>
+      <button class="mini-app-card" onclick="openMiniApp('markdown')">
+        <div class="mini-app-icon" style="background:var(--yellow-soft);color:var(--yellow)">✍</div>
+        <div>
+          <div class="mini-app-name">Markdown Editor</div>
+          <div class="mini-app-desc">Live preview</div>
+        </div>
+      </button>
     </div>
   </section>
 
@@ -718,6 +949,22 @@
       </div>
 
       <div class="card">
+        <div class="card-head"><h2 class="h2">🌐 Til</h2></div>
+        <select class="select" id="setLang" onchange="setLang(this.value)">
+          <option value="uz">🇺🇿 O'zbek</option>
+          <option value="en">🇬🇧 English</option>
+          <option value="ru">🇷🇺 Русский</option>
+        </select>
+        <div class="setting-row mt-2">
+          <div class="setting-info">
+            <div class="setting-name">Avtomatik backup</div>
+            <div class="setting-desc">Har hafta avtomatik saqlash</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="setAutoBackup" onchange="state.settings.autoBackup=this.checked;save()"/><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+
+      <div class="card">
         <div class="card-head"><h2 class="h2">💾 Ma'lumotlar</h2></div>
         <button class="btn btn-secondary mb-1" style="width:100%;justify-content:flex-start" onclick="exportAll()">
           <i class="fa-solid fa-download"></i> Eksport (JSON)
@@ -780,6 +1027,17 @@
 
 <!-- ═══════ TOAST ═══════ -->
 <div class="toast-wrap" id="toastWrap"></div>
+
+<!-- ═══════ PWA INSTALL BANNER ═══════ -->
+<div class="install-banner" id="installBanner">
+  <i class="fa-solid fa-download"></i>
+  <div style="flex:1">
+    <div style="font-weight:700;font-size:.88rem">Lumio'ni o'rnatish</div>
+    <div style="font-size:.75rem;color:var(--text3)">Tezroq ishlash uchun</div>
+  </div>
+  <button class="btn btn-primary" onclick="installPWA()">O'rnatish</button>
+  <button class="icon-btn" onclick="document.getElementById('installBanner').classList.remove('show')"><i class="fa-solid fa-xmark"></i></button>
+</div>
 
 <script src="app.js"></script>
 </body>

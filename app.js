@@ -2048,3 +2048,1308 @@ window.toggleNotif = toggleNotif;
 window.exportAll = exportAll;
 window.importFromFile = importFromFile;
 window.confirmReset = confirmReset;
+
+
+
+// ════════════════════════════════════════
+// LUMIO v2.0 EXTENSIONS — Premium features
+// ════════════════════════════════════════
+
+// Initialize new state slices
+function ensureV2State() {
+  if (!state.pet) state.pet = { name: 'Lumi', emoji: '🐱', happy: 80, energy: 80, level: 1, lastFed: today() };
+  if (!state.quests) state.quests = { date: '', list: [] };
+  if (!state.workouts) state.workouts = [];
+  if (!state.workoutLogs) state.workoutLogs = [];
+  if (!state.meals) state.meals = [];
+  if (!state.books) state.books = [];
+  if (!state.medSessions) state.medSessions = [];
+  if (!state.history) state.history = []; // for undo
+  if (!state.lang) state.lang = 'uz';
+  if (!state.settings.autoBackup) state.settings.autoBackup = false;
+  if (!state.settings.lastBackup) state.settings.lastBackup = today();
+  // expose to window for confetti.js
+  window.lumioSettings = state.settings;
+}
+
+// ════ HISTORY (UNDO/REDO) ════
+function pushHistory(action) {
+  state.history = state.history || [];
+  state.history.push({ action, time: Date.now(), snapshot: JSON.stringify({
+    tasks: state.tasks, habits: state.habits, completions: state.completions,
+    notes: state.notes, goals: state.goals
+  }) });
+  if (state.history.length > 20) state.history.shift();
+}
+function undo() {
+  if (!state.history || !state.history.length) { toast("O'chirish uchun tarix yo'q", 'info'); return; }
+  const last = state.history.pop();
+  const snap = JSON.parse(last.snapshot);
+  Object.assign(state, snap);
+  save();
+  renderAll();
+  toast(`Ortga qaytarildi: ${last.action}`, 'success');
+  fx?.play('pop');
+}
+
+// ════ DYNAMIC WALLPAPER ════
+function setDynamicWallpaper() {
+  const h = new Date().getHours();
+  let time = 'morning';
+  if (h < 6) time = 'night';
+  else if (h < 9) time = 'dawn';
+  else if (h < 12) time = 'morning';
+  else if (h < 15) time = 'noon';
+  else if (h < 18) time = 'afternoon';
+  else if (h < 21) time = 'evening';
+  else time = 'night';
+  $('#dashHero')?.setAttribute('data-time', time);
+}
+
+// ════ PRODUCTIVITY PET ════
+const PET_STAGES = [
+  { min: 0, emoji: '🥚', name: 'Tuxum' },
+  { min: 1, emoji: '🐣', name: 'Yangi tug\'ilgan' },
+  { min: 3, emoji: '🐥', name: 'Jo\'ja' },
+  { min: 5, emoji: '🐱', name: 'Mushukcha' },
+  { min: 10, emoji: '🦊', name: 'Tulkicha' },
+  { min: 20, emoji: '🐯', name: 'Yo\'lbars' },
+  { min: 30, emoji: '🦁', name: 'Sher' },
+  { min: 50, emoji: '🐉', name: 'Ajdarho' },
+];
+function getPetStage() {
+  const lvl = state.user.level;
+  let stage = PET_STAGES[0];
+  PET_STAGES.forEach(s => { if (lvl >= s.min) stage = s; });
+  return stage;
+}
+function updatePetStats() {
+  ensureV2State();
+  // Decay over time
+  const last = new Date(state.pet.lastFed || today());
+  const days = Math.max(0, Math.floor((Date.now() - last.getTime()) / 86400000));
+  if (days > 0) {
+    state.pet.happy = Math.max(0, state.pet.happy - days * 15);
+    state.pet.energy = Math.max(0, state.pet.energy - days * 15);
+  }
+  // Boost from today's activity
+  const todaysTasks = state.tasks.filter(t => t.done && t.completedAt === today()).length;
+  const todaysHabits = state.habits.filter(h => isHabitDone(h.id)).length;
+  state.pet.happy = Math.min(100, state.pet.happy + todaysHabits * 5);
+  state.pet.energy = Math.min(100, state.pet.energy + todaysTasks * 4);
+  state.pet.lastFed = today();
+}
+function renderPet() {
+  ensureV2State();
+  updatePetStats();
+  const stage = getPetStage();
+  state.pet.emoji = stage.emoji;
+  $('#petEmoji').textContent = stage.emoji;
+  $('#petName').textContent = state.pet.name;
+  const status = state.pet.happy > 70 ? "Juda baxtli! 😊" : state.pet.happy > 40 ? "Yaxshi 🙂" : state.pet.happy > 20 ? "Biroz xafa 😟" : "Xafa, parvarish kerak 😢";
+  $('#petStatus').textContent = `${stage.name} · ${status}`;
+  $('#petHappyBar').style.width = state.pet.happy + '%';
+  $('#petEnergyBar').style.width = state.pet.energy + '%';
+  $('#petWidget')?.classList.toggle('happy', state.pet.happy > 80);
+  save();
+}
+function openPetModal() {
+  ensureV2State();
+  const stage = getPetStage();
+  const c = $('#modalContent');
+  c.innerHTML = `
+    <div class="modal-head">
+      <div class="modal-title">Sizning ${stage.name}ingiz</div>
+      <button class="icon-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="pet-modal-content">
+      <div class="pet-modal-emoji">${stage.emoji}</div>
+      <div class="form-group" style="text-align:left">
+        <label class="form-label">Ism</label>
+        <input class="input" id="petNameInput" value="${escape(state.pet.name)}" oninput="state.pet.name=this.value;save();renderPet()"/>
+      </div>
+      <div class="pet-bars" style="text-align:left;margin-top:1rem">
+        <div class="pet-bar happy"><span>😊 Baxt</span><div class="pet-bar-track"><div class="pet-bar-fill" style="width:${state.pet.happy}%"></div></div><span>${state.pet.happy}%</span></div>
+        <div class="pet-bar energy"><span>⚡ Energiya</span><div class="pet-bar-track"><div class="pet-bar-fill" style="width:${state.pet.energy}%"></div></div><span>${state.pet.energy}%</span></div>
+      </div>
+      <p class="muted mt-2" style="font-size:.85rem;line-height:1.6">Vazifalarni bajaring va odatlaringizni saqlang — ${state.pet.name} sizdan kuch oladi va o'sib boradi! Har 1, 3, 5, 10, 20, 30, 50 darajada yangi shaklga aylanadi.</p>
+      <div class="pet-evolution">
+        ${PET_STAGES.map(s => `<span class="pet-stage ${s.min === stage.min?'current':''}">${s.emoji} L${s.min}</span>`).join('')}
+      </div>
+      <button class="btn btn-primary mt-2" style="width:100%;justify-content:center" onclick="petPet()">
+        <i class="fa-solid fa-hand"></i> Erkalash (+5 baxt)
+      </button>
+    </div>
+  `;
+  $('#modalOverlay').classList.add('open');
+}
+function petPet() {
+  state.pet.happy = Math.min(100, state.pet.happy + 5);
+  save();
+  renderPet();
+  fx?.play('pop');
+  fx?.haptic(20);
+  toast(`${state.pet.name} xursand! +5 baxt`, 'success');
+}
+
+
+
+// ════ DAILY QUESTS ════
+const QUEST_POOL = [
+  { id:'q_3tasks', icon:'✅', name:'3 ta vazifa bajaring', goal:3, type:'task', xp:30 },
+  { id:'q_5tasks', icon:'✅', name:'5 ta vazifa bajaring', goal:5, type:'task', xp:50 },
+  { id:'q_2habits', icon:'⚡', name:'2 ta odat bajaring', goal:2, type:'habit', xp:25 },
+  { id:'q_allhabits', icon:'🌟', name:"Bugun barcha odatlarni bajaring", goal:1, type:'all_habits', xp:60 },
+  { id:'q_focus25', icon:'⏱', name:'25 daqiqa fokuslaning', goal:25, type:'focus', xp:30 },
+  { id:'q_focus60', icon:'🎯', name:'1 soat fokus', goal:60, type:'focus', xp:60 },
+  { id:'q_water', icon:'💧', name:'8 stakan suv iching', goal:8, type:'water', xp:25 },
+  { id:'q_note', icon:'📝', name:'Bir qayd yozing', goal:1, type:'note', xp:15 },
+  { id:'q_mood', icon:'😊', name:'Kayfiyatingizni belgilang', goal:1, type:'mood', xp:10 },
+  { id:'q_meditate', icon:'🧘', name:'5 daqiqa meditatsiya', goal:5, type:'meditate', xp:25 },
+];
+function ensureDailyQuests() {
+  ensureV2State();
+  if (state.quests.date !== today()) {
+    // Generate 3 random quests
+    const pool = [...QUEST_POOL].sort(() => Math.random() - 0.5).slice(0, 3);
+    state.quests = { date: today(), list: pool.map(q => ({ ...q, progress: 0, done: false })) };
+    save();
+  }
+}
+function evalQuests() {
+  ensureDailyQuests();
+  const tasksDone = state.tasks.filter(t => t.done && t.completedAt === today()).length;
+  const habitsDone = state.habits.filter(h => isHabitDone(h.id)).length;
+  const focusToday = state.focusSessions.filter(s => s.date === today()).reduce((a,s)=>a+s.minutes,0);
+  const water = state.water[today()] || 0;
+  const noteToday = state.notes.some(n => n.updatedAt === today());
+  const moodToday = !!state.moods[today()];
+  const medToday = (state.medSessions||[]).filter(s => s.date === today()).reduce((a,s)=>a+s.minutes,0);
+  state.quests.list.forEach(q => {
+    let p = 0;
+    if (q.type === 'task') p = tasksDone;
+    else if (q.type === 'habit') p = habitsDone;
+    else if (q.type === 'all_habits') p = (state.habits.length && habitsDone === state.habits.length) ? 1 : 0;
+    else if (q.type === 'focus') p = focusToday;
+    else if (q.type === 'water') p = water;
+    else if (q.type === 'note') p = noteToday ? 1 : 0;
+    else if (q.type === 'mood') p = moodToday ? 1 : 0;
+    else if (q.type === 'meditate') p = medToday;
+    q.progress = Math.min(q.goal, p);
+    if (!q.done && q.progress >= q.goal) {
+      q.done = true;
+      addXp(q.xp, `Kvest: ${q.name}`);
+      window.confetti?.fire({ x: window.innerWidth - 100, y: 100, count: 40 });
+      fx?.play('achievement');
+    }
+  });
+  save();
+}
+function renderQuests() {
+  ensureDailyQuests();
+  evalQuests();
+  const list = $('#questsList'); if (!list) return;
+  const done = state.quests.list.filter(q => q.done).length;
+  $('#questsCount').textContent = `${done}/${state.quests.list.length}`;
+  list.innerHTML = state.quests.list.map(q => `
+    <div class="quest ${q.done?'done':''}">
+      <div class="quest-icon">${q.icon}</div>
+      <div class="quest-info">
+        <div class="quest-name">${q.name}</div>
+        <div class="quest-progress">${q.progress}/${q.goal}</div>
+      </div>
+      <div class="quest-xp">+${q.xp} XP</div>
+    </div>
+  `).join('');
+}
+
+// ════ VOICE INPUT ════
+let voiceRecognition = null;
+function toggleVoice() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { toast("Brauzeringiz ovozli kiritishni qo'llab-quvvatlamaydi", 'error'); return; }
+  const btn = $('#voiceBtn');
+  if (voiceRecognition) {
+    voiceRecognition.stop();
+    voiceRecognition = null;
+    btn?.classList.remove('listening');
+    return;
+  }
+  voiceRecognition = new SR();
+  voiceRecognition.lang = state.lang === 'en' ? 'en-US' : state.lang === 'ru' ? 'ru-RU' : 'uz-UZ';
+  voiceRecognition.continuous = false;
+  voiceRecognition.interimResults = false;
+  btn?.classList.add('listening');
+  fx?.play('pop');
+  voiceRecognition.onresult = e => {
+    const text = e.results[0][0].transcript;
+    if (text.trim()) {
+      state.tasks.push({ id: uid(), name: text, done: false, priority: 4, due: today(), category: 'Ovozli', subtasks: [], createdAt: today() });
+      save();
+      renderTasks();
+      toast(`Vazifa qo'shildi: "${text}"`, 'success');
+      fx?.play('complete');
+      fx?.haptic([20, 30, 20]);
+    }
+  };
+  voiceRecognition.onerror = e => { toast("Ovoz tanilmadi: " + e.error, 'error'); btn?.classList.remove('listening'); voiceRecognition = null; };
+  voiceRecognition.onend = () => { btn?.classList.remove('listening'); voiceRecognition = null; };
+  voiceRecognition.start();
+}
+
+
+
+// ════ TEMPLATES ════
+const HABIT_TEMPLATES = [
+  { icon:'💧', name:'Suv ichish', desc:'Kuniga 8 stakan', color:'#0284c7', target:8, frequency:'daily', category:'Sog\'liq', diff:1 },
+  { icon:'📚', name:'30 daqiqa o\'qish', desc:'Har kuni o\'qish odati', color:'#7c3aed', target:1, frequency:'daily', category:'O\'qish', diff:2 },
+  { icon:'🏃', name:'Ertalabki yugurish', desc:'30 daqiqa yugurish', color:'#ea580c', target:1, frequency:'daily', category:'Sport', diff:3 },
+  { icon:'🧘', name:'Meditatsiya', desc:'10 daqiqa tinchlik', color:'#059669', target:1, frequency:'daily', category:'Mindfulness', diff:2 },
+  { icon:'💪', name:'Push-up', desc:'Kuniga 50 ta', color:'#e11d48', target:50, frequency:'daily', category:'Sport', diff:2 },
+  { icon:'😴', name:'7 soat uyqu', desc:'Sog\'lom uyqu', color:'#1a1a1a', target:1, frequency:'daily', category:'Sog\'liq', diff:2 },
+  { icon:'☕', name:'Kofeini cheklash', desc:'Kuniga 1 piyola', color:'#92400e', target:1, frequency:'daily', category:'Sog\'liq', diff:2 },
+  { icon:'✍', name:'Kundalik yozish', desc:'Bir kun fikr', color:'#0891b2', target:1, frequency:'daily', category:'Mindfulness', diff:1 },
+  { icon:'🌱', name:'Yangi til', desc:'15 daqiqa o\'rganish', color:'#16a34a', target:15, frequency:'daily', category:'O\'qish', diff:2 },
+  { icon:'📵', name:'Telefonsiz vaqt', desc:'1 soat off', color:'#7c2d12', target:1, frequency:'daily', category:'Mindfulness', diff:3 },
+  { icon:'🚶', name:'10,000 qadam', desc:'Yurish odati', color:'#06b6d4', target:10000, frequency:'daily', category:'Sport', diff:2 },
+  { icon:'🍎', name:'Sog\'lom ovqat', desc:'Sabzavot va meva', color:'#22c55e', target:1, frequency:'daily', category:'Ovqat', diff:1 },
+];
+const GOAL_TEMPLATES = [
+  { icon:'📖', name:"Kitob o'qish", desc:'Yiliga 12 ta kitob', type:'long', milestones:['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentabr','Oktabr','Noyabr','Dekabr'] },
+  { icon:'🎓', name:'Yangi til', desc:'Asosiy bilim olish', type:'long', milestones:['100 so\'z','500 so\'z','Asosiy grammatika','Oddiy suhbat','Erkin suhbat'] },
+  { icon:'💪', name:'Sportcha tana', desc:'6 oy ichida', type:'long', milestones:['Haftada 3 marta sport','Sog\'lom ovqatlanish','7-8 soat uyqu','5 kg pasaytirish','Maqsadli tana'] },
+  { icon:'💼', name:'Yangi kasb', desc:'Karyera o\'zgarishi', type:'long', milestones:['Tadqiqot','Kurs tanlash','3 oylik o\'rganish','Portfolio','Birinchi ish'] },
+  { icon:'💰', name:'Jamg\'arma', desc:"5,000,000 so'm", type:'long', milestones:['1,000,000','2,000,000','3,000,000','4,000,000','5,000,000'] },
+  { icon:'🧘', name:'Mindfulness', desc:'Hamma joyda hozir bo\'lish', type:'long', milestones:['Kunlik meditatsiya','7 kunlik streak','30 kunlik streak','Refleksiya','Tinchlik'] },
+];
+function openTemplates(type) {
+  const c = $('#modalContent');
+  const tpls = type === 'habit' ? HABIT_TEMPLATES : GOAL_TEMPLATES;
+  const title = type === 'habit' ? "Odat shablonlari" : "SMART maqsad shablonlari";
+  c.innerHTML = `
+    <div class="modal-head">
+      <div class="modal-title">${title}</div>
+      <button class="icon-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <p class="muted mb-2">Tanlang va birini bosing</p>
+    <div class="tpl-grid">
+      ${tpls.map((t, i) => `
+        <button class="tpl-card" onclick="useTemplate('${type}',${i})">
+          <div class="tpl-icon">${t.icon}</div>
+          <div class="tpl-name">${t.name}</div>
+          <div class="tpl-desc">${t.desc}</div>
+        </button>
+      `).join('')}
+    </div>
+  `;
+  $('#modalOverlay').classList.add('open');
+}
+function useTemplate(type, idx) {
+  if (type === 'habit') {
+    const t = HABIT_TEMPLATES[idx];
+    state.habits.push({ id: uid(), name: t.name, icon: t.icon, color: t.color, frequency: t.frequency, target: t.target, category: t.category, diff: t.diff, createdAt: today() });
+    if (state.habits.length === 1) unlockAch('first_habit');
+    save();
+    closeModal();
+    renderHabits();
+    toast(`Odat qo'shildi: ${t.name}`, 'success');
+    fx?.play('complete');
+    window.confetti?.fire({ count: 30 });
+  } else {
+    const t = GOAL_TEMPLATES[idx];
+    state.goals.push({
+      id: uid(), name: t.name, desc: t.desc, type: t.type, icon: t.icon,
+      progress: 0, deadline: '',
+      milestones: t.milestones.map(m => ({ id: uid(), name: m, done: false })),
+      createdAt: today()
+    });
+    if (state.goals.length === 1) unlockAch('goal_1');
+    save();
+    closeModal();
+    renderGoals();
+    toast(`Maqsad qo'shildi: ${t.name}`, 'success');
+    fx?.play('complete');
+  }
+}
+
+// ════ MULTI-LANGUAGE ════
+const I18N = {
+  uz: { dashboard:'Bosh sahifa', tasks:'Vazifalar', habits:'Odatlar', focus:'Fokus rejim', study:"O'qish", goals:'Maqsadlar', notes:'Qaydlar', settings:'Sozlamalar', save:'Saqlash', cancel:'Bekor', today:'Bugun', save_btn:'Saqlash', new_task:'Yangi vazifa' },
+  en: { dashboard:'Dashboard', tasks:'Tasks', habits:'Habits', focus:'Focus mode', study:'Study', goals:'Goals', notes:'Notes', settings:'Settings', save:'Save', cancel:'Cancel', today:'Today', save_btn:'Save', new_task:'New task' },
+  ru: { dashboard:'Главная', tasks:'Задачи', habits:'Привычки', focus:'Фокус', study:'Учеба', goals:'Цели', notes:'Заметки', settings:'Настройки', save:'Сохранить', cancel:'Отмена', today:'Сегодня', save_btn:'Сохранить', new_task:'Новая задача' },
+};
+function setLang(lang) {
+  state.lang = lang;
+  save();
+  document.documentElement.setAttribute('lang', lang);
+  // Update nav labels (best-effort)
+  const navMap = {
+    dashboard:'home', tasks:'circle-check', habits:'bolt', focus:'circle-dot',
+    study:'graduation-cap', goals:'bullseye', notes:'note-sticky', settings:'gear'
+  };
+  $$('.nav-item').forEach(n => {
+    const p = n.dataset.page;
+    if (I18N[lang][p]) {
+      const span = n.querySelector('span');
+      if (span) span.textContent = I18N[lang][p];
+    }
+  });
+  toast(lang === 'uz' ? 'Til o\'zgartirildi' : lang === 'en' ? 'Language changed' : 'Язык изменен', 'success');
+}
+
+
+
+// ════ FULL CALENDAR ════
+let calCurMonth = null, calCurYear = null;
+function calNav(d) {
+  if (calCurMonth === null) { const n = new Date(); calCurMonth = n.getMonth(); calCurYear = n.getFullYear(); }
+  if (d === 0) { const n = new Date(); calCurMonth = n.getMonth(); calCurYear = n.getFullYear(); }
+  else { calCurMonth += d; if (calCurMonth > 11) { calCurMonth = 0; calCurYear++; } if (calCurMonth < 0) { calCurMonth = 11; calCurYear--; } }
+  renderFullCalendar();
+}
+function renderFullCalendar() {
+  if (calCurMonth === null) { const n = new Date(); calCurMonth = n.getMonth(); calCurYear = n.getFullYear(); }
+  const months = ['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentabr','Oktabr','Noyabr','Dekabr'];
+  $('#calTitle').textContent = `${months[calCurMonth]} ${calCurYear}`;
+  const first = new Date(calCurYear, calCurMonth, 1);
+  const last = new Date(calCurYear, calCurMonth + 1, 0);
+  let dow = first.getDay() - 1; if (dow < 0) dow = 6;
+  let html = '';
+  // Padding
+  for (let i = 0; i < dow; i++) {
+    const d = new Date(calCurYear, calCurMonth, -dow + i + 1);
+    html += `<div class="cal-day outside"><div class="cal-day-num">${d.getDate()}</div></div>`;
+  }
+  // Days
+  for (let d = 1; d <= last.getDate(); d++) {
+    const ds = `${calCurYear}-${String(calCurMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday = ds === today();
+    const events = [];
+    state.tasks.filter(t => t.due === ds && !t.done).forEach(t => events.push({ type:'task', name:t.name }));
+    state.exams.filter(e => e.date === ds).forEach(e => events.push({ type:'exam', name:'📚 '+e.name }));
+    if (state.completions[ds] && Object.keys(state.completions[ds]).length) events.push({ type:'habit', name: `${Object.keys(state.completions[ds]).length} odat ✓` });
+    html += `<div class="cal-day ${isToday?'today':''}" onclick="calCellClick('${ds}')">
+      <div class="cal-day-num">${d}</div>
+      ${events.slice(0,3).map(e => `<div class="cal-event ${e.type}">${escape(e.name).slice(0,18)}</div>`).join('')}
+      ${events.length > 3 ? `<div class="cal-event">+${events.length-3}</div>` : ''}
+    </div>`;
+  }
+  // Trailing
+  const total = dow + last.getDate();
+  const rem = (7 - (total % 7)) % 7;
+  for (let i = 1; i <= rem; i++) {
+    html += `<div class="cal-day outside"><div class="cal-day-num">${i}</div></div>`;
+  }
+  $('#calGrid').innerHTML = html;
+}
+function calCellClick(ds) { 
+  // Open task modal with that date prefilled
+  openModal('task');
+  setTimeout(() => { const di = document.querySelector('input[name="due"]'); if (di) di.value = ds; }, 50);
+}
+
+// ════ WORKOUT ════
+function renderWorkouts() {
+  ensureV2State();
+  const grid = $('#workoutGrid');
+  if (!state.workouts.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-icon">💪</div><h3>Mashqlar yo'q</h3><p>Birinchi mashq qo'shing</p></div>`;
+  } else {
+    grid.innerHTML = state.workouts.map(w => `
+      <div class="workout-card">
+        <div class="workout-name">${escape(w.name)}</div>
+        <div class="workout-meta">${escape(w.type||'Mashq')} · ${(w.exercises||[]).length} ta mashq</div>
+        ${(w.exercises||[]).map(e => `<div class="exercise-row">
+          <div class="exercise-name">${escape(e.name)}</div>
+          <div class="exercise-sets">${e.sets} × ${e.reps}</div>
+        </div>`).join('')}
+        <div style="display:flex;gap:6px;margin-top:1rem">
+          <button class="btn btn-primary" style="flex:1" onclick="logWorkout('${w.id}')"><i class="fa-solid fa-check"></i> Bajarildi</button>
+          <button class="btn btn-secondary" onclick="deleteWorkout('${w.id}')"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </div>
+    `).join('');
+  }
+  // Stats
+  const week = new Date(); week.setDate(week.getDate() - 7);
+  const weekLogs = state.workoutLogs.filter(l => new Date(l.date) >= week);
+  $('#wkSessions').textContent = weekLogs.length;
+  $('#wkMinutes').textContent = weekLogs.reduce((a,l)=>a+(l.minutes||30),0) + 'm';
+  $('#wkTotal').textContent = state.workoutLogs.length;
+  $('#wkStreak').textContent = workoutStreak();
+}
+function workoutStreak() {
+  let s = 0, d = new Date();
+  while (true) {
+    const ds = dstr(d);
+    if (state.workoutLogs.some(l => l.date === ds)) { s++; d.setDate(d.getDate() - 1); }
+    else break;
+    if (s > 365) break;
+  }
+  return s;
+}
+function logWorkout(id) {
+  const w = state.workouts.find(x => x.id === id); if (!w) return;
+  state.workoutLogs.push({ id: uid(), workoutId: id, date: today(), minutes: 30 });
+  save(); renderWorkouts();
+  addXp(20, `Mashq: ${w.name}`);
+  toast('Mashq belgilandi! 💪', 'success');
+  fx?.play('complete');
+  fx?.haptic(50);
+  window.confetti?.fire({ count: 40 });
+}
+function deleteWorkout(id) {
+  if (!confirm("O'chirilsinmi?")) return;
+  state.workouts = state.workouts.filter(x => x.id !== id);
+  save(); renderWorkouts();
+}
+
+// ════ MEALS ════
+function renderMeals() {
+  ensureV2State();
+  const todayMeals = state.meals.filter(m => m.date === today());
+  $('#mealCal').textContent = todayMeals.reduce((a,m) => a+(m.calories||0), 0);
+  $('#mealProt').textContent = todayMeals.reduce((a,m) => a+(m.protein||0), 0) + 'g';
+  $('#mealCarb').textContent = todayMeals.reduce((a,m) => a+(m.carbs||0), 0) + 'g';
+  $('#mealFat').textContent = todayMeals.reduce((a,m) => a+(m.fat||0), 0) + 'g';
+  const list = $('#mealList');
+  if (!todayMeals.length) {
+    list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🍽</div><h3>Bugun ovqat yo'q</h3><p>Bugungi ovqatingizni qo'shing</p></div>`;
+  } else {
+    list.innerHTML = todayMeals.map(m => `
+      <div class="meal-item">
+        <div class="meal-icon">${m.icon || '🍴'}</div>
+        <div class="meal-info">
+          <div class="meal-name">${escape(m.name)}</div>
+          <div class="meal-time">${m.time || ''} · ${m.type || ''}</div>
+        </div>
+        <div class="meal-cal">${m.calories || 0} kcal</div>
+        <button class="icon-btn" onclick="deleteMeal('${m.id}')"><i class="fa-solid fa-trash"></i></button>
+      </div>
+    `).join('');
+  }
+}
+function deleteMeal(id) { state.meals = state.meals.filter(x => x.id !== id); save(); renderMeals(); }
+
+// ════ READING ════
+let bookFilter = 'all';
+function setBookFilter(f) { bookFilter = f; $$('.tab[data-bfilter]').forEach(t => t.classList.toggle('active', t.dataset.bfilter === f)); renderReading(); }
+function renderReading() {
+  ensureV2State();
+  const grid = $('#bookGrid');
+  let list = [...state.books];
+  if (bookFilter !== 'all') list = list.filter(b => b.status === bookFilter);
+  if (!list.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-icon">📚</div><h3>Kitoblar yo'q</h3><p>Birinchi kitobni qo'shing</p></div>`;
+    return;
+  }
+  grid.innerHTML = list.map(b => {
+    const pct = b.pages ? Math.round(((b.read||0)/b.pages)*100) : 0;
+    return `<div class="book-card">
+      <span class="book-status ${b.status}">${b.status === 'reading' ? "O'qiyapman" : b.status === 'done' ? 'Tugatildi' : 'Navbatda'}</span>
+      <div class="book-cover">${escape((b.title||'?')[0])}</div>
+      <div class="book-title">${escape(b.title)}</div>
+      <div class="book-author">${escape(b.author||'Noma\'lum')}</div>
+      <div class="book-progress">
+        <div class="bar"><div class="fill" style="width:${pct}%"></div></div>
+        <span>${b.read||0}/${b.pages||0}</span>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:.8rem">
+        <button class="btn btn-secondary" style="flex:1" onclick="editBook('${b.id}')"><i class="fa-solid fa-pen"></i></button>
+        <button class="btn btn-secondary" onclick="deleteBook('${b.id}')"><i class="fa-solid fa-trash"></i></button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function editBook(id) { openModal('book', state.books.find(x => x.id === id)); }
+function deleteBook(id) { if (!confirm("O'chirilsinmi?")) return; state.books = state.books.filter(x => x.id !== id); save(); renderReading(); }
+
+
+
+// ════ MEDITATION (BREATHING) ════
+const BREATH_PATTERNS = {
+  '478': { name: '4-7-8', steps: [{label:'Nafas oling',sec:4,cls:'inhale'},{label:'Ushlang',sec:7,cls:'hold'},{label:'Chiqaring',sec:8,cls:'exhale'}] },
+  'box': { name: 'Box', steps: [{label:'Nafas oling',sec:4,cls:'inhale'},{label:'Ushlang',sec:4,cls:'hold'},{label:'Chiqaring',sec:4,cls:'exhale'},{label:'Ushlang',sec:4,cls:'hold'}] },
+  'deep': { name: 'Chuqur', steps: [{label:'Nafas oling',sec:5,cls:'inhale'},{label:'Chiqaring',sec:5,cls:'exhale'}] }
+};
+let breathInterval = null, breathStart = 0, breathCycle = 0, breathPattern = '478', breathStepIdx = 0, breathStepRemain = 0;
+function setBreathPattern() { breathPattern = $('#breathPattern').value; resetBreath(); }
+function toggleBreath() {
+  if (breathInterval) { clearInterval(breathInterval); breathInterval = null; $('#medBtn').innerHTML = '<i class="fa-solid fa-play"></i> Davom'; return; }
+  if (!breathStart) breathStart = Date.now();
+  $('#medBtn').innerHTML = '<i class="fa-solid fa-pause"></i> Pauza';
+  const pattern = BREATH_PATTERNS[breathPattern];
+  if (breathStepRemain <= 0) { breathStepIdx = 0; breathStepRemain = pattern.steps[0].sec; }
+  applyBreathStep();
+  breathInterval = setInterval(() => {
+    breathStepRemain--;
+    if (breathStepRemain <= 0) {
+      breathStepIdx = (breathStepIdx + 1) % pattern.steps.length;
+      if (breathStepIdx === 0) breathCycle++;
+      breathStepRemain = pattern.steps[breathStepIdx].sec;
+      applyBreathStep();
+      fx?.play('tick');
+    }
+    const elapsed = Math.floor((Date.now() - breathStart) / 1000);
+    $('#medCycle').textContent = breathCycle;
+    $('#medMinutes').textContent = `${Math.floor(elapsed/60)}:${String(elapsed%60).padStart(2,'0')}`;
+  }, 1000);
+}
+function applyBreathStep() {
+  const step = BREATH_PATTERNS[breathPattern].steps[breathStepIdx];
+  const orb = $('#breathOrb');
+  if (orb) {
+    orb.classList.remove('inhale','hold','exhale');
+    orb.classList.add(step.cls);
+    orb.textContent = step.label;
+  }
+}
+function resetBreath() {
+  if (breathInterval) { clearInterval(breathInterval); breathInterval = null; }
+  // Save session if was active
+  if (breathStart) {
+    const elapsed = Math.floor((Date.now() - breathStart) / 60000);
+    if (elapsed > 0) {
+      state.medSessions = state.medSessions || [];
+      state.medSessions.push({ date: today(), minutes: elapsed, pattern: breathPattern });
+      save();
+      const total = state.medSessions.reduce((a,s)=>a+s.minutes,0);
+      $('#medTotal').textContent = total + 'm';
+      addXp(elapsed * 2, 'Meditatsiya');
+    }
+  }
+  breathStart = 0; breathCycle = 0; breathStepIdx = 0; breathStepRemain = 0;
+  $('#medCycle').textContent = '0';
+  $('#medMinutes').textContent = '0:00';
+  $('#medBtn').innerHTML = '<i class="fa-solid fa-play"></i> Boshlash';
+  const orb = $('#breathOrb');
+  if (orb) { orb.classList.remove('inhale','hold','exhale'); orb.textContent = 'Nafas oling'; }
+  const total = (state.medSessions || []).reduce((a,s)=>a+s.minutes,0);
+  $('#medTotal').textContent = total + 'm';
+}
+
+// ════ AI INSIGHTS (rule-based) ════
+function generateInsights() {
+  ensureV2State();
+  const insights = [];
+  const td = today();
+  const week = new Date(); week.setDate(week.getDate() - 7);
+
+  // Productivity score
+  const habitDone = state.habits.filter(h => isHabitDone(h.id)).length;
+  const habitTotal = state.habits.length;
+  const tasksDone = state.tasks.filter(t => t.done && t.completedAt === td).length;
+  const focusToday = state.focusSessions.filter(s => s.date === td).reduce((a,s)=>a+s.minutes,0);
+
+  // Burnout detection
+  const last7Focus = state.focusSessions.filter(s => new Date(s.date) >= week).reduce((a,s)=>a+s.minutes,0);
+  if (last7Focus > 600) {
+    insights.push({ icon:'🔥', title:'Charchashga yaqinmisiz?', text:`Oxirgi 7 kunda ${Math.floor(last7Focus/60)} soatdan ko'p fokusladingiz. Tana va miyaga dam berish kerak — bugun 30 daqiqa pauza qiling.` });
+  } else if (last7Focus < 60 && state.tasks.length > 5) {
+    insights.push({ icon:'💪', title:'Vaqt — eng qimmatli', text:`Oxirgi 7 kunda atigi ${last7Focus} daqiqa fokusladingiz. Bugun 25 daqiqalik Pomodoro sessiyasini sinab ko'ring!` });
+  }
+
+  // Habit consistency
+  if (habitTotal > 0 && habitDone === habitTotal) {
+    insights.push({ icon:'⭐', title:'Mukammal kun!', text:'Bugun barcha odatlaringizni bajardingiz. Bu ajoyib! Bunday holatni kechqurun ham eslab, o\'zingizni mukofotlang.' });
+  } else if (habitTotal > 0 && habitDone === 0) {
+    insights.push({ icon:'⚠️', title:'Hech qanday odat yo\'q', text:`${habitTotal} ta odat bor, lekin bugun hali bittasi ham bajarilmagan. Bittadan boshlang — eng osonidan!` });
+  }
+
+  // Best streak
+  const longestStreak = Math.max(0, ...state.habits.map(h => calcLongest(h.id)));
+  if (longestStreak >= 30) {
+    insights.push({ icon:'🏆', title:`${longestStreak} kunlik streak!`, text:'Sizning eng yaxshi seriyangiz haqiqatan ham ajoyib. Bu intizom yuqori darajada — davom eting!' });
+  }
+
+  // Mood trend
+  const moods = Object.entries(state.moods).slice(-7);
+  if (moods.length >= 3) {
+    const avg = moods.reduce((a,[,v]) => a+v, 0) / moods.length;
+    if (avg < 2.5) {
+      insights.push({ icon:'💙', title:'Kayfiyat past', text:'Oxirgi kunlarda kayfiyatingiz past. Sport, do\'stlar bilan vaqt o\'tkazish va yaxshi uyqu yordam berishi mumkin.' });
+    } else if (avg > 4) {
+      insights.push({ icon:'😊', title:'Ajoyib hafta!', text:'Sizning kayfiyatingiz ko\'tarinki. Bu odatlaringiz va vazifalaringizni ko\'paytirish uchun eng yaxshi vaqt!' });
+    }
+  }
+
+  // Smart suggestions
+  const undoneTasks = state.tasks.filter(t => !t.done && t.due && t.due < td);
+  if (undoneTasks.length >= 3) {
+    insights.push({ icon:'📋', title:'O\'tib ketgan vazifalar', text:`Sizda ${undoneTasks.length} ta o\'tgan vazifa bor. Ularni qayta rejalashtiring yoki o\'chiring.` });
+  }
+
+  // Water
+  const water = state.water[td] || 0;
+  if (water < 4 && new Date().getHours() > 12) {
+    insights.push({ icon:'💧', title:'Suv ichish', text:`Bugun atigi ${water} stakan suv ichdingiz. Sog\'lom miya uchun yana ${8 - water} stakan kerak.` });
+  }
+
+  // Productive time pattern
+  const focusByHour = {};
+  state.focusSessions.forEach(s => {
+    if (!s.hour) return;
+    focusByHour[s.hour] = (focusByHour[s.hour] || 0) + s.minutes;
+  });
+  const bestHour = Object.entries(focusByHour).sort((a,b) => b[1] - a[1])[0];
+  if (bestHour && bestHour[1] > 30) {
+    insights.push({ icon:'⏰', title:'Eng samarali vaqt', text:`Sizning eng samarali vaqtingiz — soat ${bestHour[0]}. Muhim ishlarni shu vaqtga rejalashtiring.` });
+  }
+
+  // Weekly review
+  const weekTasks = state.tasks.filter(t => t.completedAt && new Date(t.completedAt) >= week).length;
+  insights.push({ icon:'📊', title:'Haftalik xulosa', text:`Oxirgi 7 kunda: ${weekTasks} vazifa bajarildi · ${Math.floor(last7Focus/60)} soat fokus · ${moods.length} kayfiyat yozuvi · XP: ${state.user.xp}` });
+
+  // Default if no insights
+  if (insights.length === 0) {
+    insights.push({ icon:'✨', title:'Boshlang!', text:'Lumio sizning faolligingiz haqida ma\'lumotlar to\'plagandan keyin shaxsiy maslahatlar beradi.' });
+  }
+
+  return insights;
+}
+function renderInsights() {
+  const list = $('#insightsList');
+  const insights = generateInsights();
+  list.innerHTML = insights.map(i => `
+    <div class="insight-card">
+      <div class="insight-icon">${i.icon}</div>
+      <div class="insight-body">
+        <div class="insight-title">${i.title}</div>
+        <div class="insight-text">${i.text}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ════ ADVANCED ANALYTICS ════
+let analyticsCharts = {};
+function renderAdvancedAnalytics() {
+  const week = new Date(); week.setDate(week.getDate() - 7);
+  const weekTasks = state.tasks.filter(t => t.completedAt && new Date(t.completedAt) >= week).length;
+  const weekFocus = state.focusSessions.filter(s => new Date(s.date) >= week).reduce((a,s)=>a+s.minutes,0);
+  
+  // Weekly trend - 7 days
+  const labels = [], taskData = [], focusData = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const ds = dstr(d);
+    labels.push(['Du','Se','Ch','Pa','Ju','Sh','Ya'][(d.getDay() + 6) % 7]);
+    taskData.push(state.tasks.filter(t => t.completedAt === ds).length);
+    focusData.push(state.focusSessions.filter(s => s.date === ds).reduce((a,s)=>a+s.minutes,0));
+  }
+  $('#anWeekTasks').textContent = weekTasks;
+  $('#anWeekFocus').textContent = weekFocus + 'm';
+
+  // Average score (productivity score over last 7 days - approximate)
+  const totalH = state.habits.length;
+  let scoreSum = 0, days = 0;
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const ds = dstr(d);
+    const hd = totalH ? state.habits.filter(h => getCmp(h.id, ds) >= h.target).length / totalH : 0;
+    const tdone = state.tasks.filter(t => t.completedAt === ds).length;
+    const f = state.focusSessions.filter(s => s.date === ds).reduce((a,s)=>a+s.minutes,0);
+    scoreSum += Math.round(hd * 50 + Math.min(30, tdone * 10) + Math.min(20, f / 6));
+    days++;
+  }
+  $('#anAvgScore').textContent = days ? Math.round(scoreSum / days) : 0;
+  $('#anBestDay').textContent = labels[focusData.indexOf(Math.max(...focusData))] || '—';
+
+  // Charts
+  if (typeof Chart === 'undefined') return;
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const textColor = isDark ? '#a0a0a0' : '#6b6b6b';
+  const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+  const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#1a1a1a';
+
+  // Week chart
+  if (analyticsCharts.week) analyticsCharts.week.destroy();
+  const ctx1 = $('#anWeekChart');
+  if (ctx1) analyticsCharts.week = new Chart(ctx1, {
+    type: 'bar',
+    data: { labels, datasets: [
+      { label: 'Vazifalar', data: taskData, backgroundColor: accent, borderRadius: 6 },
+      { label: 'Fokus (daq)', data: focusData, backgroundColor: '#ff8a00', borderRadius: 6 },
+    ]},
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: textColor }}},
+      scales: { y: { beginAtZero: true, ticks: { color: textColor }, grid: { color: gridColor }}, x: { ticks: { color: textColor }, grid: { display: false }}}
+    }
+  });
+
+  // Focus chart - last 14 days
+  if (analyticsCharts.focus) analyticsCharts.focus.destroy();
+  const fLabels = [], fData = [];
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    fLabels.push(d.getDate().toString());
+    fData.push(state.focusSessions.filter(s => s.date === dstr(d)).reduce((a,s)=>a+s.minutes,0));
+  }
+  const ctx2 = $('#anFocusChart');
+  if (ctx2) analyticsCharts.focus = new Chart(ctx2, {
+    type: 'line',
+    data: { labels: fLabels, datasets: [{ label: 'Daqiqa', data: fData, borderColor: accent, backgroundColor: accent + '33', fill: true, tension: 0.4 }]},
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }}, scales: { y: { ticks: { color: textColor }, grid: { color: gridColor }}, x: { ticks: { color: textColor }, grid: { display: false }}}}
+  });
+
+  // Mood chart
+  if (analyticsCharts.mood) analyticsCharts.mood.destroy();
+  const mLabels = [], mData = [];
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    mLabels.push(d.getDate().toString());
+    mData.push(state.moods[dstr(d)] || null);
+  }
+  const ctx3 = $('#anMoodChart');
+  if (ctx3) analyticsCharts.mood = new Chart(ctx3, {
+    type: 'line',
+    data: { labels: mLabels, datasets: [{ label: 'Kayfiyat', data: mData, borderColor: '#ff8a00', backgroundColor: '#ff8a0033', fill: true, tension: 0.4, spanGaps: true }]},
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }}, scales: { y: { min: 0, max: 5, ticks: { color: textColor, stepSize: 1 }, grid: { color: gridColor }}, x: { ticks: { color: textColor }, grid: { display: false }}}}
+  });
+}
+
+
+
+// ════ NEW MINI APPS ════
+function qrHTML() {
+  return `<div class="modal-head"><div class="modal-title">📱 QR Generator</div><button class="icon-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button></div>
+  <div class="form-group"><label class="form-label">Matn yoki URL</label><input class="input" id="qrInput" placeholder="https://..." oninput="genQR()" autofocus/></div>
+  <div class="qr-output" id="qrOutput"><span style="color:#999">Matn kiriting...</span></div>
+  <button class="btn btn-secondary" style="width:100%;justify-content:center" onclick="downloadQR()"><i class="fa-solid fa-download"></i> Yuklab olish</button>`;
+}
+function genQR() {
+  const text = $('#qrInput').value.trim();
+  const out = $('#qrOutput');
+  if (!text) { out.innerHTML = '<span style="color:#999">Matn kiriting...</span>'; return; }
+  // Use external API for QR
+  const url = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(text)}`;
+  out.innerHTML = `<img src="${url}" width="180" height="180" alt="QR" id="qrImg"/>`;
+}
+function downloadQR() {
+  const img = $('#qrImg'); if (!img) return toast("Avval matn kiriting", 'error');
+  const a = document.createElement('a'); a.href = img.src; a.download = 'qr.png'; a.target = '_blank'; a.click();
+}
+
+function passwordHTML() {
+  return `<div class="modal-head"><div class="modal-title">🔐 Parol generator</div><button class="icon-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button></div>
+  <div class="card mb-2" style="background:var(--bg3);text-align:center;padding:1.5rem">
+    <div id="pwOut" style="font-family:monospace;font-size:1.3rem;font-weight:600;letter-spacing:.05em;word-break:break-all">—</div>
+  </div>
+  <div class="form-group"><label class="form-label">Uzunlik: <span id="pwLen">16</span></label>
+    <input type="range" id="pwRange" min="6" max="32" value="16" oninput="$('#pwLen').textContent=this.value;genPassword()"/></div>
+  <div class="setting-row"><span class="setting-name">Katta harflar (A-Z)</span><label class="toggle"><input type="checkbox" id="pwUpper" checked onchange="genPassword()"/><span class="toggle-slider"></span></label></div>
+  <div class="setting-row"><span class="setting-name">Raqamlar (0-9)</span><label class="toggle"><input type="checkbox" id="pwNum" checked onchange="genPassword()"/><span class="toggle-slider"></span></label></div>
+  <div class="setting-row"><span class="setting-name">Belgilar (!@#)</span><label class="toggle"><input type="checkbox" id="pwSym" checked onchange="genPassword()"/><span class="toggle-slider"></span></label></div>
+  <div style="display:flex;gap:8px;margin-top:1rem">
+    <button class="btn btn-primary" style="flex:1" onclick="genPassword()"><i class="fa-solid fa-rotate"></i> Yangilash</button>
+    <button class="btn btn-secondary" onclick="copyPassword()"><i class="fa-solid fa-copy"></i> Nusxa</button>
+  </div>`;
+}
+function genPassword() {
+  const len = parseInt($('#pwRange').value);
+  let chars = 'abcdefghijklmnopqrstuvwxyz';
+  if ($('#pwUpper').checked) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  if ($('#pwNum').checked) chars += '0123456789';
+  if ($('#pwSym').checked) chars += '!@#$%^&*-_=+';
+  let p = '';
+  for (let i = 0; i < len; i++) p += chars[Math.floor(Math.random() * chars.length)];
+  $('#pwOut').textContent = p;
+}
+function copyPassword() {
+  const p = $('#pwOut').textContent;
+  navigator.clipboard?.writeText(p);
+  toast('Nusxa olindi', 'success');
+}
+
+function bmiHTML() {
+  return `<div class="modal-head"><div class="modal-title">⚖ BMI Kalkulyator</div><button class="icon-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button></div>
+  <div class="row">
+    <div class="form-group"><label class="form-label">Bo'y (cm)</label><input class="input" type="number" id="bmiHeight" value="170" oninput="calcBMI()"/></div>
+    <div class="form-group"><label class="form-label">Vazn (kg)</label><input class="input" type="number" id="bmiWeight" value="70" oninput="calcBMI()"/></div>
+  </div>
+  <div class="card" style="background:var(--bg3);text-align:center;padding:1.8rem 1rem">
+    <div id="bmiVal" style="font-size:3rem;font-weight:700;letter-spacing:-.03em">22.4</div>
+    <div id="bmiLabel" style="font-size:.95rem;font-weight:600;color:var(--green);margin-top:4px">Normal vazn</div>
+    <div id="bmiAdvice" style="font-size:.82rem;color:var(--text2);margin-top:8px;line-height:1.5">Sog'lom diapazonda</div>
+  </div>`;
+}
+function calcBMI() {
+  const h = parseFloat($('#bmiHeight').value) / 100;
+  const w = parseFloat($('#bmiWeight').value);
+  if (!h || !w) return;
+  const bmi = w / (h * h);
+  $('#bmiVal').textContent = bmi.toFixed(1);
+  let label, color, advice;
+  if (bmi < 18.5) { label = "Vazn kam"; color = '#0284c7'; advice = "Sog'lom oziq-ovqat va sport tavsiya etiladi"; }
+  else if (bmi < 25) { label = "Normal vazn"; color = '#22c55e'; advice = "Sog'lom diapazonda — davom eting!"; }
+  else if (bmi < 30) { label = "Ortiqcha vazn"; color = '#f59e0b'; advice = "Sport va sog'lom ovqatlanish foydali"; }
+  else { label = "Semizlik"; color = '#ef4444'; advice = "Shifokorga murojaat qiling"; }
+  $('#bmiLabel').textContent = label;
+  $('#bmiLabel').style.color = color;
+  $('#bmiAdvice').textContent = advice;
+}
+
+function tipHTML() {
+  return `<div class="modal-head"><div class="modal-title">💵 Tip Kalkulyator</div><button class="icon-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button></div>
+  <div class="form-group"><label class="form-label">Hisob summasi</label><input class="input" type="number" id="tipBill" placeholder="100000" oninput="calcTip()"/></div>
+  <div class="row">
+    <div class="form-group"><label class="form-label">Chayrak %</label>
+      <select class="select" id="tipPct" onchange="calcTip()">
+        <option>10</option><option selected>15</option><option>18</option><option>20</option><option>25</option>
+      </select></div>
+    <div class="form-group"><label class="form-label">Odamlar</label><input class="input" type="number" id="tipPpl" min="1" value="1" oninput="calcTip()"/></div>
+  </div>
+  <div class="card" style="background:var(--bg3)">
+    <div class="setting-row"><span>Chayrak</span><strong id="tipAmt">0</strong></div>
+    <div class="setting-row"><span>Jami</span><strong id="tipTotal">0</strong></div>
+    <div class="setting-row"><span>Bir kishiga</span><strong id="tipPer">0</strong></div>
+  </div>`;
+}
+function calcTip() {
+  const bill = parseFloat($('#tipBill').value) || 0;
+  const pct = parseFloat($('#tipPct').value) || 15;
+  const ppl = parseInt($('#tipPpl').value) || 1;
+  const tip = bill * pct / 100;
+  const total = bill + tip;
+  const per = total / ppl;
+  const fmt = n => Math.round(n).toLocaleString('uz-UZ');
+  $('#tipAmt').textContent = fmt(tip) + " so'm";
+  $('#tipTotal').textContent = fmt(total) + " so'm";
+  $('#tipPer').textContent = fmt(per) + " so'm";
+}
+
+function worldClockHTML() {
+  return `<div class="modal-head"><div class="modal-title">🌍 Jahon vaqti</div><button class="icon-btn" onclick="stopWC();closeModal()"><i class="fa-solid fa-xmark"></i></button></div>
+  <div class="world-clock-list" id="wcList"></div>`;
+}
+const WC_CITIES = [
+  { city: 'Toshkent', tz: 'Asia/Tashkent' },
+  { city: 'Moskva', tz: 'Europe/Moscow' },
+  { city: 'London', tz: 'Europe/London' },
+  { city: 'Nyu York', tz: 'America/New_York' },
+  { city: 'Tokio', tz: 'Asia/Tokyo' },
+  { city: 'Dubay', tz: 'Asia/Dubai' },
+];
+let wcInterval = null;
+function initWC() {
+  if (wcInterval) clearInterval(wcInterval);
+  const update = () => {
+    const list = $('#wcList'); if (!list) return;
+    list.innerHTML = WC_CITIES.map(c => {
+      const time = new Date().toLocaleTimeString('uz-UZ', { timeZone: c.tz, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const off = new Date().toLocaleString('en-US', { timeZone: c.tz, hour12: false });
+      return `<div class="wc-item"><div><div class="wc-city">${c.city}</div><div class="wc-tz">${c.tz}</div></div><div class="wc-time">${time}</div></div>`;
+    }).join('');
+  };
+  update();
+  wcInterval = setInterval(update, 1000);
+}
+function stopWC() { if (wcInterval) { clearInterval(wcInterval); wcInterval = null; } }
+
+function colorPickerHTML() {
+  return `<div class="modal-head"><div class="modal-title">🎨 Color Picker</div><button class="icon-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button></div>
+  <div class="color-picker-display" id="cpDisp" style="background:#7c3aed">#7c3aed</div>
+  <input type="color" id="cpInput" value="#7c3aed" oninput="cpUpdate()" style="width:100%;height:40px;border:none;border-radius:8px;cursor:pointer;background:none"/>
+  <div class="card mt-2" style="background:var(--bg3);font-size:.82rem">
+    <div class="setting-row"><span>HEX</span><strong id="cpHex">#7c3aed</strong></div>
+    <div class="setting-row"><span>RGB</span><strong id="cpRgb">124, 58, 237</strong></div>
+    <div class="setting-row"><span>HSL</span><strong id="cpHsl">263°, 83%, 58%</strong></div>
+  </div>
+  <button class="btn btn-secondary mt-2" style="width:100%;justify-content:center" onclick="cpCopy()"><i class="fa-solid fa-copy"></i> HEX nusxa olish</button>`;
+}
+function cpUpdate() {
+  const hex = $('#cpInput').value;
+  $('#cpDisp').style.background = hex;
+  $('#cpDisp').textContent = hex.toUpperCase();
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  $('#cpHex').textContent = hex.toUpperCase();
+  $('#cpRgb').textContent = `${r}, ${g}, ${b}`;
+  // HSL
+  const rr=r/255, gg=g/255, bb=b/255;
+  const max = Math.max(rr,gg,bb), min = Math.min(rr,gg,bb);
+  let h, s, l = (max+min)/2;
+  if (max === min) { h = s = 0; }
+  else {
+    const d = max - min;
+    s = l > .5 ? d/(2-max-min) : d/(max+min);
+    if (max === rr) h = (gg-bb)/d + (gg < bb ? 6 : 0);
+    else if (max === gg) h = (bb-rr)/d + 2;
+    else h = (rr-gg)/d + 4;
+    h /= 6;
+  }
+  $('#cpHsl').textContent = `${Math.round(h*360)}°, ${Math.round(s*100)}%, ${Math.round(l*100)}%`;
+}
+function cpCopy() { navigator.clipboard?.writeText($('#cpHex').textContent); toast('HEX nusxa olindi', 'success'); }
+
+function markdownEditorHTML() {
+  return `<div class="modal-head"><div class="modal-title">✍ Markdown Editor</div><button class="icon-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button></div>
+  <div class="md-editor-grid">
+    <textarea class="md-input" id="mdInput" oninput="mdRender()" placeholder="# Sarlavha
+## Sub
+**bold** *italic* \`code\`
+- ro'yxat
+- band
+[link](url)"></textarea>
+    <div class="md-preview" id="mdPreview"></div>
+  </div>`;
+}
+function mdRender() {
+  const md = $('#mdInput').value;
+  // Simple MD parser
+  let html = escape(md);
+  html = html.replace(/^### (.*)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^## (.*)$/gm, '<h2>$1</h2>');
+  html = html.replace(/^# (.*)$/gm, '<h1>$1</h1>');
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  html = html.replace(/`(.+?)`/g, '<code>$1</code>');
+  html = html.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank">$1</a>');
+  html = html.replace(/^- (.*)$/gm, '<li>$1</li>');
+  html = html.replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>');
+  html = html.replace(/\n/g, '<br>');
+  $('#mdPreview').innerHTML = html;
+}
+
+
+
+// ════ NEW MODALS (workout, meal, book) ════
+function workoutModalHTML(w) {
+  return `<div class="modal-head"><div class="modal-title">${w?'Mashqni tahrirlash':'Yangi mashq'}</div><button class="icon-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button></div>
+  <form onsubmit="saveWorkout(event,'${w?.id||''}')">
+    <div class="form-group"><label class="form-label">Mashq nomi</label><input class="input" name="name" value="${w?escape(w.name):''}" required autofocus/></div>
+    <div class="form-group"><label class="form-label">Tip</label>
+      <select class="select" name="type">
+        <option ${w?.type==='Kuch'?'selected':''}>Kuch</option>
+        <option ${w?.type==='Kardio'?'selected':''}>Kardio</option>
+        <option ${w?.type==='Cho\'zilish'?'selected':''}>Cho'zilish</option>
+        <option ${w?.type==='Yoga'?'selected':''}>Yoga</option>
+      </select></div>
+    <div class="form-group"><label class="form-label">Mashqlar (har biri yangi qatordan: nom × set × repeat)</label>
+      <textarea class="textarea" name="ex" rows="5" placeholder="Push-up × 3 × 15
+Squat × 3 × 20
+Plank × 3 × 60s">${w?(w.exercises||[]).map(e=>`${e.name} × ${e.sets} × ${e.reps}`).join('\n'):''}</textarea></div>
+    <div class="modal-foot">
+      <button type="button" class="btn btn-secondary" onclick="closeModal()">Bekor</button>
+      <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Saqlash</button>
+    </div>
+  </form>`;
+}
+function saveWorkout(e, id) {
+  e.preventDefault();
+  const f = e.target;
+  const exercises = f.ex.value.split('\n').filter(Boolean).map(line => {
+    const parts = line.split('×').map(s => s.trim());
+    return { name: parts[0] || '?', sets: parts[1] || '?', reps: parts[2] || '?' };
+  });
+  const data = { name: f.name.value.trim(), type: f.type.value, exercises };
+  if (id) Object.assign(state.workouts.find(x => x.id === id), data);
+  else state.workouts.push({ id: uid(), ...data, createdAt: today() });
+  save(); closeModal(); renderWorkouts();
+  toast(id ? 'Yangilandi' : 'Mashq qo\'shildi', 'success');
+}
+
+function mealModalHTML() {
+  return `<div class="modal-head"><div class="modal-title">Yangi ovqat</div><button class="icon-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button></div>
+  <form onsubmit="saveMeal(event)">
+    <div class="form-group"><label class="form-label">Ovqat nomi</label><input class="input" name="name" required autofocus/></div>
+    <div class="row">
+      <div class="form-group"><label class="form-label">Tip</label>
+        <select class="select" name="type">
+          <option>🌅 Nonushta</option><option>🌞 Tushlik</option><option>🌆 Kechki ovqat</option><option>🍪 Tamaddi</option>
+        </select></div>
+      <div class="form-group"><label class="form-label">Vaqt</label><input class="input" type="time" name="time"/></div>
+    </div>
+    <div class="row">
+      <div class="form-group"><label class="form-label">Kaloriya</label><input class="input" type="number" name="calories" placeholder="500"/></div>
+      <div class="form-group"><label class="form-label">Oqsil (g)</label><input class="input" type="number" name="protein"/></div>
+    </div>
+    <div class="row">
+      <div class="form-group"><label class="form-label">Uglevod (g)</label><input class="input" type="number" name="carbs"/></div>
+      <div class="form-group"><label class="form-label">Yog' (g)</label><input class="input" type="number" name="fat"/></div>
+    </div>
+    <div class="modal-foot">
+      <button type="button" class="btn btn-secondary" onclick="closeModal()">Bekor</button>
+      <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Saqlash</button>
+    </div>
+  </form>`;
+}
+function saveMeal(e) {
+  e.preventDefault();
+  const f = e.target;
+  const icons = { '🌅 Nonushta':'🥐','🌞 Tushlik':'🍱','🌆 Kechki ovqat':'🍝','🍪 Tamaddi':'🍪' };
+  state.meals.push({
+    id: uid(), date: today(),
+    name: f.name.value, type: f.type.value, time: f.time.value, icon: icons[f.type.value] || '🍴',
+    calories: parseFloat(f.calories.value)||0, protein: parseFloat(f.protein.value)||0,
+    carbs: parseFloat(f.carbs.value)||0, fat: parseFloat(f.fat.value)||0
+  });
+  save(); closeModal(); renderMeals();
+  toast('Saqlandi', 'success');
+}
+
+function bookModalHTML(b) {
+  return `<div class="modal-head"><div class="modal-title">${b?'Kitobni tahrirlash':'Yangi kitob'}</div><button class="icon-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button></div>
+  <form onsubmit="saveBook(event,'${b?.id||''}')">
+    <div class="form-group"><label class="form-label">Sarlavha</label><input class="input" name="title" value="${b?escape(b.title):''}" required autofocus/></div>
+    <div class="form-group"><label class="form-label">Muallif</label><input class="input" name="author" value="${b?escape(b.author||''):''}"/></div>
+    <div class="row">
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="select" name="status">
+          <option value="queue" ${(!b||b.status==='queue')?'selected':''}>Navbatda</option>
+          <option value="reading" ${b?.status==='reading'?'selected':''}>O'qiyapman</option>
+          <option value="done" ${b?.status==='done'?'selected':''}>Tugatildi</option>
+        </select></div>
+      <div class="form-group"><label class="form-label">Sahifalar</label><input class="input" type="number" name="pages" value="${b?.pages||''}"/></div>
+    </div>
+    <div class="form-group"><label class="form-label">O'qilgan sahifa</label><input class="input" type="number" name="read" value="${b?.read||0}"/></div>
+    <div class="modal-foot">
+      <button type="button" class="btn btn-secondary" onclick="closeModal()">Bekor</button>
+      <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Saqlash</button>
+    </div>
+  </form>`;
+}
+function saveBook(e, id) {
+  e.preventDefault();
+  const f = e.target;
+  const data = { title: f.title.value.trim(), author: f.author.value.trim(), status: f.status.value, pages: parseInt(f.pages.value)||0, read: parseInt(f.read.value)||0 };
+  if (id) Object.assign(state.books.find(x => x.id === id), data);
+  else state.books.push({ id: uid(), ...data, createdAt: today() });
+  save(); closeModal(); renderReading();
+  toast(id?'Yangilandi':'Kitob qo\'shildi', 'success');
+}
+
+// ════ AUTO BACKUP ════
+function autoBackupCheck() {
+  if (!state.settings.autoBackup) return;
+  const last = state.settings.lastBackup ? new Date(state.settings.lastBackup) : new Date(0);
+  const days = (Date.now() - last.getTime()) / 86400000;
+  if (days >= 7) {
+    localStorage.setItem('lumio_backup_' + today(), JSON.stringify(state));
+    state.settings.lastBackup = today();
+    save();
+    // Keep only 4 most recent backups
+    const keys = Object.keys(localStorage).filter(k => k.startsWith('lumio_backup_')).sort();
+    while (keys.length > 4) localStorage.removeItem(keys.shift());
+    toast('Avtomatik backup yaratildi', 'info');
+  }
+}
+
+// ════ PWA ════
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  setTimeout(() => $('#installBanner')?.classList.add('show'), 5000);
+});
+window.installPWA = async function() {
+  if (!deferredPrompt) { toast('Brauzeringiz hali tayyor emas', 'info'); return; }
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  if (outcome === 'accepted') toast('Lumio o\'rnatildi! 🎉', 'success');
+  deferredPrompt = null;
+  $('#installBanner')?.classList.remove('show');
+};
+
+// Register service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+
+// ════ ENHANCE EXISTING FUNCTIONS ════
+// Override openModal to support new types
+const _originalOpenModal = window.openModal;
+window.openModal = function(type, data = null) {
+  const c = $('#modalContent');
+  if (type === 'workout') c.innerHTML = workoutModalHTML(data);
+  else if (type === 'meal') c.innerHTML = mealModalHTML();
+  else if (type === 'book') c.innerHTML = bookModalHTML(data);
+  else if (type === 'habitTemplates') return openTemplates('habit');
+  else if (type === 'goalTemplates') return openTemplates('goal');
+  else return _originalOpenModal(type, data);
+  $('#modalOverlay').classList.add('open');
+};
+
+// Override openMiniApp to support new ones
+const _originalOpenMiniApp = window.openMiniApp;
+window.openMiniApp = function(name) {
+  const c = $('#modalContent');
+  if (name === 'qr') { c.innerHTML = qrHTML(); $('#modalOverlay').classList.add('open'); return; }
+  if (name === 'password') { c.innerHTML = passwordHTML(); $('#modalOverlay').classList.add('open'); setTimeout(genPassword, 50); return; }
+  if (name === 'bmi') { c.innerHTML = bmiHTML(); $('#modalOverlay').classList.add('open'); setTimeout(calcBMI, 50); return; }
+  if (name === 'tip') { c.innerHTML = tipHTML(); $('#modalOverlay').classList.add('open'); return; }
+  if (name === 'worldclock') { c.innerHTML = worldClockHTML(); $('#modalOverlay').classList.add('open'); setTimeout(initWC, 50); return; }
+  if (name === 'color') { c.innerHTML = colorPickerHTML(); $('#modalOverlay').classList.add('open'); return; }
+  if (name === 'markdown') { c.innerHTML = markdownEditorHTML(); $('#modalOverlay').classList.add('open'); return; }
+  return _originalOpenMiniApp(name);
+};
+
+// Override goPage to render new pages
+const _originalGoPage = window.goPage;
+window.goPage = function(page) {
+  _originalGoPage(page);
+  if (page === 'calendar') renderFullCalendar();
+  else if (page === 'workout') renderWorkouts();
+  else if (page === 'meals') renderMeals();
+  else if (page === 'meditation') resetBreath();
+  else if (page === 'reading') renderReading();
+  else if (page === 'insights') renderInsights();
+  else if (page === 'analytics') renderAdvancedAnalytics();
+};
+
+// Enhance toggleTask & toggleHabit with effects
+const _origToggleTask = window.toggleTask;
+window.toggleTask = function(id) {
+  const t = state.tasks.find(x => x.id === id);
+  const wasUndone = t && !t.done;
+  _origToggleTask(id);
+  if (wasUndone && t.done) {
+    fx?.play('complete');
+    fx?.haptic([20, 30, 20]);
+    window.confetti?.fire({ count: 30, x: window.innerWidth/2, y: window.innerHeight - 100 });
+    if (state.tasks.filter(x => x.done).length % 10 === 0) {
+      window.confetti?.celebrate();
+    }
+    renderQuests();
+    renderPet();
+  }
+};
+
+const _origToggleHabit = window.toggleHabit;
+window.toggleHabit = function(id) {
+  const h = state.habits.find(x => x.id === id);
+  const wasUndone = h && !isHabitDone(id);
+  _origToggleHabit(id);
+  if (wasUndone && isHabitDone(id)) {
+    fx?.play('complete');
+    fx?.haptic([20, 30, 20]);
+    window.confetti?.fire({ count: 25, x: window.innerWidth/2, y: window.innerHeight - 100 });
+    renderQuests();
+    renderPet();
+  }
+};
+
+// Enhance addXp with sound
+const _origAddXp = window.addXp || addXp;
+const enhancedAddXp = function(amount, reason) {
+  const oldLevel = state.user.level;
+  _origAddXp(amount, reason);
+  if (state.user.level > oldLevel) {
+    fx?.play('levelup');
+    window.confetti?.celebrate();
+  }
+};
+window.addXp = enhancedAddXp;
+
+// Enhance unlockAch with confetti
+const _origUnlockAch = window.unlockAch || unlockAch;
+window.unlockAch = function(id) {
+  const has = state.achievements.includes(id);
+  _origUnlockAch(id);
+  if (!has && state.achievements.includes(id)) {
+    fx?.play('achievement');
+    window.confetti?.celebrate();
+  }
+};
+
+// Hook setMood to play sound
+const _origSetMood = window.setMood;
+window.setMood = function(v) {
+  _origSetMood(v);
+  fx?.play('pop');
+  fx?.haptic(20);
+  renderQuests();
+};
+
+// Setup keyboard for new shortcuts
+document.addEventListener('keydown', e => {
+  const tag = (document.activeElement?.tagName || '').toLowerCase();
+  const inInput = ['input','textarea','select'].includes(tag);
+  if (inInput) return;
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); undo(); }
+  else if (e.key.toLowerCase() === 'v') { 
+    if (window.location.hash.includes('tasks') || $('#page-tasks')?.classList.contains('active')) {
+      e.preventDefault(); toggleVoice();
+    }
+  }
+});
+
+// Add navigation extension
+const _origRenderPage = renderPageContent;
+window.renderPageContent = function(page) {
+  _origRenderPage(page);
+  if (page === 'dashboard') {
+    setDynamicWallpaper();
+    renderPet();
+    renderQuests();
+  }
+  if (page === 'calendar') renderFullCalendar();
+  if (page === 'workout') renderWorkouts();
+  if (page === 'meals') renderMeals();
+  if (page === 'meditation') resetBreath();
+  if (page === 'reading') renderReading();
+  if (page === 'insights') renderInsights();
+  if (page === 'analytics') renderAdvancedAnalytics();
+};
+
+// Final init enhancement
+const _origInit = init;
+async function enhancedInit() {
+  ensureV2State();
+  await _origInit();
+  setTimeout(() => {
+    setDynamicWallpaper();
+    if (state.onboarded) {
+      renderPet();
+      renderQuests();
+      autoBackupCheck();
+      // Settings UI
+      if ($('#setLang')) $('#setLang').value = state.lang || 'uz';
+      if ($('#setAutoBackup')) $('#setAutoBackup').checked = !!state.settings.autoBackup;
+    }
+    // Periodic refresh
+    setInterval(() => { if ($('#page-dashboard')?.classList.contains('active')) { setDynamicWallpaper(); renderQuests(); } }, 60000);
+  }, 1500);
+}
+
+// Replace init
+document.removeEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', enhancedInit);
+
+// Expose all
+window.openPetModal = openPetModal;
+window.petPet = petPet;
+window.toggleVoice = toggleVoice;
+window.undo = undo;
+window.calNav = calNav;
+window.calCellClick = calCellClick;
+window.useTemplate = useTemplate;
+window.openTemplates = openTemplates;
+window.setLang = setLang;
+window.logWorkout = logWorkout;
+window.deleteWorkout = deleteWorkout;
+window.deleteMeal = deleteMeal;
+window.setBookFilter = setBookFilter;
+window.editBook = editBook;
+window.deleteBook = deleteBook;
+window.toggleBreath = toggleBreath;
+window.setBreathPattern = setBreathPattern;
+window.resetBreath = resetBreath;
+window.renderInsights = renderInsights;
+window.renderAdvancedAnalytics = renderAdvancedAnalytics;
+window.saveWorkout = saveWorkout;
+window.saveMeal = saveMeal;
+window.saveBook = saveBook;
+window.genQR = genQR;
+window.downloadQR = downloadQR;
+window.genPassword = genPassword;
+window.copyPassword = copyPassword;
+window.calcBMI = calcBMI;
+window.calcTip = calcTip;
+window.cpUpdate = cpUpdate;
+window.cpCopy = cpCopy;
+window.mdRender = mdRender;
+window.stopWC = stopWC;
+window.$ = $;
