@@ -2723,7 +2723,16 @@ function renderInsights() {
 
 // ════ ADVANCED ANALYTICS ════
 let analyticsCharts = {};
+function destroyAnalyticsCharts() {
+  Object.keys(analyticsCharts).forEach(k => {
+    try { analyticsCharts[k]?.destroy(); } catch(e) {}
+    delete analyticsCharts[k];
+  });
+}
 function renderAdvancedAnalytics() {
+  // Always destroy previous charts first to prevent memory leaks & flicker
+  destroyAnalyticsCharts();
+
   const week = new Date(); week.setDate(week.getDate() - 7);
   const weekTasks = state.tasks.filter(t => t.completedAt && new Date(t.completedAt) >= week).length;
   const weekFocus = state.focusSessions.filter(s => new Date(s.date) >= week).reduce((a,s)=>a+s.minutes,0);
@@ -2755,31 +2764,50 @@ function renderAdvancedAnalytics() {
   $('#anAvgScore').textContent = days ? Math.round(scoreSum / days) : 0;
   $('#anBestDay').textContent = labels[focusData.indexOf(Math.max(...focusData))] || '—';
 
-  // Charts
+  // Charts (deferred to next frame so canvas has correct size after page becomes visible)
+  if (typeof Chart === 'undefined') return;
+  requestAnimationFrame(() => {
+    try { renderAnalyticsCharts(weekTasks, weekFocus); } catch(e) { console.warn('analytics charts:', e); }
+  });
+}
+
+function renderAnalyticsCharts() {
   if (typeof Chart === 'undefined') return;
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
   const textColor = isDark ? '#a0a0a0' : '#6b6b6b';
   const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
   const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#1a1a1a';
 
+  // Build week data
+  const labels = [], taskData = [], focusData = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const ds = dstr(d);
+    labels.push(['Du','Se','Ch','Pa','Ju','Sh','Ya'][(d.getDay() + 6) % 7]);
+    taskData.push(state.tasks.filter(t => t.completedAt === ds).length);
+    focusData.push(state.focusSessions.filter(s => s.date === ds).reduce((a,s)=>a+s.minutes,0));
+  }
+
   // Week chart
-  if (analyticsCharts.week) analyticsCharts.week.destroy();
   const ctx1 = $('#anWeekChart');
-  if (ctx1) analyticsCharts.week = new Chart(ctx1, {
-    type: 'bar',
-    data: { labels, datasets: [
-      { label: 'Vazifalar', data: taskData, backgroundColor: accent, borderRadius: 6 },
-      { label: 'Fokus (daq)', data: focusData, backgroundColor: '#ff8a00', borderRadius: 6 },
-    ]},
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { labels: { color: textColor }}},
-      scales: { y: { beginAtZero: true, ticks: { color: textColor }, grid: { color: gridColor }}, x: { ticks: { color: textColor }, grid: { display: false }}}
-    }
-  });
+  if (ctx1) {
+    try { analyticsCharts.week?.destroy(); } catch(e) {}
+    analyticsCharts.week = new Chart(ctx1, {
+      type: 'bar',
+      data: { labels, datasets: [
+        { label: 'Vazifalar', data: taskData, backgroundColor: accent, borderRadius: 6 },
+        { label: 'Fokus (daq)', data: focusData, backgroundColor: '#ff8a00', borderRadius: 6 },
+      ]},
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        animation: { duration: 400 },
+        plugins: { legend: { labels: { color: textColor }}},
+        scales: { y: { beginAtZero: true, ticks: { color: textColor }, grid: { color: gridColor }}, x: { ticks: { color: textColor }, grid: { display: false }}}
+      }
+    });
+  }
 
   // Focus chart - last 14 days
-  if (analyticsCharts.focus) analyticsCharts.focus.destroy();
   const fLabels = [], fData = [];
   for (let i = 13; i >= 0; i--) {
     const d = new Date(); d.setDate(d.getDate() - i);
@@ -2787,14 +2815,16 @@ function renderAdvancedAnalytics() {
     fData.push(state.focusSessions.filter(s => s.date === dstr(d)).reduce((a,s)=>a+s.minutes,0));
   }
   const ctx2 = $('#anFocusChart');
-  if (ctx2) analyticsCharts.focus = new Chart(ctx2, {
-    type: 'line',
-    data: { labels: fLabels, datasets: [{ label: 'Daqiqa', data: fData, borderColor: accent, backgroundColor: accent + '33', fill: true, tension: 0.4 }]},
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }}, scales: { y: { ticks: { color: textColor }, grid: { color: gridColor }}, x: { ticks: { color: textColor }, grid: { display: false }}}}
-  });
+  if (ctx2) {
+    try { analyticsCharts.focus?.destroy(); } catch(e) {}
+    analyticsCharts.focus = new Chart(ctx2, {
+      type: 'line',
+      data: { labels: fLabels, datasets: [{ label: 'Daqiqa', data: fData, borderColor: accent, backgroundColor: accent + '33', fill: true, tension: 0.4, pointRadius: 3 }]},
+      options: { responsive: true, maintainAspectRatio: false, animation: { duration: 400 }, plugins: { legend: { display: false }}, scales: { y: { ticks: { color: textColor }, grid: { color: gridColor }}, x: { ticks: { color: textColor }, grid: { display: false }}}}
+    });
+  }
 
   // Mood chart
-  if (analyticsCharts.mood) analyticsCharts.mood.destroy();
   const mLabels = [], mData = [];
   for (let i = 13; i >= 0; i--) {
     const d = new Date(); d.setDate(d.getDate() - i);
@@ -2802,14 +2832,15 @@ function renderAdvancedAnalytics() {
     mData.push(state.moods[dstr(d)] || null);
   }
   const ctx3 = $('#anMoodChart');
-  if (ctx3) analyticsCharts.mood = new Chart(ctx3, {
-    type: 'line',
-    data: { labels: mLabels, datasets: [{ label: 'Kayfiyat', data: mData, borderColor: '#ff8a00', backgroundColor: '#ff8a0033', fill: true, tension: 0.4, spanGaps: true }]},
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }}, scales: { y: { min: 0, max: 5, ticks: { color: textColor, stepSize: 1 }, grid: { color: gridColor }}, x: { ticks: { color: textColor }, grid: { display: false }}}}
-  });
+  if (ctx3) {
+    try { analyticsCharts.mood?.destroy(); } catch(e) {}
+    analyticsCharts.mood = new Chart(ctx3, {
+      type: 'line',
+      data: { labels: mLabels, datasets: [{ label: 'Kayfiyat', data: mData, borderColor: '#ff8a00', backgroundColor: '#ff8a0033', fill: true, tension: 0.4, spanGaps: true, pointRadius: 4 }]},
+      options: { responsive: true, maintainAspectRatio: false, animation: { duration: 400 }, plugins: { legend: { display: false }}, scales: { y: { min: 0, max: 5, ticks: { color: textColor, stepSize: 1 }, grid: { color: gridColor }}, x: { ticks: { color: textColor }, grid: { display: false }}}}
+    });
+  }
 }
-
-
 
 // ════ NEW MINI APPS ════
 function qrHTML() {
@@ -3276,24 +3307,6 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// Add navigation extension
-const _origRenderPage = renderPageContent;
-window.renderPageContent = function(page) {
-  _origRenderPage(page);
-  if (page === 'dashboard') {
-    setDynamicWallpaper();
-    renderPet();
-    renderQuests();
-  }
-  if (page === 'calendar') renderFullCalendar();
-  if (page === 'workout') renderWorkouts();
-  if (page === 'meals') renderMeals();
-  if (page === 'meditation') resetBreath();
-  if (page === 'reading') renderReading();
-  if (page === 'insights') renderInsights();
-  if (page === 'analytics') renderAdvancedAnalytics();
-};
-
 // Final init enhancement
 const _origInit = init;
 async function enhancedInit() {
@@ -3309,6 +3322,49 @@ async function enhancedInit() {
       if ($('#setLang')) $('#setLang').value = state.lang || 'uz';
       if ($('#setAutoBackup')) $('#setAutoBackup').checked = !!state.settings.autoBackup;
     }
+
+    // ✨ FIX: Add v2.0 page renderers to nav clicks
+    // (original bindNav captured local goPage, so v2 pages didn't render)
+    const v2Renderers = {
+      dashboard: () => { setDynamicWallpaper(); renderPet(); renderQuests(); },
+      calendar: () => renderFullCalendar(),
+      workout: () => renderWorkouts(),
+      meals: () => renderMeals(),
+      meditation: () => resetBreath(),
+      reading: () => renderReading(),
+      insights: () => renderInsights(),
+      analytics: () => { try { renderAdvancedAnalytics(); } catch(e){ console.warn('analytics:', e); } },
+    };
+    // v2 page meta titles
+    const v2PageMeta = {
+      calendar: { title: 'Taqvim', sub: 'Hammasi bir joyda' },
+      workout: { title: 'Sport', sub: 'Tana sog\'lom — fikr tiniq' },
+      meals: { title: 'Ovqatlanish', sub: 'Sog\'lom ovqat — sog\'lom hayot' },
+      meditation: { title: 'Meditatsiya', sub: 'Nafas — hozirgi daqiqaga qaytish' },
+      reading: { title: 'Kitoblar', sub: 'Bilim — eng yaxshi sarmoya' },
+      insights: { title: 'AI Maslahatlar', sub: 'Sizning produktivligingiz haqida' },
+      analytics: { title: 'Statistika', sub: 'Sizning produktivlik tarixi' },
+    };
+
+    $$('.nav-item').forEach(n => {
+      n.addEventListener('click', e => {
+        const p = n.dataset.page;
+        // Wait until original handler switches the active page
+        setTimeout(() => {
+          // Update topbar for v2 pages (original PAGE_META lacks them)
+          if (v2PageMeta[p]) {
+            $('#topbarTitle').textContent = v2PageMeta[p].title;
+            const ds = $('#topbarDate');
+            if (ds && !$('#page-' + p + ' .page-head .muted')?.textContent.includes(ds.textContent)) {
+              // keep existing date in topbar — page muted shows sub
+            }
+          }
+          // Render v2 content
+          if (v2Renderers[p]) v2Renderers[p]();
+        }, 60);
+      });
+    });
+
     // Periodic refresh
     setInterval(() => { if ($('#page-dashboard')?.classList.contains('active')) { setDynamicWallpaper(); renderQuests(); } }, 60000);
   }, 1500);
