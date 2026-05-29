@@ -2000,3 +2000,30 @@ kbd {
   .md-editor-grid { grid-template-columns: 1fr; height: auto; }
   .md-input, .md-preview { height: 200px; }
 }
+
+
+
+/* ══════════ CHART CONTAINER FIX ══════════ */
+/* Chart.js canvases need fixed-height containers when maintainAspectRatio is false */
+#page-analytics .card { position: relative; }
+#page-analytics canvas#anWeekChart {
+  max-height: 220px !important;
+  height: 220px !important;
+}
+#page-analytics canvas#anFocusChart,
+#page-analytics canvas#anMoodChart {
+  max-height: 240px !important;
+  height: 240px !important;
+}
+#page-analytics .dash-grid .card { min-height: 280px; }
+
+/* Wrap canvas to constrain height */
+.chart-wrap {
+  position: relative;
+  height: 240px;
+  width: 100%;
+}
+.chart-wrap canvas { max-height: 100% !important; }
+
+/* General canvas safety net */
+canvas { max-width: 100%; }
