@@ -2799,7 +2799,7 @@ function renderAnalyticsCharts() {
         { label: 'Fokus (daq)', data: focusData, backgroundColor: '#ff8a00', borderRadius: 6 },
       ]},
       options: {
-        responsive: true, maintainAspectRatio: false,
+        responsive: true, maintainAspectRatio: true, aspectRatio: 3,
         animation: { duration: 400 },
         plugins: { legend: { labels: { color: textColor }}},
         scales: { y: { beginAtZero: true, ticks: { color: textColor }, grid: { color: gridColor }}, x: { ticks: { color: textColor }, grid: { display: false }}}
@@ -2820,7 +2820,7 @@ function renderAnalyticsCharts() {
     analyticsCharts.focus = new Chart(ctx2, {
       type: 'line',
       data: { labels: fLabels, datasets: [{ label: 'Daqiqa', data: fData, borderColor: accent, backgroundColor: accent + '33', fill: true, tension: 0.4, pointRadius: 3 }]},
-      options: { responsive: true, maintainAspectRatio: false, animation: { duration: 400 }, plugins: { legend: { display: false }}, scales: { y: { ticks: { color: textColor }, grid: { color: gridColor }}, x: { ticks: { color: textColor }, grid: { display: false }}}}
+      options: { responsive: true, maintainAspectRatio: true, aspectRatio: 2.4, animation: { duration: 400 }, plugins: { legend: { display: false }}, scales: { y: { ticks: { color: textColor }, grid: { color: gridColor }}, x: { ticks: { color: textColor }, grid: { display: false }}}}
     });
   }
 
@@ -2837,7 +2837,7 @@ function renderAnalyticsCharts() {
     analyticsCharts.mood = new Chart(ctx3, {
       type: 'line',
       data: { labels: mLabels, datasets: [{ label: 'Kayfiyat', data: mData, borderColor: '#ff8a00', backgroundColor: '#ff8a0033', fill: true, tension: 0.4, spanGaps: true, pointRadius: 4 }]},
-      options: { responsive: true, maintainAspectRatio: false, animation: { duration: 400 }, plugins: { legend: { display: false }}, scales: { y: { min: 0, max: 5, ticks: { color: textColor, stepSize: 1 }, grid: { color: gridColor }}, x: { ticks: { color: textColor }, grid: { display: false }}}}
+      options: { responsive: true, maintainAspectRatio: true, aspectRatio: 2.4, animation: { duration: 400 }, plugins: { legend: { display: false }}, scales: { y: { min: 0, max: 5, ticks: { color: textColor, stepSize: 1 }, grid: { color: gridColor }}, x: { ticks: { color: textColor }, grid: { display: false }}}}
     });
   }
 }
