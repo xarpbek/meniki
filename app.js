@@ -3817,3 +3817,418 @@ if (typeof Chart !== 'undefined') {
 }
 
 console.log('✨ Lumio v1.1 polish loaded');
+
+
+
+// ════════════════════════════════════════════
+// LUMIO REMINDERS — Smart Notification System
+// ════════════════════════════════════════════
+// Each reminder: {
+//   id, emoji, title, message, time: "HH:MM",
+//   days: [0..6] (0=Sunday), enabled, lastFired: "YYYY-MM-DD"
+// }
+
+const REMINDER_TEMPLATES = {
+  book:       { emoji: '📚', title: 'Kitob o\'qish', message: 'Bugun kitob o\'qishni unutmang! 30 daqiqa ham yetadi 📖', time: '21:00' },
+  water:      { emoji: '💧', title: 'Suv ichish vaqti', message: 'Suv ichib qo\'ying — sog\'lom miya uchun zarur', time: '10:00' },
+  exercise:   { emoji: '💪', title: 'Sport mashqi', message: 'Tana harakatga muhtoj! 15 daqiqa ham juda yaxshi', time: '07:00' },
+  meditation: { emoji: '🧘', title: 'Meditatsiya', message: '5 daqiqa nafas oling va miyangizga dam bering', time: '22:00' },
+  study:      { emoji: '📖', title: 'O\'qish vaqti', message: 'Bugungi rejangizni eslang — 25 daqiqalik fokus sessiyasi?', time: '19:00' },
+  sleep:      { emoji: '😴', title: 'Uyqu vaqti yaqin', message: 'Sog\'lom hayot uchun 7-8 soatlik uyqu kerak. Telefonni qo\'ying!', time: '23:00' },
+  stretch:    { emoji: '🤸', title: 'Cho\'zilish', message: '2 daqiqa cho\'ziling — kompyuter oldida o\'tirgan tana uchun', time: '15:00' },
+  break:      { emoji: '☕', title: 'Pauza', message: 'Ishni to\'xtating va 5 daqiqa dam oling', time: '14:00' },
+};
+
+const DAY_NAMES_SHORT = ['Ya','Du','Se','Ch','Pa','Ju','Sh'];
+const DAY_NAMES_FULL = ['Yakshanba','Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba'];
+
+// Make sure state has reminders array
+function _ensureReminders() {
+  if (!state) return;
+  if (!Array.isArray(state.reminders)) state.reminders = [];
+}
+
+function addQuickReminder(key) {
+  _ensureReminders();
+  const tpl = REMINDER_TEMPLATES[key];
+  if (!tpl) return;
+  state.reminders.push({
+    id: uid(),
+    emoji: tpl.emoji,
+    title: tpl.title,
+    message: tpl.message,
+    time: tpl.time,
+    days: [0,1,2,3,4,5,6],
+    enabled: true,
+    lastFired: null,
+    createdAt: today(),
+  });
+  save();
+  renderReminders();
+  toast(`${tpl.emoji} "${tpl.title}" eslatmasi qo'shildi`, 'success');
+  fx?.play?.('complete');
+  ensureNotificationPermission();
+}
+
+function renderReminders() {
+  _ensureReminders();
+  const list = document.getElementById('remindersList');
+  if (!list) return;
+
+  // Permission card
+  const permCard = document.getElementById('notifPermCard');
+  if (permCard) {
+    if ('Notification' in window && Notification.permission !== 'granted') {
+      permCard.style.display = '';
+    } else {
+      permCard.style.display = 'none';
+    }
+  }
+
+  const cnt = document.getElementById('remindersCount');
+  if (cnt) cnt.textContent = state.reminders.length ? `${state.reminders.filter(r => r.enabled).length} faol / ${state.reminders.length} jami` : '';
+
+  if (!state.reminders.length) {
+    list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🔔</div><h3>Eslatmalar yo'q</h3><p>Yuqoridagi shablondan birini tanlang yoki "Yangi eslatma" tugmasini bosing</p></div>`;
+    return;
+  }
+
+  // Sort by time
+  const sorted = [...state.reminders].sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+
+  list.innerHTML = sorted.map(r => `
+    <div class="reminder-item ${r.enabled ? '' : 'disabled'}">
+      <div class="reminder-icon">${r.emoji || '🔔'}</div>
+      <div class="reminder-info">
+        <div class="reminder-title">${escape(r.title)}</div>
+        <div class="reminder-meta">${escape(r.message || '').slice(0, 60)}${(r.message || '').length > 60 ? '…' : ''}</div>
+        <div class="reminder-days">
+          ${[1,2,3,4,5,6,0].map(d => `<div class="reminder-day ${(r.days || []).includes(d) ? 'active' : ''}">${DAY_NAMES_SHORT[d][0]}</div>`).join('')}
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+        <div class="reminder-time">${r.time || '--:--'}</div>
+        <div style="display:flex;gap:4px">
+          <label class="toggle" title="Yoqish/o'chirish">
+            <input type="checkbox" ${r.enabled ? 'checked' : ''} onchange="toggleReminder('${r.id}', this.checked)"/>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div style="display:flex;gap:4px">
+          <button class="icon-btn" onclick="testReminder('${r.id}')" title="Sinab ko'rish"><i class="fa-solid fa-paper-plane"></i></button>
+          <button class="icon-btn" onclick="editReminder('${r.id}')" title="Tahrirlash"><i class="fa-solid fa-pen"></i></button>
+          <button class="icon-btn" onclick="deleteReminder('${r.id}')" title="O'chirish"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleReminder(id, enabled) {
+  const r = state.reminders.find(x => x.id === id);
+  if (!r) return;
+  r.enabled = enabled;
+  save();
+  renderReminders();
+  toast(enabled ? 'Eslatma yoqildi' : 'Eslatma o\'chirildi', 'info');
+}
+
+function deleteReminder(id) {
+  if (!confirm('Eslatmani o\'chirishni xohlaysizmi?')) return;
+  state.reminders = state.reminders.filter(x => x.id !== id);
+  save();
+  renderReminders();
+  toast('O\'chirildi', 'info');
+}
+
+function editReminder(id) {
+  openModal('reminder', state.reminders.find(x => x.id === id));
+}
+
+function testReminder(id) {
+  const r = state.reminders.find(x => x.id === id);
+  if (!r) return;
+  fireReminder(r, true);
+}
+
+// Reminder modal
+const REMINDER_EMOJIS = ['🔔','📚','💧','💪','🧘','📖','😴','🤸','☕','🍎','📞','💼','🎯','✨','🌟','💡','🔥','⏰','📝','🎨','🎵','🌱','🏃','🍱','💊','🚶','📵','✍'];
+
+function reminderModalHTML(r) {
+  const isEdit = !!r;
+  const days = r?.days || [1,2,3,4,5,6,0];
+  return `<div class="modal-head">
+    <div class="modal-title">${isEdit ? 'Eslatmani tahrirlash' : 'Yangi eslatma'}</div>
+    <button class="icon-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <form onsubmit="saveReminder(event,'${r?.id || ''}')">
+    <div class="form-group">
+      <label class="form-label">Sarlavha *</label>
+      <input class="input" name="title" value="${r ? escape(r.title) : ''}" placeholder="Masalan: Kitob o'qish" required autofocus/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Xabar matni</label>
+      <textarea class="textarea" name="message" rows="2" placeholder="Bugun kitob o'qishni unutmang!">${r ? escape(r.message || '') : ''}</textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Vaqt</label>
+      <input class="input" type="time" name="time" value="${r?.time || '09:00'}" required style="font-size:1.05rem"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Kunlar</label>
+      <div class="day-picker" id="dayPickerWrap">
+        ${[1,2,3,4,5,6,0].map(d => `
+          <button type="button" class="day-pick ${days.includes(d) ? 'active' : ''}" data-day="${d}" onclick="this.classList.toggle('active')">
+            ${DAY_NAMES_SHORT[d]}
+          </button>
+        `).join('')}
+      </div>
+      <div style="display:flex;gap:6px;margin-top:6px">
+        <button type="button" class="btn btn-ghost" style="font-size:.75rem;padding:5px 10px" onclick="setReminderDays('all')">Hammasi</button>
+        <button type="button" class="btn btn-ghost" style="font-size:.75rem;padding:5px 10px" onclick="setReminderDays('weekdays')">Ish kunlari</button>
+        <button type="button" class="btn btn-ghost" style="font-size:.75rem;padding:5px 10px" onclick="setReminderDays('weekends')">Dam olish</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Belgi (emoji)</label>
+      <div class="emoji-picker">
+        ${REMINDER_EMOJIS.map(e => `
+          <button type="button" class="emoji-pick ${(r?.emoji || '🔔') === e ? 'active' : ''}" onclick="document.querySelectorAll('.emoji-pick').forEach(b=>b.classList.remove('active'));this.classList.add('active');document.getElementById('reminderEmoji').value='${e}'">${e}</button>
+        `).join('')}
+      </div>
+      <input type="hidden" id="reminderEmoji" value="${r?.emoji || '🔔'}"/>
+    </div>
+    <div class="modal-foot">
+      ${isEdit ? `<button type="button" class="btn btn-danger" onclick="deleteReminder('${r.id}');closeModal()"><i class="fa-solid fa-trash"></i> O'chirish</button>` : ''}
+      <button type="button" class="btn btn-secondary" onclick="closeModal()">Bekor</button>
+      <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Saqlash</button>
+    </div>
+  </form>`;
+}
+
+function setReminderDays(preset) {
+  const wrap = document.getElementById('dayPickerWrap');
+  if (!wrap) return;
+  wrap.querySelectorAll('.day-pick').forEach(b => {
+    const d = parseInt(b.dataset.day);
+    let active = false;
+    if (preset === 'all') active = true;
+    else if (preset === 'weekdays') active = d >= 1 && d <= 5;
+    else if (preset === 'weekends') active = d === 0 || d === 6;
+    b.classList.toggle('active', active);
+  });
+}
+
+function saveReminder(e, id) {
+  e.preventDefault();
+  _ensureReminders();
+  const f = e.target;
+  const days = Array.from(document.querySelectorAll('#dayPickerWrap .day-pick.active')).map(b => parseInt(b.dataset.day));
+  const data = {
+    title: f.title.value.trim(),
+    message: f.message.value.trim(),
+    time: f.time.value,
+    days: days.length ? days : [0,1,2,3,4,5,6],
+    emoji: document.getElementById('reminderEmoji').value || '🔔',
+    enabled: true,
+  };
+  if (!data.title) return toast('Sarlavhani kiriting', 'error');
+  if (id) {
+    Object.assign(state.reminders.find(r => r.id === id), data);
+    toast('Yangilandi', 'success');
+  } else {
+    state.reminders.push({ id: uid(), ...data, lastFired: null, createdAt: today() });
+    toast('🔔 Eslatma qo\'shildi', 'success');
+    fx?.play?.('complete');
+    ensureNotificationPermission();
+  }
+  save();
+  closeModal();
+  renderReminders();
+}
+
+// ── Notification permission ──
+async function ensureNotificationPermission() {
+  if (!('Notification' in window)) return false;
+  if (Notification.permission === 'granted') return true;
+  if (Notification.permission === 'denied') {
+    toast('Bildirishnomalar bloklangan. Brauzer sozlamalaridan ruxsat bering.', 'error');
+    return false;
+  }
+  try {
+    const result = await Notification.requestPermission();
+    if (result === 'granted') {
+      state.settings = state.settings || {};
+      state.settings.notifications = true;
+      save();
+      toast('🔔 Bildirishnomalar yoqildi!', 'success');
+      // Send a welcome notification
+      setTimeout(() => {
+        new Notification('Lumio ✨', {
+          body: 'Eslatmalar muvaffaqiyatli yoqildi! Endi belgilangan vaqtda xabarnoma olasiz.',
+          tag: 'welcome',
+        });
+      }, 600);
+      return true;
+    }
+    return false;
+  } catch (e) {
+    return false;
+  }
+}
+
+window.requestNotifPermission = ensureNotificationPermission;
+
+// ── Fire a reminder ──
+function fireReminder(r, isTest = false) {
+  if (!r) return;
+
+  // Always show in-app toast
+  const toastMsg = `${r.emoji || '🔔'} ${r.title}${r.message ? ' — ' + r.message : ''}`;
+  toast(toastMsg, 'info', 'fa-bell');
+  fx?.play?.('pop');
+  fx?.haptic?.([20, 30, 20]);
+
+  // System notification (if permission granted)
+  if ('Notification' in window && Notification.permission === 'granted') {
+    try {
+      const n = new Notification(r.title || 'Lumio eslatmasi', {
+        body: r.message || 'Eslatma vaqti keldi!',
+        tag: r.id,
+        icon: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="%231a1a1a"/><text x="50" y="62" font-size="60" text-anchor="middle" fill="white">' + (r.emoji || '🔔') + '</text></svg>',
+        badge: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"><rect width="96" height="96" rx="20" fill="%231a1a1a"/></svg>',
+        renotify: false,
+        requireInteraction: false,
+      });
+      n.onclick = () => { window.focus(); n.close(); };
+      // Auto-close after 8s
+      setTimeout(() => { try { n.close(); } catch {} }, 8000);
+    } catch (e) {
+      console.warn('Notification error:', e);
+    }
+  }
+
+  if (!isTest) {
+    r.lastFired = today();
+    save();
+  }
+}
+
+// ── Master scheduler — checks every minute ──
+let _reminderInterval = null;
+function startReminderScheduler() {
+  if (_reminderInterval) return;
+  // Check immediately
+  checkReminderTick();
+  // Then every minute, aligned to the start of each minute
+  const now = new Date();
+  const msToNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
+  setTimeout(() => {
+    checkReminderTick();
+    _reminderInterval = setInterval(checkReminderTick, 60000);
+  }, msToNextMinute);
+}
+
+function checkReminderTick() {
+  _ensureReminders();
+  if (!state.reminders.length) return;
+
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2, '0');
+  const mm = String(now.getMinutes()).padStart(2, '0');
+  const currentTime = `${hh}:${mm}`;
+  const currentDay = now.getDay();
+  const todayStr = today();
+
+  state.reminders.forEach(r => {
+    if (!r.enabled) return;
+    if (r.time !== currentTime) return;
+    if (Array.isArray(r.days) && !r.days.includes(currentDay)) return;
+    if (r.lastFired === todayStr) return; // already fired today
+    fireReminder(r);
+  });
+
+  // Backup: check if we missed any from earlier today (e.g., user just opened tab)
+  // Only fire if within last 5 minutes
+  state.reminders.forEach(r => {
+    if (!r.enabled || !r.time) return;
+    if (Array.isArray(r.days) && !r.days.includes(currentDay)) return;
+    if (r.lastFired === todayStr) return;
+    const [rh, rm] = r.time.split(':').map(Number);
+    const reminderMinutes = rh * 60 + rm;
+    const nowMinutes = now.getHours() * 60 + now.getMinutes();
+    const diff = nowMinutes - reminderMinutes;
+    if (diff > 0 && diff <= 5) {
+      fireReminder(r);
+    }
+  });
+}
+
+// ── Hook into init ──
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    _ensureReminders();
+    startReminderScheduler();
+  }, 2500);
+});
+
+// ── Update PAGE_META so reminders has nice title ──
+setTimeout(() => {
+  if (typeof PAGE_META === 'object' && PAGE_META) {
+    PAGE_META.reminders = { title: 'Eslatmalar', sub: 'Sizga qachon va nima haqida eslatish kerakligini sozlang' };
+  }
+}, 100);
+
+// ── Hook into nav-click rendering for reminders page ──
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    document.querySelectorAll('.nav-item[data-page="reminders"]').forEach(n => {
+      n.addEventListener('click', () => {
+        setTimeout(() => renderReminders(), 60);
+      });
+    });
+  }, 1800);
+});
+
+// ── Wire up reminder modal type ──
+{
+  const _origOpenModal = window.openModal;
+  if (_origOpenModal) {
+    window.openModal = function(type, data) {
+      if (type === 'reminder') {
+        const c = document.getElementById('modalContent');
+        if (c) {
+          c.innerHTML = reminderModalHTML(data);
+          document.getElementById('modalOverlay').classList.add('open');
+          return;
+        }
+      }
+      return _origOpenModal(type, data);
+    };
+  }
+}
+
+// ── Settings: when user toggles notifications, request permission ──
+{
+  const _origToggleNotif = window.toggleNotif;
+  if (_origToggleNotif) {
+    window.toggleNotif = function(on) {
+      _origToggleNotif(on);
+      if (on) ensureNotificationPermission();
+    };
+  }
+}
+
+// Expose globals
+window.addQuickReminder = addQuickReminder;
+window.toggleReminder = toggleReminder;
+window.deleteReminder = deleteReminder;
+window.editReminder = editReminder;
+window.testReminder = testReminder;
+window.saveReminder = saveReminder;
+window.setReminderDays = setReminderDays;
+window.renderReminders = renderReminders;
+window.fireReminder = fireReminder;
+window.ensureNotificationPermission = ensureNotificationPermission;
+
+console.log('🔔 Lumio Reminders v1.0 loaded');

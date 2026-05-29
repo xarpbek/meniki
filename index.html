@@ -135,6 +135,7 @@
     <div class="nav-label">Boshqa</div>
     <a class="nav-item" data-page="apps"><i class="fa-solid fa-grid-2"></i><span>Mini ilovalar</span></a>
     <a class="nav-item" data-page="achievements"><i class="fa-solid fa-trophy"></i><span>Yutuqlar</span></a>
+    <a class="nav-item" data-page="reminders"><i class="fa-solid fa-bell"></i><span>Eslatmalar</span></a>
     <a class="nav-item" data-page="settings"><i class="fa-solid fa-gear"></i><span>Sozlamalar</span></a>
   </nav>
 
@@ -881,6 +882,91 @@
   </section>
 
 
+
+  <!-- ═══════ REMINDERS ═══════ -->
+  <section class="page" id="page-reminders">
+    <div class="page-head">
+      <div>
+        <h1 class="h1 serif">Eslatmalar</h1>
+        <div class="muted">Sizga qachon va nima haqida eslatish kerakligini sozlang</div>
+      </div>
+      <button class="btn btn-primary" onclick="openModal('reminder')"><i class="fa-solid fa-plus"></i> Yangi eslatma</button>
+    </div>
+
+    <!-- Permission card -->
+    <div class="card mb-2" id="notifPermCard" style="display:none">
+      <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+        <div style="width:50px;height:50px;border-radius:14px;background:var(--orange-soft);color:var(--orange);display:flex;align-items:center;justify-content:center;font-size:1.5rem">🔔</div>
+        <div style="flex:1;min-width:200px">
+          <div style="font-weight:700">Bildirishnomalarni yoqing</div>
+          <div class="muted" style="font-size:.82rem">Belgilangan vaqtda eslatma olish uchun ruxsat kerak</div>
+        </div>
+        <button class="btn btn-primary" onclick="requestNotifPermission()"><i class="fa-solid fa-bell"></i> Yoqish</button>
+      </div>
+    </div>
+
+    <!-- Quick templates -->
+    <div class="card mb-2">
+      <div class="card-head"><h2 class="h2">⚡ Tezkor shablonlar</h2></div>
+      <div class="tpl-grid">
+        <button class="tpl-card" onclick="addQuickReminder('book')">
+          <div class="tpl-icon">📚</div>
+          <div class="tpl-name">Kitob o'qish</div>
+          <div class="tpl-desc">Har kuni 21:00 da</div>
+        </button>
+        <button class="tpl-card" onclick="addQuickReminder('water')">
+          <div class="tpl-icon">💧</div>
+          <div class="tpl-name">Suv ichish</div>
+          <div class="tpl-desc">Har 2 soatda</div>
+        </button>
+        <button class="tpl-card" onclick="addQuickReminder('exercise')">
+          <div class="tpl-icon">💪</div>
+          <div class="tpl-name">Sport mashqi</div>
+          <div class="tpl-desc">Har kuni 07:00 da</div>
+        </button>
+        <button class="tpl-card" onclick="addQuickReminder('meditation')">
+          <div class="tpl-icon">🧘</div>
+          <div class="tpl-name">Meditatsiya</div>
+          <div class="tpl-desc">Har kuni 22:00 da</div>
+        </button>
+        <button class="tpl-card" onclick="addQuickReminder('study')">
+          <div class="tpl-icon">📖</div>
+          <div class="tpl-name">O'qish vaqti</div>
+          <div class="tpl-desc">Har kuni 19:00 da</div>
+        </button>
+        <button class="tpl-card" onclick="addQuickReminder('sleep')">
+          <div class="tpl-icon">😴</div>
+          <div class="tpl-name">Uyqu vaqti</div>
+          <div class="tpl-desc">Har kuni 23:00 da</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- My reminders -->
+    <div class="card">
+      <div class="card-head">
+        <h2 class="h2">🔔 Mening eslatmalarim</h2>
+        <small class="muted" id="remindersCount"></small>
+      </div>
+      <div id="remindersList"></div>
+    </div>
+
+    <!-- Help -->
+    <div class="card mt-2" style="background:var(--accent-soft);border:none">
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <div style="font-size:1.6rem">💡</div>
+        <div>
+          <strong>Eslatmalar qanday ishlaydi?</strong>
+          <p class="muted mt-1" style="font-size:.85rem;line-height:1.6">
+            • Brauzer ochiq turganda har daqiqada tekshiriladi<br>
+            • Lumio'ni "Add to Home Screen" qilsangiz, telefon yopilsa ham ishlaydi<br>
+            • Muvofiq vaqt yetganda push notification yuboriladi<br>
+            • Bir kunda bir eslatmani <strong>2 marta</strong> yubormaydi
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- ═══════ SETTINGS ═══════ -->
   <section class="page" id="page-settings">

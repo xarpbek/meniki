@@ -2325,3 +2325,103 @@ body, .card, .sidebar, .topbar, .stat-card, .widget-card,
   .sidebar { padding-top: env(safe-area-inset-top); }
   .install-banner { bottom: max(1rem, env(safe-area-inset-bottom)); }
 }
+
+
+
+/* ════════════════════════════════════════════
+   REMINDERS UI
+════════════════════════════════════════════ */
+.reminder-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 8px;
+  transition: all .25s;
+}
+.reminder-item:hover { border-color: var(--border2); transform: translateX(2px); }
+.reminder-item.disabled { opacity: 0.55; }
+
+.reminder-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: var(--accent-soft);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.reminder-info { flex: 1; min-width: 0; }
+.reminder-title { font-size: .92rem; font-weight: 600; margin-bottom: 2px; }
+.reminder-meta { font-size: .76rem; color: var(--text3); }
+
+.reminder-time {
+  font-variant-numeric: tabular-nums;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  background: var(--glass2);
+  padding: 5px 12px;
+  border-radius: 8px;
+}
+
+.reminder-days {
+  display: flex; gap: 3px;
+  margin-top: 6px;
+}
+.reminder-day {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--glass2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700;
+  color: var(--text3);
+}
+.reminder-day.active {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.day-picker {
+  display: flex; gap: 6px;
+  flex-wrap: wrap;
+}
+.day-pick {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: var(--glass2);
+  border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .78rem; font-weight: 700;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all .15s;
+}
+.day-pick:hover { border-color: var(--border3); }
+.day-pick.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+
+.emoji-picker {
+  display: flex; gap: 6px;
+  flex-wrap: wrap;
+  max-height: 140px;
+  overflow-y: auto;
+  padding: 4px;
+  background: var(--bg3);
+  border-radius: 10px;
+}
+.emoji-pick {
+  width: 38px; height: 38px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all .15s;
+  background: transparent;
+}
+.emoji-pick:hover { background: var(--glass2); }
+.emoji-pick.active { background: var(--accent); }
