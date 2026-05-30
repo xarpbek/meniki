@@ -301,6 +301,7 @@ function setAccent(a) {
   if (a === 'default') document.documentElement.removeAttribute('data-accent');
   else document.documentElement.setAttribute('data-accent', a);
   $$('.accent-card').forEach(c => c.classList.toggle('active', c.dataset.acc === a));
+  try { window.fx?.haptic(15); } catch {}
   save();
 }
 
