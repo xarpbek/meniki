@@ -1548,7 +1548,7 @@ kbd {
 .toggle input:checked + .toggle-slider { background: var(--accent); }
 .toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
 
-.theme-cards { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
+.theme-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
 .theme-card {
   padding: 12px;
   background: var(--bg3);

@@ -253,15 +253,48 @@ function refreshUserUI() {
 
 
 // ════ THEME ════
+// 'light' | 'dark' | 'system' (qurilma sozlamasiga moslashadi)
+const _systemThemeMQ = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+
+function resolveTheme(t) {
+  // 'system' bo'lsa — qurilmaning real mavzusini qaytaradi
+  if (t === 'system') {
+    return (_systemThemeMQ && _systemThemeMQ.matches) ? 'dark' : 'light';
+  }
+  return t;
+}
+
 function setTheme(t) {
   state.theme = t;
-  document.documentElement.setAttribute('data-theme', t);
-  $('#themeIcon')?.classList.replace(t === 'dark' ? 'fa-moon' : 'fa-sun', t === 'dark' ? 'fa-sun' : 'fa-moon');
+  const effective = resolveTheme(t); // light yoki dark
+  document.documentElement.setAttribute('data-theme', effective);
+  const icon = $('#themeIcon');
+  if (icon) {
+    icon.classList.remove('fa-moon', 'fa-sun', 'fa-circle-half-stroke');
+    icon.classList.add(t === 'system' ? 'fa-circle-half-stroke' : (effective === 'dark' ? 'fa-sun' : 'fa-moon'));
+  }
   $$('.theme-card').forEach(c => c.classList.toggle('active', c.dataset.th === t));
+  // PWA theme-color meta sync
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', effective === 'dark' ? '#0a0a0a' : '#fafaf9');
   save();
 }
+
+// Qurilma mavzusi o'zgarganda (faqat 'system' rejimida) avtomatik yangilash
+if (_systemThemeMQ) {
+  const _onSystemThemeChange = () => {
+    if (state.theme === 'system') setTheme('system');
+  };
+  if (_systemThemeMQ.addEventListener) _systemThemeMQ.addEventListener('change', _onSystemThemeChange);
+  else if (_systemThemeMQ.addListener) _systemThemeMQ.addListener(_onSystemThemeChange); // eski brauzerlar
+}
+
 function toggleTheme() {
-  setTheme(state.theme === 'dark' ? 'light' : 'dark');
+  // light → dark → system → light ...
+  const next = state.theme === 'light' ? 'dark' : state.theme === 'dark' ? 'system' : 'light';
+  setTheme(next);
+  const label = next === 'light' ? "☀️ Yorug'" : next === 'dark' ? '🌙 Qora' : '💻 Tizim';
+  if (typeof toast === 'function') toast(`Mavzu: ${label}`, 'info');
 }
 function setAccent(a) {
   state.accent = a;
@@ -3216,7 +3249,7 @@ function markdownEditorHTML() {
   <div class="md-editor-grid">
     <textarea class="md-input" id="mdInput" oninput="mdRender()" placeholder="# Sarlavha
 ## Sub
-**bold** *italic* \`code\`
+**bold** *italic* code
 - ro'yxat
 - band
 [link](url)"></textarea>
@@ -6666,6 +6699,1061 @@ const ARTICLES = [
 
       <p>Bu eng oson, lekin eng kuchli o'zgarish — bugundan boshlang!</p>
     `
+  },
+  {
+    id: 'a13',
+    cat: 'finance',
+    icon: '💵',
+    iconBg: 'rgba(34,197,94,0.15)',
+    iconColor: '#22c55e',
+    title: '50/30/20 qoidasi: pulni boshqarishning eng oddiy usuli',
+    summary: 'Daromadingizni 3 qismga bo\'ling — moliyaviy hayotingiz 5 daqiqada o\'zgaradi.',
+    readTime: 5,
+    content: `
+      <h2>Bu nima?</h2>
+      <p>50/30/20 qoidasi — Elizabeth Warren tomonidan taklif qilingan oddiy byudjet sxemasi. Daromadingizni quyidagicha bo'lasiz:</p>
+
+      <h2>Ulush bo'lib taqsimot</h2>
+      <ul>
+        <li><strong>50%</strong> — Zaruriy xarajatlar (uy, ovqat, transport, kommunal)</li>
+        <li><strong>30%</strong> — Xohishlar (ko'ngilochar, restoran, sayohat, sovg'alar)</li>
+        <li><strong>20%</strong> — Jamg'arma va investitsiya (kelajak)</li>
+      </ul>
+
+      <h2>Misol — 5,000,000 so'm daromad</h2>
+      <ul>
+        <li>Zaruriy: 2,500,000 so'm</li>
+        <li>Xohish: 1,500,000 so'm</li>
+        <li>Jamg'arma: 1,000,000 so'm</li>
+      </ul>
+
+      <h2>Nega bu ishlaydi?</h2>
+      <ol>
+        <li><strong>Soddaligi</strong> — faqat 3 ta kategoriya, esda qoladi</li>
+        <li><strong>Balans</strong> — bugungi rohat va kelajak orasida</li>
+        <li><strong>Avtomatlashtirish</strong> — daromad kelishi bilan ajratasiz</li>
+        <li><strong>Stress kamayadi</strong> — har xarid uchun fikrlamaysiz</li>
+      </ol>
+
+      <h2>Amaliyotga qo'llash</h2>
+      <ol>
+        <li>Daromadingizni hisoblang (oylik o'rtacha)</li>
+        <li>3 ta hisob/konvert oching</li>
+        <li>Daromad kelishi bilan darhol bo'ling</li>
+        <li>Har hisobdan faqat o'sha maqsadda harxa qiling</li>
+      </ol>
+
+      <blockquote>"Xarajatlaringiz daromadingizdan kam bo'lsa, siz boy. Ko'p bo'lsa — kambag'al, daromadning miqdoridan qat'i nazar." — Charles Dickens</blockquote>
+
+      <h2>Maslahatlar</h2>
+      <ul>
+        <li>Ish haqi tushar zahoti 20% jamg'armaga ko'chiring</li>
+        <li>Karta'da emas, naqd pulda saqlasangiz tejash osonroq</li>
+        <li>Subscription'larni tekshiring — ko'pi keraksiz</li>
+        <li>Lumio'da Xarajatlar mini-ilovasi bor — kuzating!</li>
+      </ul>
+    `
+  },
+  {
+    id: 'a14',
+    cat: 'finance',
+    icon: '🏦',
+    iconBg: 'rgba(245,158,11,0.15)',
+    iconColor: '#f59e0b',
+    title: 'Compound interest: dunyodagi 8-mo\'jiza',
+    summary: "Albert Eynshteyn aytganidek — bu mo'jiza. Uni tushunganlar foyda ko'radi, tushunmaganlar to'laydi.",
+    readTime: 6,
+    content: `
+      <h2>Compound interest nima?</h2>
+      <p>Murakkab foiz — bu pul ustidan foiz ham foiz olishingiz. Vaqt o'tgan sari, foydangiz <strong>eksponensial</strong> o'sib boradi.</p>
+
+      <h2>Sodda misol</h2>
+      <p>1,000,000 so'm joyladingiz, yiliga 10% foiz:</p>
+      <ul>
+        <li><strong>Yil 1:</strong> 1,100,000 so'm (+100,000)</li>
+        <li><strong>Yil 5:</strong> 1,610,510 so'm (+510,510)</li>
+        <li><strong>Yil 10:</strong> 2,593,742 so'm</li>
+        <li><strong>Yil 20:</strong> 6,727,500 so'm</li>
+        <li><strong>Yil 30:</strong> 17,449,402 so'm</li>
+        <li><strong>Yil 40:</strong> 45,259,256 so'm</li>
+      </ul>
+
+      <p>Faqat 1 mln'dan — 45 mln! Boshqa hech narsa qo'shmadingiz!</p>
+
+      <h2>2 ta kuchli printsip</h2>
+
+      <h3>1. Vaqt — eng kuchli omil</h3>
+      <p>20 yoshda 100,000/oy yotqizgan odam, 30 yoshda 200,000/oy yotqizgan odamdan boyroq bo'ladi! Vaqt foizdan ham muhim.</p>
+
+      <h3>2. 72 qoidasi</h3>
+      <p>Pulingiz qancha vaqtda ikki barobarga oshadi? <strong>72 ÷ foiz darajasi</strong></p>
+      <ul>
+        <li>10% foiz: 72/10 = 7.2 yil</li>
+        <li>15% foiz: 72/15 = 4.8 yil</li>
+        <li>20% foiz: 72/20 = 3.6 yil</li>
+      </ul>
+
+      <h2>Qanday boshlash mumkin?</h2>
+      <ol>
+        <li>Bank depozit (UZB: ~20-22% yiliga)</li>
+        <li>Davlat obligatsiyalari</li>
+        <li>Aksiyalar (S&P 500 — yiliga 10% o'rtacha)</li>
+        <li>Kripto (yuqori risk, yuqori daromad)</li>
+        <li>Ko'chmas mulk</li>
+      </ol>
+
+      <blockquote>"Murakkab foiz — koinotning eng kuchli kuchi. Uni tushuningan ishlaydi, tushunmagan to'laydi." — Albert Eynshteyn</blockquote>
+
+      <h2>Aksincha ham ishlaydi (yomon)</h2>
+      <p>Kredit kartalari aynan shunday ishlaydi — siz to'lashingiz kerak! 20% foizli qarz 4 yilda ikki barobar oshadi.</p>
+
+      <p><strong>Maslahat:</strong> Avval qarzlardan qutuling, keyin investitsiya qiling.</p>
+    `
+  },
+  {
+    id: 'a15',
+    cat: 'career',
+    icon: '🚀',
+    iconBg: 'rgba(99,102,241,0.15)',
+    iconColor: '#6366f1',
+    title: "Karyera o'sishi: ish haqini 2x oshirishning haqiqiy yo'llari",
+    summary: "Yillik 5% oshish emas — yangi imkoniyatlar va aniq ko'nikmalar.",
+    readTime: 7,
+    content: `
+      <h2>Real karyera o'sishi nimaga bog'liq?</h2>
+      <p>Sizning ish haqingiz 3 narsadan iborat:</p>
+      <ol>
+        <li><strong>Sizning qiymatingiz</strong> (skills + tajriba)</li>
+        <li><strong>Bozor talabi</strong> (qancha kompaniya kerak)</li>
+        <li><strong>Sizning ko'rinarliligingiz</strong> (kim biladi sizni)</li>
+      </ol>
+
+      <h2>3 ta yo'l — qaysisi sizniki?</h2>
+
+      <h3>🐢 1. Sekin: Bir kompaniyada o'sish</h3>
+      <ul>
+        <li>+5-10% har yili</li>
+        <li>20 yilda taxminan 2x ish haqi</li>
+        <li>Eng xavfsiz, lekin eng sekin</li>
+      </ul>
+
+      <h3>🚂 2. O'rta: Ishni almashtirish</h3>
+      <ul>
+        <li>Har 2-3 yilda yangi ish</li>
+        <li>+15-25% har almashishda</li>
+        <li>10 yilda 3-4x ish haqi</li>
+        <li>Ko'p networking talab qiladi</li>
+      </ul>
+
+      <h3>🚀 3. Tezkor: O'z biznesi yoki freelance</h3>
+      <ul>
+        <li>Cheksiz potentsial</li>
+        <li>Lekin yuqori risk</li>
+        <li>5 yilda 5-10x ham mumkin</li>
+      </ul>
+
+      <h2>Aniq qadamlar</h2>
+
+      <h3>1-yil: O'rganish</h3>
+      <ul>
+        <li>Sohangizda eng yaxshi 3 odamni toping</li>
+        <li>Ular o'rgatadigan narsalarni o'rganing</li>
+        <li>Soft skills: kommunikatsiya, lider</li>
+        <li>Ingliz tilini puxta qiling</li>
+      </ul>
+
+      <h3>2-yil: Portfolio yaratish</h3>
+      <ul>
+        <li>GitHub/Behance/portfolio sayt</li>
+        <li>3-5 ta zo'r loyiha</li>
+        <li>LinkedIn aktivlashtirish</li>
+        <li>Kichik freelance loyihalar</li>
+      </ul>
+
+      <h3>3-yil: Networking</h3>
+      <ul>
+        <li>Konferensiyalar, meetup'lar</li>
+        <li>Twitter/LinkedIn'da yozish</li>
+        <li>Mentorlar topish</li>
+        <li>Open source contributions</li>
+      </ul>
+
+      <h2>Eng qimmatli ko'nikmalar (2025)</h2>
+      <ol>
+        <li>AI integratsiya (ChatGPT, Claude, etc)</li>
+        <li>Data analysis</li>
+        <li>Cloud (AWS, GCP)</li>
+        <li>Programming (Python, JS)</li>
+        <li>Product management</li>
+        <li>UX/UI design</li>
+        <li>Digital marketing</li>
+        <li>Soft skills: kommunikatsiya</li>
+      </ol>
+
+      <blockquote>"Sizning ish haqingiz — sizning eng kichik qiymatingiz. Eng katta qiymat — siz tanlamagan imkoniyatlar." — Naval Ravikant</blockquote>
+
+      <h2>Negotiation</h2>
+      <p>Yangi ish haqi taklifi olganda:</p>
+      <ol>
+        <li>Hech qachon birinchi raqamni siz aytmang</li>
+        <li>Bozorni o'rganing (Glassdoor, salary surveys)</li>
+        <li>15-20% ko'proq so'rang</li>
+        <li>Faqat baseline emas, paket — bonus, opsiya, dam olish</li>
+      </ol>
+    `
+  },
+  {
+    id: 'a16',
+    cat: 'relationships',
+    icon: '❤️',
+    iconBg: 'rgba(236,72,153,0.15)',
+    iconColor: '#ec4899',
+    title: 'Mustahkam munosabatlar: ilm-fan nima deydi?',
+    summary: "75 yillik Garvard tadqiqoti baxtning siri nima ekanligini ko'rsatadi.",
+    readTime: 6,
+    content: `
+      <h2>Garvard'ning eng katta tadqiqoti</h2>
+      <p>1938-yildan beri davom etayotgan tadqiqot — 75 yil mobaynida 700+ odamni kuzatdi. Savol: <strong>nima inson hayotini baxtli qiladi?</strong></p>
+
+      <h2>Asosiy xulosa</h2>
+      <blockquote>"Yaxshi munosabatlar — bizni baxtli qiladi va sog'lom saqlaydi. Bu hammasi." — Robert Waldinger, tadqiqot direktori</blockquote>
+
+      <p>Pul, shuhrat, lavozim emas. <strong>Munosabatlar.</strong></p>
+
+      <h2>Tadqiqot natijalari</h2>
+      <ul>
+        <li>Yaqin do'stga ega odamlar 50% ko'proq yashaydi</li>
+        <li>Yolg'izlik chekishdan kam zararli emas</li>
+        <li>Munosabatlar sifati 50 yoshdagi sog'liqni 80 yoshdagiga qaraganda yaxshiroq bashorat qiladi</li>
+      </ul>
+
+      <h2>Sog'lom munosabatning 5 belgisi</h2>
+
+      <h3>1. Ishonch</h3>
+      <ul>
+        <li>"Men sizga aytishim mumkin"</li>
+        <li>Sirlar saqlanadi</li>
+        <li>Va'dalar bajariladi</li>
+      </ul>
+
+      <h3>2. Hurmat</h3>
+      <ul>
+        <li>Farqlarni qabul qilish</li>
+        <li>Vaqt va chegaralarni hurmat</li>
+        <li>Pasaytirib gapirish yo'q</li>
+      </ul>
+
+      <h3>3. Aloqa</h3>
+      <ul>
+        <li>Halol gapirish (lekin yumshoq)</li>
+        <li>Tinglash — eshitish emas</li>
+        <li>Hisn-tuyg'ularni baham ko'rish</li>
+      </ul>
+
+      <h3>4. Qo'llab-quvvatlash</h3>
+      <ul>
+        <li>Yaxshi va yomon kunlarda</li>
+        <li>Xohishlaringga rag'batlantirish</li>
+        <li>Hech kim mukammal emas — sabr</li>
+      </ul>
+
+      <h3>5. O'sish</h3>
+      <ul>
+        <li>Birga rivojlanish</li>
+        <li>Bir-biringizni yaxshilash</li>
+        <li>Yangi tajribalar</li>
+      </ul>
+
+      <h2>Yomon munosabatdan qutulish</h2>
+      <p>Ba'zan eng muhim qadam — chiqib ketish:</p>
+      <ul>
+        <li>Doimo tanqid qilinadi</li>
+        <li>Sizni yomon his qilasiz</li>
+        <li>Hurmat yo'q</li>
+        <li>Manipulyatsiya bor</li>
+        <li>Jismoniy yoki hissiy zo'rlik</li>
+      </ul>
+
+      <h2>Sog'lom chegaralar</h2>
+      <p>"YO'Q" — bu to'liq jumla. Uchun sabab kerak emas.</p>
+      <ul>
+        <li>O'z vaqtingizni himoya qiling</li>
+        <li>Energiyangizni saqlang</li>
+        <li>Hammasi uchun mavjud bo'lmang</li>
+      </ul>
+
+      <h2>Yolg'izlikdan qutulish</h2>
+      <ol>
+        <li>Sevimli mashg'ulot guruhlari (sport, kitobxonlik)</li>
+        <li>Eski do'stlarga qo'ng'iroq qiling</li>
+        <li>Volonterlik</li>
+        <li>Onlayn klublar</li>
+        <li>Notanish odamga "Salom" deb gapiring</li>
+      </ol>
+
+      <blockquote>"Eng katta sovg'a — bu vaqt. Sevganlaringga uni bering." — Anonim</blockquote>
+    `
+  },
+  {
+    id: 'a17',
+    cat: 'mindfulness',
+    icon: '🧘',
+    iconBg: 'rgba(34,197,94,0.15)',
+    iconColor: '#22c55e',
+    title: 'Hozirgi daqiqada yashash: aql tinchligining sirri',
+    summary: "Past + Kelajak haqida o'ylash = stress. Hozirda bo'lish = tinchlik.",
+    readTime: 5,
+    content: `
+      <h2>Bizning aql qaerda?</h2>
+      <p>Tadqiqotlar shuni ko'rsatadiki, oddiy odam <strong>vaqtning 47%</strong> da hozirgi daqiqada bo'lmaydi. Aqli o'tmish yoki kelajak haqida o'ylaydi.</p>
+
+      <h2>Bu nega yomon?</h2>
+      <ul>
+        <li>O'tmish haqida fikr → afsus, tushkunlik</li>
+        <li>Kelajak haqida fikr → tashvish, qo'rquv</li>
+        <li>Hozir = sizning yagona haqiqiy hayotingiz</li>
+      </ul>
+
+      <h2>Mindfulness — bu nima?</h2>
+      <p>Hozirgi daqiqaga to'liq diqqat — fikrlamasdan, hukm qilmasdan, qabul qilib.</p>
+
+      <h2>5-4-3-2-1 mashqi</h2>
+      <p>Stress paytida, eng oson texnika:</p>
+      <ol>
+        <li><strong>5 narsani</strong> ko'ring</li>
+        <li><strong>4 narsani</strong> teging</li>
+        <li><strong>3 ovozni</strong> eshiting</li>
+        <li><strong>2 hidni</strong> his qiling</li>
+        <li><strong>1 ta'mni</strong> tatib ko'ring</li>
+      </ol>
+      <p>Bu darhol sizni hozirga qaytaradi.</p>
+
+      <h2>Kunlik mindfulness</h2>
+
+      <h3>🍵 Choy mashqi</h3>
+      <p>Choyni ichganda, faqat <strong>choy</strong> ichish:</p>
+      <ul>
+        <li>Issiqlikni his qiling</li>
+        <li>Hidini tinglang</li>
+        <li>Ta'mini sezing</li>
+        <li>Telefonsiz, suhbatsiz</li>
+      </ul>
+
+      <h3>🚿 Dush mashqi</h3>
+      <p>Suvni terige tegishini his qiling. Issiqlikni, kelishini, ovozini.</p>
+
+      <h3>🚶 Yurish mashqi</h3>
+      <p>Har qadamingizni his qiling. Tovonlar, oyoqlar, nafas. Telefonsiz.</p>
+
+      <h3>🍽️ Ovqatlanish</h3>
+      <p>Birinchi 3 luqmani sekin yeb ko'ring. Tikish, ta'm, tuzlanish.</p>
+
+      <h2>Fikrlardan qutulish</h2>
+      <p>Buddist o'rgatadi: fikrlar bulut kabi — keladi va ketadi.</p>
+      <ol>
+        <li>Fikr keldimi? Tan oling: "Bu fikr"</li>
+        <li>Unga qarshi turmang</li>
+        <li>Lekin uni ushlab ham qolmang</li>
+        <li>Yana hozirga qayting</li>
+      </ol>
+
+      <blockquote>"Aql — yaxshi xizmatkor, lekin yomon xo'jayin." — Robert Frost</blockquote>
+
+      <h2>Kichik kunlik amaliyot</h2>
+      <ul>
+        <li>Ertalab — 3 ta chuqur nafas (uyg'onishdan oldin)</li>
+        <li>Kun davomida — har soatda 1 daqiqa to'xtab qarab turish</li>
+        <li>Yotishdan oldin — tana skanerlash</li>
+      </ul>
+
+      <p><strong>Lumio'da</strong> Meditatsiya bo'limida 4-7-8 nafas mashqi mavjud — sinab ko'ring!</p>
+    `
+  },
+  {
+    id: 'a18',
+    cat: 'creativity',
+    icon: '🎨',
+    iconBg: 'rgba(168,85,247,0.15)',
+    iconColor: '#a855f7',
+    title: "Ijodkorlik: tug'ma qobiliyat emas, mashq qilinadigan ko'nikma",
+    summary: "Pikasso aytdi: 'Har bir bola san'atkor — muammo qachon bu bolaligini saqlash.'",
+    readTime: 5,
+    content: `
+      <h2>Ijodkorlik haqidagi 3 yolg'on</h2>
+      <ol>
+        <li>"Ba'zi odamlar — ijodkor, ba'zilari yo'q" ❌</li>
+        <li>"Ijodkorlik — ilhom kelishi" ❌</li>
+        <li>"Ijodkorlikni o'rganib bo'lmaydi" ❌</li>
+      </ol>
+
+      <h2>Haqiqat — ijodkorlik mashqdir</h2>
+      <p>Tadqiqotlar: ijodkorlik <strong>ko'nikma</strong>. Mashq qilsangiz, kuchayadi.</p>
+
+      <h2>Ijodkorlikni rivojlantirish</h2>
+
+      <h3>1. Birlashtirish</h3>
+      <p>Ijodkorlik = mavjud g'oyalarni yangi tarzda birlashtirish.</p>
+      <p>Apple = telefon + kompyuter + iPod.<br>YouTube = video + sotsial tarmoq + qidiruv.</p>
+
+      <h3>2. Cheklov</h3>
+      <p>Cheklov ijodkorlikni kuchaytiradi:</p>
+      <ul>
+        <li>Twitter — 280 belgi</li>
+        <li>Haiku — 17 bo'g'in</li>
+        <li>50 dollarda kun yashash chaqiriqlari</li>
+      </ul>
+
+      <h3>3. Boshqa sohalardan o'rganish</h3>
+      <p>Eng yaxshi g'oyalar boshqa sohadan:</p>
+      <ul>
+        <li>Steve Jobs — kalligrafiya → typography</li>
+        <li>Elon Musk — fizika → kosmik raketalar</li>
+        <li>Pixar — anime → 3D filmlar</li>
+      </ul>
+
+      <h2>Kunlik ijodiy mashqlar</h2>
+
+      <h3>📝 Morning Pages</h3>
+      <p>Julia Cameron usulida: ertalab 3 sahifa erkin yozing. Hech nima haqida emas — shunchaki yozing. Aql tozalanadi.</p>
+
+      <h3>💡 10 g'oya</h3>
+      <p>James Altucher metodi: har kuni 10 ta g'oya. Mavzu bir xil emas:</p>
+      <ul>
+        <li>Bugun: 10 ta yangi biznes g'oyalari</li>
+        <li>Ertaga: 10 ta kitob g'oyalari</li>
+        <li>Indinga: 10 ta sayohat joyi</li>
+      </ul>
+
+      <p>Sifat muhim emas. Miqdor muhim. 6 oydan keyin g'oyalar darajasi keskin oshadi.</p>
+
+      <h3>🎨 Erkin chizish</h3>
+      <p>Hech nima haqida o'ylamasdan, qog'ozga chiziq tortib turish. 10 daqiqa.</p>
+
+      <h2>Ilhom uchun joylar</h2>
+      <ul>
+        <li>🚿 Dush — eng ko'p insight</li>
+        <li>🚶 Yurish — Steve Jobs ham qilardi</li>
+        <li>🌳 Tabiat — miya yangilanadi</li>
+        <li>😴 Uyqu — REM bosqichida ulanishlar</li>
+        <li>📖 Boshqa sohalar haqida o'qish</li>
+      </ul>
+
+      <h2>Block bilan kurashish</h2>
+      <p>Ijodiy block (ijodga qiyinchilik):</p>
+      <ol>
+        <li>Mukammal bo'lishni tark eting — birinchi versiya yomon bo'lishi normal</li>
+        <li>Boshlang — ish hatto yomon bo'lsa ham</li>
+        <li>Boshqa narsa qiling — miyani aylantiring</li>
+        <li>Constraint qo'ying — vaqt yoki resurs cheklang</li>
+      </ol>
+
+      <blockquote>"Ilhom kelishini kutmang. Uni o'lja kabi haydang." — Jack London</blockquote>
+    `
+  },
+  {
+    id: 'a19',
+    cat: 'philosophy',
+    icon: '🏛️',
+    iconBg: 'rgba(99,102,241,0.15)',
+    iconColor: '#6366f1',
+    title: 'Stoitsizm: 2000 yillik hayot falsafasi',
+    summary: "Marcus Aurelius, Seneca, Epiktet — Roma imperatorlari va qullar bir xil falsafani qo'lladilar.",
+    readTime: 7,
+    content: `
+      <h2>Stoitsizm nima?</h2>
+      <p>Stoitsizm — eramizdan oldingi 3-asrda Yunonistonda paydo bo'lgan amaliy falsafa. Markaziy g'oya: <strong>baxt nazoratimizdagi narsalardan, nazoratimizda emasidan emas.</strong></p>
+
+      <h2>2 ta toifa qoidasi</h2>
+      <p>Hayotni 2 ga bo'ling:</p>
+
+      <h3>✅ Mening nazoratimda</h3>
+      <ul>
+        <li>Mening fikrlarim</li>
+        <li>Mening harakatlarim</li>
+        <li>Mening reaksiyalarim</li>
+        <li>Mening so'zlarim</li>
+        <li>Mening xulqim</li>
+      </ul>
+
+      <h3>❌ Mening nazoratimda EMAS</h3>
+      <ul>
+        <li>Boshqa odamlarning fikrlari</li>
+        <li>Ob-havo</li>
+        <li>O'tmish</li>
+        <li>Boshqalarning harakatlari</li>
+        <li>Tabiat ofatlari</li>
+        <li>Iqtisodiy holat</li>
+      </ul>
+
+      <p><strong>Asosiy printsip:</strong> Faqat 1-toifaga energiya sarflang.</p>
+
+      <h2>Memento Mori — "Sen o'lsang yodingda bo'lsin"</h2>
+      <p>Bu g'amgin emas — bu ozodlik. Hayot qisqa bo'lsa, har daqiqa qadrli bo'ladi.</p>
+      <ul>
+        <li>Hozir sevganingizni quchoqlang</li>
+        <li>Bugun ham sodir bo'lishi mumkin</li>
+        <li>Vaqtni isrof qilmang</li>
+      </ul>
+
+      <h2>Negativ vizualizatsiya</h2>
+      <p>Stoiklar har kuni ertalab xayolan:</p>
+      <ol>
+        <li>Hammasini yo'qotish — pul, sog'liq, oila</li>
+        <li>Bu chinakam yuz bersa, qanday his qilardik?</li>
+        <li>Endi minnatdorlik bilan kunni boshlang</li>
+      </ol>
+
+      <p>Bu sizni minnatdor qiladi va kelajakdagi muammolarga tayyorlaydi.</p>
+
+      <h2>Marcus Aurelius'ning 5 ta hikmati</h2>
+
+      <ol>
+        <li><strong>"Sizning hayotingiz — sizning fikrlaringiz."</strong>
+          <br>Fikrlangiz hayotingizni shakllantiradi.</li>
+
+        <li><strong>"Ertalab qiyinchilikda yashash uchun bilan uyg'oning."</strong>
+          <br>Hayot oson bo'lmaydi — qabul qiling.</li>
+
+        <li><strong>"Sizga tegmaslik kerak narsa — boshqalarning fikri."</strong>
+          <br>Boshqalar haqida fikrlamang.</li>
+
+        <li><strong>"Birinchi navbatda yaxshi inson bo'ling, keyin amal qiling."</strong>
+          <br>Identifikatsiya — eng kuchlisi.</li>
+
+        <li><strong>"Vaqt cheksiz emas. Yashang."</strong>
+          <br>Bugun — yagona haqiqiy kun.</li>
+      </ol>
+
+      <h2>Stoik kunlik amaliyot</h2>
+
+      <h3>🌅 Ertalab</h3>
+      <ul>
+        <li>5 daq mediatsiya</li>
+        <li>"Bugun nima nazaratimda?"</li>
+        <li>Bugungi qiyinchiliklarga tayyorlanish</li>
+      </ul>
+
+      <h3>🌆 Kechqurun</h3>
+      <ul>
+        <li>3 ta minnatdor narsa</li>
+        <li>"Bugun nimani yaxshi qildim?"</li>
+        <li>"Nimani yaxshilashim mumkin?"</li>
+      </ul>
+
+      <blockquote>"Siz sizga nima sodir bo'lganini boshqara olmaysiz, lekin unga qanday javob berishingizni boshqara olasiz." — Epiktet</blockquote>
+
+      <h2>Tavsiya etilgan kitoblar</h2>
+      <ul>
+        <li>"Meditations" — Marcus Aurelius (eng asosiy)</li>
+        <li>"Letters from a Stoic" — Seneca</li>
+        <li>"Discourses" — Epiktet</li>
+        <li>"The Daily Stoic" — Ryan Holiday (zamonaviy)</li>
+      </ul>
+    `
+  },
+  {
+    id: 'a20',
+    cat: 'tech',
+    icon: '🤖',
+    iconBg: 'rgba(99,102,241,0.15)',
+    iconColor: '#6366f1',
+    title: 'AI bilan ishlash: kelajakdagi eng muhim ko\'nikma',
+    summary: "Sun'iy intellekt sizni almashtirmaydi — undan foydalana oladigan odam almashtiradi.",
+    readTime: 6,
+    content: `
+      <h2>AI — yangi reallik</h2>
+      <p>2022-yildan beri AI hayotimizni o'zgartirmoqda. ChatGPT, Claude, Gemini, Midjourney — bu shunchaki boshlanish.</p>
+
+      <h2>Asosiy haqiqat</h2>
+      <blockquote>"AI sizni almashtirmaydi. Lekin AI'dan foydalana oladigan odam — almashtiradi." — Sotsial tarmoqlar</blockquote>
+
+      <h2>AI qanday ishlaydi (sodda)</h2>
+      <p>Hozirgi AI'lar — <strong>Large Language Models (LLM)</strong>. Ular millionlab matn o'qib, "keyingi so'z nima bo'lishi kerak"ni bashorat qiladi.</p>
+
+      <p>Misol: "Quyosh sharqdan ___" → "ko'tariladi" (eng ko'p uchragan)</p>
+
+      <h2>AI bilan nima qilish mumkin?</h2>
+
+      <h3>📝 Yozish</h3>
+      <ul>
+        <li>Email yaratish</li>
+        <li>Maqolalar yozish</li>
+        <li>Tarjima qilish</li>
+        <li>Resume yaratish</li>
+        <li>Muharrirlik</li>
+      </ul>
+
+      <h3>💻 Kod</h3>
+      <ul>
+        <li>Kod yozish</li>
+        <li>Bug topish</li>
+        <li>Tushuntirish</li>
+        <li>O'rganish</li>
+      </ul>
+
+      <h3>🎨 Ijod</h3>
+      <ul>
+        <li>Rasm chizish (Midjourney, DALL-E)</li>
+        <li>Video yaratish (Runway, Sora)</li>
+        <li>Musiqa (Suno, Udio)</li>
+        <li>Logo dizayn</li>
+      </ul>
+
+      <h3>📊 Tahlil</h3>
+      <ul>
+        <li>Ma'lumotlar tahlili</li>
+        <li>Tadqiqot</li>
+        <li>Hujjatlar xulosasi</li>
+      </ul>
+
+      <h2>Prompt engineering — yangi savod</h2>
+      <p>AI bilan yaxshi gaplashish — alohida ko'nikma. Asosiy printsiplar:</p>
+
+      <h3>1. Kontekst bering</h3>
+      <p>❌ "Email yoz"<br>
+      ✅ "Men marketing menejeri. Mijozga yangi kampaniya haqida professional, lekin do'stona email yoz. 100 so'z."</p>
+
+      <h3>2. Rol bering</h3>
+      <p>"Sen tajribali professional yozuvchisan..."<br>
+      "Sen 10 yillik marketing tajribasi bor expert..."</p>
+
+      <h3>3. Format ko'rsating</h3>
+      <p>"Javobni quyidagi tarzda ber:<br>
+      1. Asosiy g'oya<br>
+      2. 3 ta tafsilot<br>
+      3. Xulosa"</p>
+
+      <h3>4. Misollar bering</h3>
+      <p>"Masalan, agar so'rasam: 'Olma' → senda javob: 'Meva'"</p>
+
+      <h2>Maslahat</h2>
+      <ul>
+        <li>AI'ni shaxsiy <strong>mentor</strong> deb tasavvur qiling</li>
+        <li>Faqat narsa <strong>so'rashning oldida emas</strong> — keyin ham</li>
+        <li>Doim tekshirib turing — AI xato qilishi mumkin</li>
+        <li>AI sizning fikringizni almashtirmasin — kuchaytirsin</li>
+      </ul>
+
+      <h2>Eng yaxshi AI vositalari (2025)</h2>
+      <ul>
+        <li><strong>ChatGPT (OpenAI)</strong> — eng mashhur</li>
+        <li><strong>Claude (Anthropic)</strong> — uzun matnlar uchun zo'r</li>
+        <li><strong>Gemini (Google)</strong> — bepul, kuchli</li>
+        <li><strong>Perplexity</strong> — qidiruv + AI</li>
+        <li><strong>Midjourney</strong> — rasm</li>
+        <li><strong>Cursor</strong> — kod yozish</li>
+        <li><strong>NotebookLM</strong> — hujjatlar bilan ishlash</li>
+      </ul>
+
+      <h2>Xavotirlar</h2>
+      <p>"AI hammani ishsiz qoldiradi" — qisman to'g'ri. Lekin tarix ko'rsatadi: yangi texnologiya yangi ishlar yaratadi.</p>
+
+      <p>Eng muhimi — <strong>o'rganish</strong>. Hozirdan AI'ni ishlashga o'rganing.</p>
+    `
+  },
+  {
+    id: 'a21',
+    cat: 'health',
+    icon: '🥗',
+    iconBg: 'rgba(34,197,94,0.15)',
+    iconColor: '#22c55e',
+    title: "Sog'lom ovqatlanish: oddiy 7 qoida",
+    summary: "Diet emas — hayot tarzi. Murakkab emas, oddiy.",
+    readTime: 5,
+    content: `
+      <h2>Salomatlik = ovqat</h2>
+      <p>Hippokrat 2500 yil oldin aytdi: <strong>"Ovqat — sizning dorongiz, dori — sizning ovqatingiz."</strong></p>
+
+      <p>Zamonaviy tadqiqotlar bu fikrni isbotladi.</p>
+
+      <h2>7 ta oddiy qoida</h2>
+
+      <h3>1. Haqiqiy ovqat yeb keling</h3>
+      <p>Michael Pollan'ning 7 so'zli qoidasi:</p>
+      <blockquote>"Ovqat yeb. Ko'p emas. Asosan o'simlik."</blockquote>
+
+      <p><strong>Haqiqiy ovqat</strong> = bobongiz tanigan narsa. Qadoqlangan emas.</p>
+
+      <h3>2. Ranglar — sog'lik belgisi</h3>
+      <p>Sizning tarelkangizda:</p>
+      <ul>
+        <li>🟢 Yashil — palak, ko'k karam, brokoli</li>
+        <li>🔴 Qizil — pomidor, qulupnay, qizil bolg'or qalam</li>
+        <li>🟡 Sariq — limon, banan, sariq qalam</li>
+        <li>🟣 Binafsha — uzum, ko'kat, baqlajon</li>
+        <li>⚫ Qora — qora bug'doy, kunjut</li>
+      </ul>
+
+      <p>Har xil rang = har xil vitamin va antioksidant.</p>
+
+      <h3>3. Suv — birinchi navbatda</h3>
+      <ul>
+        <li>Ertalab uyg'onganda — 2 stakan</li>
+        <li>Ovqat oldidan — 1 stakan</li>
+        <li>Tana vazni × 30 ml = kunlik</li>
+      </ul>
+
+      <h3>4. Jarayonlangan ovqatdan saqlaning</h3>
+      <p>Eng zararli:</p>
+      <ul>
+        <li>🍔 Fast food</li>
+        <li>🍟 Chips va kraker</li>
+        <li>🥤 Shirin ichimliklar (kola)</li>
+        <li>🍩 Shirinliklar va donalar</li>
+        <li>🌭 Qiyma kolbasalar</li>
+      </ul>
+
+      <h3>5. Oqsil hayot quvvati</h3>
+      <p>Tana vazningizning <strong>1 kg = 1g oqsil</strong> kuniga.</p>
+      <ul>
+        <li>Tuxum (6g/dona)</li>
+        <li>Tovuq go'shti (30g/100g)</li>
+        <li>Baliq</li>
+        <li>Yog'siz qaymoq</li>
+        <li>Lobiya</li>
+        <li>Yong'oqlar</li>
+      </ul>
+
+      <h3>6. Sekin yeb keling</h3>
+      <p>Miyaga ovqat yetishi 20 daqiqa. Tez yeyilsa — ortiqcha yeyiladi.</p>
+      <ul>
+        <li>Telefonsiz yeb keling</li>
+        <li>Har luqmani 20 marta chaynang</li>
+        <li>Vilkani har luqmadan keyin qo'yib yuboring</li>
+      </ul>
+
+      <h3>7. 80/20 qoidasi</h3>
+      <p>80% sog'lom + 20% nimani xohlasangiz:</p>
+      <ul>
+        <li>Iztirobsiz yashash mumkin</li>
+        <li>Diet siz hech narsani taqiqlamasin</li>
+        <li>Hayot zavqi — muhim</li>
+      </ul>
+
+      <h2>Oddiy menyu (1 kun)</h2>
+
+      <h3>🌅 Nonushta</h3>
+      <ul>
+        <li>2 ta tuxum</li>
+        <li>Avokado</li>
+        <li>Yashil chol</li>
+      </ul>
+
+      <h3>🌞 Tushlik</h3>
+      <ul>
+        <li>Tovuq go'shti</li>
+        <li>Yashil salat</li>
+        <li>Choy bug'doy</li>
+      </ul>
+
+      <h3>🌆 Kechki ovqat</h3>
+      <ul>
+        <li>Baliq</li>
+        <li>Sabzavotlar</li>
+        <li>Yong'oq</li>
+      </ul>
+
+      <p><strong>Lumio'da</strong> Ovqatlanish bo'limi mavjud — ovqatlaringizni kuzating!</p>
+    `
+  },
+  {
+    id: 'a22',
+    cat: 'productivity',
+    icon: '🎯',
+    iconBg: 'rgba(245,158,11,0.15)',
+    iconColor: '#f59e0b',
+    title: 'Eisenhower matritsasi: ustuvor narsalarni topishning sirri',
+    summary: "AQSh prezidenti Eisenhower kunlik 100+ qaror qilardi. U bu usulni ishlatardi.",
+    readTime: 4,
+    content: `
+      <h2>Muammo</h2>
+      <p>Hammamiz buni bilamiz:</p>
+      <ul>
+        <li>Vaqt yetmaydi</li>
+        <li>Narsalar tugamaydi</li>
+        <li>Qaysi biri muhim — bilmaymiz</li>
+        <li>Hammasi muhim ko'rinadi</li>
+      </ul>
+
+      <h2>Eisenhower'ning yechimi</h2>
+      <p>Har vazifani 2 savol bilan tahlil qiling:</p>
+      <ol>
+        <li><strong>Muhimmi?</strong></li>
+        <li><strong>Shoshilinchmi?</strong></li>
+      </ol>
+
+      <p>4 ta kategoriya:</p>
+
+      <h2>📋 Matritsa</h2>
+
+      <h3>🟥 1-Quadrant: Muhim VA Shoshilinch</h3>
+      <p><strong>HOZIR QILING!</strong></p>
+      <ul>
+        <li>Inqirozlar</li>
+        <li>Bugungi muhim deadline'lar</li>
+        <li>Salomatlik muammosi</li>
+      </ul>
+
+      <h3>🟩 2-Quadrant: Muhim, lekin shoshilinch EMAS</h3>
+      <p><strong>REJALANGAN VAQT BERING!</strong></p>
+      <ul>
+        <li>Sport</li>
+        <li>Oila bilan vaqt</li>
+        <li>Yangi narsa o'rganish</li>
+        <li>Maqsadlar ustida ish</li>
+        <li>Munosabatlar</li>
+      </ul>
+
+      <p><strong>Bu eng muhim quadrant!</strong> Lekin ko'pchilik buni e'tibordan chiqarib yuboradi, chunki shoshilinch emas.</p>
+
+      <h3>🟦 3-Quadrant: Shoshilinch, lekin muhim EMAS</h3>
+      <p><strong>BOSHQALARGA TOPSHIRING!</strong></p>
+      <ul>
+        <li>Ko'p uchrashuvlar</li>
+        <li>Email javoblari</li>
+        <li>Telefon qo'ng'iroqlari</li>
+        <li>Kichik so'rovlar</li>
+      </ul>
+
+      <h3>🟫 4-Quadrant: Muhim ham, shoshilinch ham EMAS</h3>
+      <p><strong>O'CHIRING!</strong></p>
+      <ul>
+        <li>Sotsial tarmoqlar</li>
+        <li>Maqsadsiz internet</li>
+        <li>TV</li>
+        <li>Maqsadsiz "vaqt o'tkazuvchilar"</li>
+      </ul>
+
+      <h2>Asosiy xulosa</h2>
+      <p>Ko'pchilik vaqtni 1 va 3 da o'tkazadi. Lekin haqiqiy yutuq <strong>2-quadrant</strong>da yotadi.</p>
+
+      <p>Sport, kitob o'qish, dam olish, oila — shoshilinch emas. Lekin eng muhim narsalar.</p>
+
+      <blockquote>"Eng muhim narsalar hech qachon eng shoshilinch narsalar bo'lmasligi kerak." — Stephen Covey</blockquote>
+
+      <h2>Amaliyotga tatbiq</h2>
+      <ol>
+        <li>Bugun barcha vazifalarni yozing</li>
+        <li>Har biri uchun 2 savol bering</li>
+        <li>Kategoriyalarga ajrating</li>
+        <li>2-quadrant uchun vaqt rejalashtiring</li>
+        <li>4-quadrantni butunlay tashlang</li>
+      </ol>
+
+      <p><strong>Lumio'da</strong> Vazifalar ustuvorligi bor — Yuqori, O'rta, Past, Yo'q. Aynan shu printsip!</p>
+    `
+  },
+  {
+    id: 'a23',
+    cat: 'learning',
+    icon: '🎓',
+    iconBg: 'rgba(99,102,241,0.15)',
+    iconColor: '#6366f1',
+    title: 'Tezkor o\'rganish: yangi narsani 20 soatda o\'rganing',
+    summary: "Josh Kaufman'ning kitobida — muvaffaqiyatli o'rganishning 4 qadami.",
+    readTime: 6,
+    content: `
+      <h2>Eski yolg'on</h2>
+      <p>"Biror narsada usta bo'lish uchun 10,000 soat kerak" (Malcolm Gladwell).</p>
+
+      <p>Bu <strong>yolg'on</strong>. Aslida bu — <strong>professional darajaga</strong> chiqish uchun.</p>
+
+      <h2>Yangi haqiqat</h2>
+      <blockquote>"Yetarlicha yaxshi" darajaga chiqish uchun atigi 20 soat kerak. — Josh Kaufman</blockquote>
+
+      <p>Sizga professional bo'lish kerak emas. Sizga <strong>foydali daraja</strong> kerak.</p>
+
+      <h2>4 ta qadam</h2>
+
+      <h3>1. Ko'nikmani parchalang</h3>
+      <p>"Gitara o'rganish" emas — juda umumiy.</p>
+      <p>"3 ta sevimli qo'shiqni chala olish" — aniq.</p>
+
+      <p>Boshqa misollar:</p>
+      <ul>
+        <li>"Frantsuz tili" → "Mehmonxona suhbatini olib bora olish"</li>
+        <li>"Programming" → "Oddiy veb-sayt yaratish"</li>
+        <li>"Rasm chizish" → "Oddiy portret chiza olish"</li>
+        <li>"Cooking" → "5 ta ovqat tayyorlay olish"</li>
+      </ul>
+
+      <h3>2. Yetarlicha o'rganing — boshlang</h3>
+      <p>3-5 ta resursga e'tibor bering:</p>
+      <ul>
+        <li>1-2 ta kitob</li>
+        <li>1-2 ta YouTube kursi</li>
+        <li>1 ta odam (mentor yoki dust)</li>
+      </ul>
+
+      <p><strong>Muhim:</strong> ortiqcha o'qib o'tirmang. Faqat boshlash uchun yetarlicha.</p>
+
+      <h3>3. To'siqlarni olib tashlang</h3>
+      <p>Mashq qilishingizga to'sqinlik qiluvchi narsalarni topib bartaraf eting:</p>
+      <ul>
+        <li>Asbob yo'qmi? — Sotib oling yoki ijaraga oling</li>
+        <li>Vaqt yo'qmi? — 20 daqiqa kunda toping</li>
+        <li>Joy yo'qmi? — Burjak/stol toping</li>
+        <li>Internetda chalg'iyapsizmi? — Olib qo'ying</li>
+      </ul>
+
+      <h3>4. Mashq — kuniga 45 daqiqa</h3>
+      <p>27 kun × 45 daqiqa = 20 soat.</p>
+
+      <p>Asosiy printsip: <strong>maqsadli mashq</strong>.</p>
+      <ul>
+        <li>Aniq maqsad bilan</li>
+        <li>To'liq diqqat</li>
+        <li>Telefonsiz</li>
+        <li>Xato qilsangiz tuzating</li>
+      </ul>
+
+      <h2>20 soatlik kurves</h2>
+      <p>Birinchi 1-5 soat — eng qiyin, lekin eng tez o'sish:</p>
+      <ul>
+        <li>Soat 0-2: Hech narsa qila olmaysiz</li>
+        <li>Soat 2-5: Ba'zi narsalar ishlay boshlaydi</li>
+        <li>Soat 5-10: Boshlovchi darajaga chiqasiz</li>
+        <li>Soat 10-20: Mustaqil ishlay olasiz</li>
+        <li>Soat 20: Yaxshi darajada — boshqalarga o'rgata olasiz</li>
+      </ul>
+
+      <h2>Chuqur o'rganish (kelajak)</h2>
+      <p>Ko'p ko'nikmalar uchun 20 soat yetadi. Lekin chuqur professional bo'lmoqchi bo'lsangiz, davom eting.</p>
+
+      <h2>Misollar</h2>
+      <p>20 soatda o'rgangan haqiqiy odamlar:</p>
+      <ul>
+        <li>Josh Kaufman — yoga (kitobning muallifi)</li>
+        <li>Tim Ferriss — tilshunoslik</li>
+        <li>Tony Robbins — gitara</li>
+      </ul>
+
+      <h2>Bugun boshlang</h2>
+      <ol>
+        <li>1 ta o'rganmoqchi bo'lgan ko'nikma tanlang</li>
+        <li>Aniq maqsadni yozing</li>
+        <li>20 soatlik vaqt bloki rejalashtiring (27 kun × 45 daqiqa)</li>
+        <li>Birinchi mashq — bugun!</li>
+      </ol>
+
+      <blockquote>"Mukammallik — dushman. Yaxshi — yetarli." — Voltaire</blockquote>
+    `
+  },
+  {
+    id: 'a24',
+    cat: 'mindfulness',
+    icon: '🌬️',
+    iconBg: 'rgba(14,165,233,0.15)',
+    iconColor: '#0ea5e9',
+    title: "Nafas — eng kuchli vosita: aql va tana orasidagi ko'prik",
+    summary: "Nafas — aksiyamiz ko'p qismi avtomatik ishlaydi, lekin uni ongli boshqarishimiz mumkin.",
+    readTime: 5,
+    content: `
+      <h2>Nafas — sehrli vosita</h2>
+      <p>Nafas — yagona avtonom funksiya, biz uni <strong>ham avtomatik, ham ongli</strong> boshqara olamiz.</p>
+
+      <p>Bu juda muhim, chunki nafas orqali tana va aqlni boshqara olamiz.</p>
+
+      <h2>Nafas qanday ta'sir qiladi?</h2>
+
+      <h3>Sekin nafas</h3>
+      <ul>
+        <li>Stress kamayadi</li>
+        <li>Yurak tezligi pasayadi</li>
+        <li>Bosim normallashadi</li>
+        <li>Aql tinchlanadi</li>
+        <li>Uxlash osonroq</li>
+      </ul>
+
+      <h3>Tez nafas</h3>
+      <ul>
+        <li>Energiya oshadi</li>
+        <li>Diqqat o'tkirlashadi</li>
+        <li>Tana isiyadi</li>
+        <li>Sport uchun yaxshi</li>
+      </ul>
+
+      <h2>5 ta kuchli texnika</h2>
+
+      <h3>1. 4-7-8 nafas (uxlash uchun)</h3>
+      <ol>
+        <li>4 sekund — burun bilan nafas oling</li>
+        <li>7 sekund — ushlab turing</li>
+        <li>8 sekund — og'iz bilan chiqaring</li>
+        <li>4 marta takrorlang</li>
+      </ol>
+      <p>Dr. Andrew Weil yaratgan. 60 sekundda uyqu keladi.</p>
+
+      <h3>2. Box nafas (stress uchun)</h3>
+      <ol>
+        <li>4 sekund — nafas oling</li>
+        <li>4 sekund — ushlang</li>
+        <li>4 sekund — chiqaring</li>
+        <li>4 sekund — bo'sh ushlang</li>
+      </ol>
+      <p>Navy SEAL'lar ishlatadigan texnika.</p>
+
+      <h3>3. Wim Hof texnikasi (energiya)</h3>
+      <ol>
+        <li>30 marta tez chuqur nafas</li>
+        <li>Oxirgi nafasni butunlay chiqaring</li>
+        <li>30-60 sekund nafassiz turing</li>
+        <li>Chuqur nafas oling, 15 sekund ushlang</li>
+        <li>3-4 sikl takrorlang</li>
+      </ol>
+
+      <h3>4. Nadi Shodhana (yoga)</h3>
+      <ol>
+        <li>O'ng burunni barmoq bilan yoping</li>
+        <li>Chap burundan nafas oling</li>
+        <li>Chap burunni yoping, o'ngdan chiqaring</li>
+        <li>O'ngdan nafas oling, chapdan chiqaring</li>
+        <li>5-10 sikl</li>
+      </ol>
+
+      <h3>5. Coherent breathing (umumiy)</h3>
+      <p>Eng oddiy:</p>
+      <ul>
+        <li>5 sekund nafas oling</li>
+        <li>5 sekund chiqaring</li>
+        <li>10 daqiqa</li>
+      </ul>
+
+      <h2>Qachon ishlatish?</h2>
+
+      <h3>🌅 Ertalab — Wim Hof</h3>
+      <p>Energiya berish uchun</p>
+
+      <h3>📊 Stress paytida — Box</h3>
+      <p>Tez tinchlanish uchun</p>
+
+      <h3>📚 Ish oldidan — Nadi Shodhana</h3>
+      <p>Diqqatni jamlash uchun</p>
+
+      <h3>🌙 Yotishdan oldin — 4-7-8</h3>
+      <p>Tez uxlash uchun</p>
+
+      <h3>♾️ Har vaqt — Coherent</h3>
+      <p>Umumiy balans uchun</p>
+
+      <h2>Burun nafas afzalligi</h2>
+      <p>Ko'pchilik og'iz bilan nafas oladi — bu yomon!</p>
+
+      <p>Burun bilan nafas:</p>
+      <ul>
+        <li>Havoni filtrlaydi</li>
+        <li>Isitadi</li>
+        <li>Namlaydi</li>
+        <li>Azot oksidi ishlab chiqaradi (immunitet)</li>
+        <li>Yaxshi uyqu</li>
+      </ul>
+
+      <p><strong>Yotishda</strong> agiz lentasi ishlatib ko'ring (Mouth tape).</p>
+
+      <blockquote>"Nafas — siz va dunyo orasidagi ko'prik. Uni boshqaring — hayotingizni boshqarasiz." — Tich Nhat Hanh</blockquote>
+
+      <p><strong>Lumio'da</strong> Meditatsiya bo'limi 3 ta nafas mashqi bor: 4-7-8, Box, Deep. Sinab ko'ring!</p>
+    `
   }
 ];
 
@@ -6675,7 +7763,15 @@ const ARTICLE_CATS = {
   psychology: { name: 'Psixologiya', icon: '🧠' },
   health: { name: 'Salomatlik', icon: '💪' },
   growth: { name: 'Rivojlanish', icon: '🌱' },
-  productivity: { name: 'Mahsuldorlik', icon: '⚡' }
+  productivity: { name: 'Mahsuldorlik', icon: '⚡' },
+  finance: { name: 'Moliya', icon: '💰' },
+  career: { name: 'Karyera', icon: '💼' },
+  relationships: { name: 'Munosabatlar', icon: '🤝' },
+  mindfulness: { name: 'Mindfulness', icon: '🧘' },
+  creativity: { name: 'Ijod', icon: '🎨' },
+  learning: { name: "O'qish", icon: '📖' },
+  tech: { name: 'Texnologiya', icon: '💻' },
+  philosophy: { name: 'Falsafa', icon: '📜' }
 };
 
 let _currentArticleCat = 'all';
