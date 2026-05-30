@@ -71,7 +71,87 @@ const QUOTES = [
   { t:"Diqqat — eng kuchli kuch.", a:"Cal Newport" },
   { t:"Siz harakatlaringizning natijasisiz, niyatlaringizning emas.", a:"Anonim" },
   { t:"Mukammallik — bu tasodifiy emas, balki harakat.", a:"Aristotel" },
+  { t:"Hayot 10% sizga sodir bo'lgan narsa va 90% siz unga qanday javob berasiz.", a:"Charles Swindoll" },
+  { t:"Mag'lubiyatdan qo'rqmang. Hech narsa qilmaslikdan qo'rqing.", a:"Konfutsiy" },
+  { t:"Sabr — fazilatlarning eng katti.", a:"Cato" },
+  { t:"Yulduzlarga erishmoqchi bo'lsangiz, oydan kechmang.", a:"W. Clement Stone" },
+  { t:"Hech qachon kech emas, qachondir bo'lib bo'lmaydi.", a:"George Eliot" },
+  { t:"Iste'dod arzon. Intizom — qimmatli.", a:"Mike Tyson" },
+  { t:"Eng katta dushman — siz o'zingizsiz.", a:"Sun Tzu" },
+  { t:"Vaqt — eng qimmatbaho narsa, uni tejash mumkin emas, faqat sarflash mumkin.", a:"Theophrastus" },
+  { t:"Bilim — kuch.", a:"Frensis Bekon" },
+  { t:"Sukut bilan oltin sotib olib bo'lmaydi, lekin ko'pincha tinchlik sotib olinadi.", a:"O'zbek maqoli" },
+  { t:"O'zingni bil — donolikning boshlanishi shu.", a:"Sokrat" },
+  { t:"Hech qachon emasdan ko'ra kechroq yaxshi.", a:"Tito Liviy" },
+  { t:"O'zgarish boshlanadi qachon siz boshlasangiz.", a:"Anonim" },
+  { t:"Hayot — bu siklda harakat. Tugatish uchun yoki davom ettirish uchun har doim tanlovingiz bor.", a:"Tony Robbins" },
+  { t:"Eng katta xavf — xavf qilmaslik.", a:"Mark Zuckerberg" },
+  { t:"Imkonsiz — bu shunchaki xayolda mavjud.", a:"Muhammad Ali" },
+  { t:"Tushlaringga ergashing, lekin uxlamasdan.", a:"Anonim" },
+  { t:"Xato qilishdan qo'rqma — hech narsa qilmaslikdan qo'rq.", a:"Bob Marley" },
+  { t:"Yutuq — kichik harakatlarning yig'indisi, har kun takrorlangan.", a:"Robert Collier" },
+  { t:"Bugun yashang — ertaga sovg'a emas.", a:"Anonim" },
+  { t:"Sizning yagona cheklov — siz o'zingiz qo'ygan cheklov.", a:"Les Brown" },
+  { t:"Niyatsiz harakat — natijasiz qoladi.", a:"Bukker T. Vashington" },
+  { t:"Eng baxtli odamlar eng yaxshi narsalarga ega emas — ular bor narsalardan eng yaxshi olishadi.", a:"Anonim" },
+  { t:"Birinchi vazifa — o'zingiz bilan halol bo'lish.", a:"Stiv Maraboli" },
+  { t:"Qanchalik harakatga moyil bo'lsangiz, shunchalik omadli bo'lasiz.", a:"Tomas Jefferson" },
+  { t:"Boshlanish — eng qiyin qism. Birinchi qadam — qolganlarining yarmi.", a:"Aristotel" },
+  { t:"Sabr achchiq, lekin uning mevasi shirin.", a:"Jan-Jak Russo" },
+  { t:"Hech qachon takomiliroq vaqtni kutmang. Hozir va shu yerda boshlang.", a:"Napoleon Hill" },
+  { t:"O'zgarmoq qiyin, lekin o'zgarmaslik halokatli.", a:"Anonim" },
+  { t:"Hayot 100% bo'lib o'tadi — siz xohlasangiz ham, xohlamasangiz ham. Faolm bo'ling.", a:"Anonim" },
+  { t:"Eng katta sovg'a — bugungi kun. Shuning uchun u 'present' deb ataladi.", a:"Eleanor Roosevelt" },
+  { t:"Aql qancha kuchli bo'lsa, fikrlar shuncha tinch.", a:"Patanjali" },
+  { t:"Quyoshga yuzlaning va soyalar orqada qoladi.", a:"Maori maqoli" },
+  { t:"Ulug' yutuqlar uchun ulug' qurbonliklar kerak emas — faqat doimiy harakat.", a:"Anonim" },
+  { t:"Oltinning qiymati issiq olovda chiniqishida.", a:"Seneka" },
+  { t:"Yaxshi odat — ozodlik ramzi.", a:"Sokrat" },
+  { t:"Bugun harakatga keling — kechagi kechikkan.", a:"Anonim" },
+  { t:"Hech kim sizdan kuchli emas. Hech narsa imkonsiz emas.", a:"Anonim" },
+  { t:"Aqlli odam — bilmasligini biladigan odam.", a:"Sokrat" },
+  { t:"Hayot dengizdek — to'lqinlar keladi va ketadi. Siz uchayveringiz.", a:"Anonim" },
+  { t:"O'qiganni yashash — eng yaxshi ta'lim.", a:"Albert Eynshteyn" },
+  { t:"Eng baxtli inson — boshqalarni baxtli qilgan inson.", a:"Tagor" },
+  { t:"Yaxshi tinglovchi har joyda hurmat oladi.", a:"Dale Carnegie" },
+  { t:"Sizning fikrlaringiz — sizning hayotingiz.", a:"Marcus Aurelius" },
+  { t:"Hayot 10 yoshda — o'yinlar, 20 yoshda — sevgi, 30 yoshda — kasb, 40 yoshda — bola, 50 yoshda — donolik.", a:"O'zbek maqoli" },
+  { t:"Eng kuchli kishi — o'zini boshqarayotgan kishi.", a:"Lao Tzu" },
+  { t:"Hech kim bizdan ozodlikni olib qo'ya olmaydi, agar biz uni o'zimiz topshirmasak.", a:"Eleanor Roosevelt" },
+  { t:"Vaqtni isrof qilmang — bu hayot sodir bo'layotgan narsa.", a:"Lennon" },
+  { t:"Saxiylik bilan bering — kamroq bo'lib qolmaydi.", a:"Vinston Cherchill" },
+  { t:"Hech qachon o'rganishni to'xtatmang — chunki hayot hech qachon o'rgatishni to'xtatmaydi.", a:"Anonim" },
+  { t:"Eng katta safar — bir qadamdan boshlanadi.", a:"Lao Tzu" },
+  { t:"Mas'uliyat — kuchli odamning belgisi.", a:"Anonim" },
+  { t:"Ish qilishni boshlang. Mukammal vaqt yo'q.", a:"Napoleon Hill" },
+  { t:"Tafakkur — eng yuqori tartibli mehnat.", a:"Henri Ford" },
+  { t:"Quyoshli kunda soyani ko'rmaslik mumkin, lekin u doim sizga ergashadi.", a:"O'zbek maqoli" },
+  { t:"Eng katta kuch — sevgi. Eng katta zaiflik — qo'rquv.", a:"Yi Cing" },
+  { t:"O'zingiz bo'ling. Boshqalar allaqachon band.", a:"Oscar Wilde" },
+  { t:"Hayot adolatli emas — bunga ko'nikinging.", a:"Bill Geyts" },
+  { t:"Imkoniyat tayyor odamlarni topadi.", a:"Lui Paster" },
+  { t:"Iste'dodingni jonlat — yashash hayotning eng katta sovg'asidir.", a:"Anonim" },
+  { t:"Avval o'zingiz bilan to'g'ri yashang.", a:"Sokrat" },
+  { t:"Yashashni o'rganish — tushunish uchun.", a:"Konfutsiy" },
+  { t:"Hech qachon to'xtamang. Davom eting.", a:"Vinston Cherchill" },
 ];
+
+// Track shown quotes per session for non-repeating
+let _quotesShownThisSession = new Set();
+function getRandomQuote() {
+  // Reset if all shown
+  if (_quotesShownThisSession.size >= QUOTES.length) {
+    _quotesShownThisSession.clear();
+  }
+  let attempts = 0;
+  let idx;
+  do {
+    idx = Math.floor(Math.random() * QUOTES.length);
+    attempts++;
+  } while (_quotesShownThisSession.has(idx) && attempts < 50);
+  _quotesShownThisSession.add(idx);
+  return QUOTES[idx];
+}
 
 const ACH = [
   { id:'first_task', name:"Birinchi qadam", desc:"Birinchi vazifa bajarildi", icon:'🎯', xp:10 },
@@ -323,8 +403,8 @@ function setGreeting() {
   const days = ['Yakshanba','Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba'];
   const d = new Date();
   $('#topbarDate').textContent = `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}`;
-  // Quote
-  const q = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+  // Quote (different on every refresh, no repeat in same session)
+  const q = getRandomQuote();
   $('#quoteText').textContent = `"${q.t}"`;
   $('#quoteAuthor').textContent = `— ${q.a}`;
 }
@@ -811,8 +891,8 @@ function enterFocus() {
   focusRemaining = focusDuration;
   focusType = 'focus';
   $('#focusLabel').textContent = 'Fokus';
-  // Random quote
-  const q = QUOTES[Math.floor(Math.random()*QUOTES.length)];
+  // Random quote (no repeat in session)
+  const q = getRandomQuote();
   $('#focusQuote').textContent = `"${q.t}" — ${q.a}`;
   updateFocusDisplay();
   toggleFocus();
@@ -2057,7 +2137,7 @@ window.confirmReset = confirmReset;
 
 // Initialize new state slices
 function ensureV2State() {
-  if (!state.pet) state.pet = { name: 'Lumi', emoji: '🐱', happy: 80, energy: 80, level: 1, lastFed: today() };
+  if (!state.pet) state.pet = { name: 'Lumi', emoji: '🌱', happy: 80, energy: 80, level: 1, lastFed: today() };
   if (!state.quests) state.quests = { date: '', list: [] };
   if (!state.workouts) state.workouts = [];
   if (!state.workoutLogs) state.workoutLogs = [];
@@ -2107,15 +2187,20 @@ function setDynamicWallpaper() {
 }
 
 // ════ PRODUCTIVITY PET ════
+// Fantasy creature evolution - mythical beings that grow with you
 const PET_STAGES = [
-  { min: 0, emoji: '🥚', name: 'Tuxum' },
-  { min: 1, emoji: '🐣', name: 'Yangi tug\'ilgan' },
-  { min: 3, emoji: '🐥', name: 'Jo\'ja' },
-  { min: 5, emoji: '🐱', name: 'Mushukcha' },
-  { min: 10, emoji: '🦊', name: 'Tulkicha' },
-  { min: 20, emoji: '🐯', name: 'Yo\'lbars' },
-  { min: 30, emoji: '🦁', name: 'Sher' },
-  { min: 50, emoji: '🐉', name: 'Ajdarho' },
+  { min: 0,   emoji: '🌱', name: 'Yashil urug\'' },           // Seedling — boshlanish
+  { min: 1,   emoji: '🌿', name: 'Yosh maysa' },             // Sapling
+  { min: 3,   emoji: '🦋', name: 'Yorug\'lik kapalagi' },    // Light Butterfly
+  { min: 5,   emoji: '🦄', name: 'Sehrli yakkashox' },       // Unicorn
+  { min: 8,   emoji: '🧚', name: 'Aql parisi' },             // Wisdom Fairy
+  { min: 12,  emoji: '🐲', name: 'Yosh ajdarcha' },          // Young Dragon
+  { min: 18,  emoji: '🦅', name: 'Olovli qush — Feniks' },   // Phoenix
+  { min: 25,  emoji: '🐉', name: 'Sharqona ajdar' },         // Eastern Dragon
+  { min: 35,  emoji: '🦉', name: 'Donishmand boyqush' },     // Wise Owl (mystical)
+  { min: 50,  emoji: '🌟', name: 'Yulduz mavjudoti' },       // Star Being
+  { min: 75,  emoji: '⚡', name: 'Chaqmoq jini' },           // Lightning Spirit
+  { min: 100, emoji: '🔮', name: 'Abadiy donishmand' },      // Eternal Sage
 ];
 function getPetStage() {
   const lvl = state.user.level;
@@ -2172,7 +2257,7 @@ function openPetModal() {
         <div class="pet-bar happy"><span>😊 Baxt</span><div class="pet-bar-track"><div class="pet-bar-fill" style="width:${state.pet.happy}%"></div></div><span>${state.pet.happy}%</span></div>
         <div class="pet-bar energy"><span>⚡ Energiya</span><div class="pet-bar-track"><div class="pet-bar-fill" style="width:${state.pet.energy}%"></div></div><span>${state.pet.energy}%</span></div>
       </div>
-      <p class="muted mt-2" style="font-size:.85rem;line-height:1.6">Vazifalarni bajaring va odatlaringizni saqlang — ${state.pet.name} sizdan kuch oladi va o'sib boradi! Har 1, 3, 5, 10, 20, 30, 50 darajada yangi shaklga aylanadi.</p>
+      <p class="muted mt-2" style="font-size:.85rem;line-height:1.6">Vazifalarni bajaring va odatlaringizni saqlang — ${state.pet.name} sizdan kuch oladi va sehrli mavjudotga aylanadi! 🌱→🌿→🦋→🦄→🧚→🐲→🦅→🐉→🦉→🌟→⚡→🔮</p>
       <div class="pet-evolution">
         ${PET_STAGES.map(s => `<span class="pet-stage ${s.min === stage.min?'current':''}">${s.emoji} L${s.min}</span>`).join('')}
       </div>
@@ -2196,51 +2281,164 @@ function petPet() {
 
 // ════ DAILY QUESTS ════
 const QUEST_POOL = [
+  // Vazifalar
   { id:'q_3tasks', icon:'✅', name:'3 ta vazifa bajaring', goal:3, type:'task', xp:30 },
   { id:'q_5tasks', icon:'✅', name:'5 ta vazifa bajaring', goal:5, type:'task', xp:50 },
+  { id:'q_7tasks', icon:'🚀', name:'7 ta vazifa bajaring', goal:7, type:'task', xp:80 },
+  { id:'q_priority', icon:'🔥', name:'Yuqori ustuvorlikdagi vazifani bajaring', goal:1, type:'priority_task', xp:40 },
+  // Odatlar
   { id:'q_2habits', icon:'⚡', name:'2 ta odat bajaring', goal:2, type:'habit', xp:25 },
+  { id:'q_3habits', icon:'⚡', name:'3 ta odat bajaring', goal:3, type:'habit', xp:40 },
+  { id:'q_5habits', icon:'⚡', name:'5 ta odat bajaring', goal:5, type:'habit', xp:65 },
   { id:'q_allhabits', icon:'🌟', name:"Bugun barcha odatlarni bajaring", goal:1, type:'all_habits', xp:60 },
+  { id:'q_morning', icon:'🌅', name:"Ertalab odat bajaring (12:00 dan oldin)", goal:1, type:'morning_habit', xp:35 },
+  // Fokus
+  { id:'q_focus15', icon:'⏱', name:'15 daqiqa fokus', goal:15, type:'focus', xp:20 },
   { id:'q_focus25', icon:'⏱', name:'25 daqiqa fokuslaning', goal:25, type:'focus', xp:30 },
   { id:'q_focus60', icon:'🎯', name:'1 soat fokus', goal:60, type:'focus', xp:60 },
+  { id:'q_focus2h', icon:'🧠', name:'2 soat chuqur ish', goal:120, type:'focus', xp:100 },
+  { id:'q_2sessions', icon:'💪', name:'2 ta fokus sessiyasi', goal:2, type:'focus_count', xp:45 },
+  // Sog'liq
+  { id:'q_water6', icon:'💧', name:'6 stakan suv iching', goal:6, type:'water', xp:20 },
   { id:'q_water', icon:'💧', name:'8 stakan suv iching', goal:8, type:'water', xp:25 },
+  { id:'q_water10', icon:'💦', name:'10 stakan suv (super!)', goal:10, type:'water', xp:35 },
+  // Yozish
   { id:'q_note', icon:'📝', name:'Bir qayd yozing', goal:1, type:'note', xp:15 },
+  { id:'q_journal', icon:'📔', name:'Kundalik yozing', goal:1, type:'journal', xp:20 },
+  { id:'q_2notes', icon:'✍', name:'2 ta qayd yarating', goal:2, type:'note', xp:30 },
+  // Kayfiyat
   { id:'q_mood', icon:'😊', name:'Kayfiyatingizni belgilang', goal:1, type:'mood', xp:10 },
+  { id:'q_good_mood', icon:'😄', name:"Kayfiyatingiz 4+ bo'lsin", goal:1, type:'good_mood', xp:25 },
+  // Meditatsiya
   { id:'q_meditate', icon:'🧘', name:'5 daqiqa meditatsiya', goal:5, type:'meditate', xp:25 },
+  { id:'q_meditate10', icon:'🧘', name:'10 daqiqa meditatsiya', goal:10, type:'meditate', xp:40 },
+  { id:'q_meditate20', icon:'🌌', name:'20 daqiqa chuqur meditatsiya', goal:20, type:'meditate', xp:75 },
+  // Sport
+  { id:'q_workout', icon:'💪', name:'Bir mashq bajaring', goal:1, type:'workout', xp:30 },
+  { id:'q_workout3', icon:'🏋', name:'3 ta mashq bajaring', goal:3, type:'workout', xp:60 },
+  // O'qish
+  { id:'q_book', icon:'📚', name:'10 daqiqa kitob', goal:10, type:'reading', xp:25 },
+  { id:'q_book30', icon:'📖', name:'30 daqiqa o\'qing', goal:30, type:'reading', xp:55 },
+  { id:'q_flashcard', icon:'🎴', name:'5 ta flashcard', goal:5, type:'flashcard', xp:20 },
+  // Sotsial / shaxsiy
+  { id:'q_goal', icon:'🎯', name:'Maqsadni yangilang', goal:1, type:'goal_progress', xp:30 },
+  { id:'q_milestone', icon:'⭐', name:'Bir milestone tugating', goal:1, type:'milestone', xp:40 },
+  // Ovqatlanish
+  { id:'q_meal', icon:'🍎', name:'Ovqatni qaydlang', goal:1, type:'meal', xp:15 },
+  // Kombinatsiya
+  { id:'q_3areas', icon:'✨', name:"3 sohada faollik (vazifa, odat, fokus)", goal:1, type:'combo_3', xp:70 },
+  { id:'q_perfect', icon:'🏆', name:'Mukammal kun (5 sohada faollik)', goal:1, type:'perfect_day', xp:120 },
+  // Erta turish
+  { id:'q_early', icon:'🌄', name:'Erta turing (8:00 gacha faollik)', goal:1, type:'early_active', xp:30 },
+  // Yo'naltirish
+  { id:'q_no_phone', icon:'📵', name:'30 daq fokus (telefonsiz)', goal:30, type:'focus', xp:50 },
 ];
+
 function ensureDailyQuests() {
   ensureV2State();
   if (state.quests.date !== today()) {
-    // Generate 3 random quests
-    const pool = [...QUEST_POOL].sort(() => Math.random() - 0.5).slice(0, 3);
-    state.quests = { date: today(), list: pool.map(q => ({ ...q, progress: 0, done: false })) };
+    // Generate 3 fresh random quests, avoid yesterday's quests
+    const yesterdayIds = (state.quests.list || []).map(q => q.id);
+    let pool = [...QUEST_POOL].filter(q => !yesterdayIds.includes(q.id));
+    if (pool.length < 3) pool = [...QUEST_POOL]; // fallback if filter too restrictive
+    pool.sort(() => Math.random() - 0.5);
+
+    // Try to get balanced mix: 1 easy (xp<=25), 1 medium (26-50), 1 hard (>50)
+    const easy = pool.filter(q => q.xp <= 25);
+    const medium = pool.filter(q => q.xp > 25 && q.xp <= 50);
+    const hard = pool.filter(q => q.xp > 50);
+
+    const selected = [];
+    if (easy.length) selected.push(easy[0]);
+    if (medium.length) selected.push(medium[0]);
+    if (hard.length) selected.push(hard[0]);
+    // If we don't have 3 (rare edge case), fill from pool
+    while (selected.length < 3 && pool.length > selected.length) {
+      const next = pool.find(q => !selected.includes(q));
+      if (next) selected.push(next);
+      else break;
+    }
+
+    state.quests = { date: today(), list: selected.map(q => ({ ...q, progress: 0, done: false })) };
     save();
   }
 }
 function evalQuests() {
   ensureDailyQuests();
   const tasksDone = state.tasks.filter(t => t.done && t.completedAt === today()).length;
+  const priorityTasksDone = state.tasks.filter(t => t.done && t.completedAt === today() && (t.priority === 1 || t.priority === 2)).length;
   const habitsDone = state.habits.filter(h => isHabitDone(h.id)).length;
-  const focusToday = state.focusSessions.filter(s => s.date === today()).reduce((a,s)=>a+s.minutes,0);
+  const focusSessions = state.focusSessions.filter(s => s.date === today());
+  const focusToday = focusSessions.reduce((a,s)=>a+s.minutes,0);
   const water = state.water[today()] || 0;
-  const noteToday = state.notes.some(n => n.updatedAt === today());
+  const noteToday = state.notes.some(n => n.updatedAt === today() || n.createdAt === today());
+  const notesCount = state.notes.filter(n => n.updatedAt === today() || n.createdAt === today()).length;
   const moodToday = !!state.moods[today()];
-  const medToday = (state.medSessions||[]).filter(s => s.date === today()).reduce((a,s)=>a+s.minutes,0);
+  const moodValue = state.moods[today()] || 0;
+  const medSessions = (state.medSessions || []).filter(s => s.date === today());
+  const medToday = medSessions.reduce((a,s)=>a+s.minutes,0);
+  const journalToday = !!(state.journal && state.journal[today()]);
+  const workoutsToday = (state.workoutLogs || []).filter(w => w.date === today()).length;
+  const mealsToday = (state.meals || []).filter(m => m.date === today()).length;
+  // Reading - approximate from book progress
+  const readingMinutes = (state.medSessions || [])
+    .filter(s => s.date === today() && s.type === 'reading')
+    .reduce((a,s) => a + (s.minutes || 0), 0);
+  const flashcardsToday = state.flashIdx || 0; // simple proxy
+  const goalProgressToday = (state.goals || []).some(g => g.updatedAt === today());
+  const milestonesDone = (state.goals || []).reduce((a, g) =>
+    a + (g.milestones || []).filter(m => m.done && m.doneAt === today()).length, 0);
+
+  // Time-based checks
+  const now = new Date();
+  const hour = now.getHours();
+  const earlyActivity = hour < 8 && (tasksDone > 0 || habitsDone > 0 || focusToday > 0);
+  const morningHabit = hour < 12 && habitsDone > 0;
+
+  // Combo
+  const areasActive = [
+    tasksDone > 0,
+    habitsDone > 0,
+    focusToday > 0,
+    noteToday,
+    moodToday,
+    medToday > 0,
+    workoutsToday > 0,
+    mealsToday > 0,
+    journalToday,
+  ].filter(Boolean).length;
+
   state.quests.list.forEach(q => {
     let p = 0;
     if (q.type === 'task') p = tasksDone;
+    else if (q.type === 'priority_task') p = priorityTasksDone;
     else if (q.type === 'habit') p = habitsDone;
     else if (q.type === 'all_habits') p = (state.habits.length && habitsDone === state.habits.length) ? 1 : 0;
+    else if (q.type === 'morning_habit') p = morningHabit ? 1 : 0;
     else if (q.type === 'focus') p = focusToday;
+    else if (q.type === 'focus_count') p = focusSessions.length;
     else if (q.type === 'water') p = water;
-    else if (q.type === 'note') p = noteToday ? 1 : 0;
+    else if (q.type === 'note') p = notesCount || (noteToday ? 1 : 0);
+    else if (q.type === 'journal') p = journalToday ? 1 : 0;
     else if (q.type === 'mood') p = moodToday ? 1 : 0;
+    else if (q.type === 'good_mood') p = moodValue >= 4 ? 1 : 0;
     else if (q.type === 'meditate') p = medToday;
+    else if (q.type === 'workout') p = workoutsToday;
+    else if (q.type === 'reading') p = readingMinutes;
+    else if (q.type === 'flashcard') p = flashcardsToday;
+    else if (q.type === 'goal_progress') p = goalProgressToday ? 1 : 0;
+    else if (q.type === 'milestone') p = milestonesDone;
+    else if (q.type === 'meal') p = mealsToday;
+    else if (q.type === 'combo_3') p = areasActive >= 3 ? 1 : 0;
+    else if (q.type === 'perfect_day') p = areasActive >= 5 ? 1 : 0;
+    else if (q.type === 'early_active') p = earlyActivity ? 1 : 0;
+
     q.progress = Math.min(q.goal, p);
     if (!q.done && q.progress >= q.goal) {
       q.done = true;
       addXp(q.xp, `Kvest: ${q.name}`);
-      window.confetti?.fire({ x: window.innerWidth - 100, y: 100, count: 40 });
-      fx?.play('achievement');
+      try { window.confetti?.fire({ x: window.innerWidth - 100, y: 100, count: 40 }); } catch {}
+      try { fx?.play('achievement'); } catch {}
     }
   });
   save();
@@ -5479,3 +5677,1124 @@ window.addEventListener('focus', () => {
 });
 
 console.log('🔄 SW auto-update enabled');
+
+
+
+// ════════════════════════════════════════════
+// WORKOUT TEMPLATES — Uy mashqlari shablonlari
+// ════════════════════════════════════════════
+const WORKOUT_TEMPLATES = [
+  {
+    id: 'wt_morning',
+    icon: '🌅',
+    name: "Ertalabki uyg'onish (5-10 daq)",
+    desc: "Yengil cho'zilish va energiya berish",
+    type: 'Cho\'zilish',
+    exercises: [
+      { name: 'Bo\'yin aylanmasi', sets: '2', reps: '10' },
+      { name: 'Yelka aylanasi', sets: '2', reps: '10' },
+      { name: 'Cho\'kkalab cho\'zilish', sets: '1', reps: '30s' },
+      { name: 'Tovon ko\'tarish', sets: '2', reps: '15' },
+      { name: 'Chuqur nafas olish', sets: '1', reps: '5 sikl' }
+    ]
+  },
+  {
+    id: 'wt_full_body',
+    icon: '💪',
+    name: 'To\'liq tana mashqi (15-20 daq)',
+    desc: 'Hech qanday jihoz kerak emas',
+    type: 'Kuch',
+    exercises: [
+      { name: 'Push-up (kotaklar)', sets: '3', reps: '10-15' },
+      { name: 'Squat (cho\'kkalab turish)', sets: '3', reps: '15' },
+      { name: 'Plank (taxta)', sets: '3', reps: '30-60s' },
+      { name: 'Lunges (oldinga qadam)', sets: '3', reps: '10/oyoq' },
+      { name: 'Mountain climber', sets: '3', reps: '20' }
+    ]
+  },
+  {
+    id: 'wt_abs',
+    icon: '🔥',
+    name: 'Pressga zo\'r mashq (10 daq)',
+    desc: 'Qorin mushaklari uchun',
+    type: 'Kuch',
+    exercises: [
+      { name: 'Crunches', sets: '3', reps: '20' },
+      { name: 'Leg raises (oyoq ko\'tarish)', sets: '3', reps: '15' },
+      { name: 'Russian twists', sets: '3', reps: '20' },
+      { name: 'Plank', sets: '3', reps: '45s' },
+      { name: 'Bicycle crunches', sets: '3', reps: '20' }
+    ]
+  },
+  {
+    id: 'wt_cardio',
+    icon: '🏃',
+    name: 'HIIT kardio (15 daq)',
+    desc: 'Yog\' yoqish uchun yuqori intensiv',
+    type: 'Kardio',
+    exercises: [
+      { name: 'Jumping jacks', sets: '4', reps: '40s' },
+      { name: 'High knees', sets: '4', reps: '40s' },
+      { name: 'Burpees', sets: '4', reps: '30s' },
+      { name: 'Mountain climber', sets: '4', reps: '40s' },
+      { name: 'Skater jumps', sets: '4', reps: '40s' },
+      { name: 'Dam (rest)', sets: '3', reps: '30s' }
+    ]
+  },
+  {
+    id: 'wt_legs',
+    icon: '🦵',
+    name: 'Oyoq mashqlari (15 daq)',
+    desc: 'Oyoqlarni kuchlantirish',
+    type: 'Kuch',
+    exercises: [
+      { name: 'Squats', sets: '4', reps: '20' },
+      { name: 'Lunges', sets: '4', reps: '12/oyoq' },
+      { name: 'Glute bridges', sets: '4', reps: '15' },
+      { name: 'Calf raises', sets: '4', reps: '20' },
+      { name: 'Wall sit', sets: '3', reps: '45s' },
+      { name: 'Single leg deadlift', sets: '3', reps: '10/oyoq' }
+    ]
+  },
+  {
+    id: 'wt_upper',
+    icon: '💪',
+    name: 'Yuqori tana (12-15 daq)',
+    desc: 'Ko\'krak, qo\'l, yelka',
+    type: 'Kuch',
+    exercises: [
+      { name: 'Standard push-up', sets: '3', reps: '12-15' },
+      { name: 'Diamond push-up', sets: '3', reps: '8-10' },
+      { name: 'Wide push-up', sets: '3', reps: '10-12' },
+      { name: 'Pike push-up', sets: '3', reps: '10' },
+      { name: 'Tricep dips (stulda)', sets: '3', reps: '12' },
+      { name: 'Plank to push-up', sets: '3', reps: '10' }
+    ]
+  },
+  {
+    id: 'wt_yoga',
+    icon: '🧘',
+    name: 'Yoga rejimi (20 daq)',
+    desc: 'Tana va aql tinchligi',
+    type: 'Yoga',
+    exercises: [
+      { name: 'Mushuk-sigir pozasi', sets: '1', reps: '10 sikl' },
+      { name: 'Pastga tushgan it', sets: '1', reps: '60s' },
+      { name: 'Boyuk salomlash (1-sikl)', sets: '5', reps: '1 sikl' },
+      { name: 'Jangchi pozasi I', sets: '1', reps: '30s/tomon' },
+      { name: 'Bola pozasi', sets: '1', reps: '60s' },
+      { name: 'Shavasana (dam)', sets: '1', reps: '3 daq' }
+    ]
+  },
+  {
+    id: 'wt_evening',
+    icon: '🌙',
+    name: 'Kechki cho\'zilish (10 daq)',
+    desc: 'Yotishdan oldin tinchlanish',
+    type: 'Cho\'zilish',
+    exercises: [
+      { name: 'Bo\'yin va yelka cho\'zilish', sets: '1', reps: '60s' },
+      { name: 'Bel cho\'zilish (egilish)', sets: '1', reps: '45s' },
+      { name: 'Hip flexor cho\'zilish', sets: '1', reps: '30s/oyoq' },
+      { name: 'Dyusangid cho\'zilish', sets: '1', reps: '30s/oyoq' },
+      { name: 'Spinal twist', sets: '1', reps: '45s/tomon' },
+      { name: 'Chuqur nafas + meditatsiya', sets: '1', reps: '3 daq' }
+    ]
+  },
+  {
+    id: 'wt_quick',
+    icon: '⚡',
+    name: '7 daqiqalik tezkor (busy days)',
+    desc: 'Vaqtingiz kam? Mana shu yetadi',
+    type: 'Kardio',
+    exercises: [
+      { name: 'Jumping jacks', sets: '1', reps: '30s' },
+      { name: 'Wall sit', sets: '1', reps: '30s' },
+      { name: 'Push-ups', sets: '1', reps: '30s' },
+      { name: 'Crunches', sets: '1', reps: '30s' },
+      { name: 'Step-ups (stulga)', sets: '1', reps: '30s' },
+      { name: 'Squats', sets: '1', reps: '30s' },
+      { name: 'Plank', sets: '1', reps: '30s' }
+    ]
+  },
+  {
+    id: 'wt_back',
+    icon: '🦴',
+    name: 'Bel og\'rig\'iga qarshi (10 daq)',
+    desc: 'Kompyuter oldida o\'tirganlar uchun',
+    type: 'Cho\'zilish',
+    exercises: [
+      { name: 'Cat-cow stretch', sets: '1', reps: '10 sikl' },
+      { name: 'Child\'s pose', sets: '1', reps: '60s' },
+      { name: 'Cobra pose', sets: '3', reps: '20s' },
+      { name: 'Knee-to-chest', sets: '3', reps: '20s/oyoq' },
+      { name: 'Spinal twist', sets: '3', reps: '20s/tomon' },
+      { name: 'Bridge pose', sets: '3', reps: '15' }
+    ]
+  }
+];
+
+function renderWorkoutTemplates() {
+  const grid = document.getElementById('workoutTemplates');
+  if (!grid) return;
+  grid.innerHTML = WORKOUT_TEMPLATES.map(tpl => `
+    <button class="tpl-card" onclick="useWorkoutTemplate('${tpl.id}')">
+      <div class="tpl-icon">${tpl.icon}</div>
+      <div class="tpl-name">${tpl.name}</div>
+      <div class="tpl-desc">${tpl.desc} · ${tpl.exercises.length} ta mashq</div>
+    </button>
+  `).join('');
+}
+
+function useWorkoutTemplate(id) {
+  const tpl = WORKOUT_TEMPLATES.find(w => w.id === id);
+  if (!tpl) return;
+  ensureV2State();
+  state.workouts.push({
+    id: uid(),
+    name: tpl.name,
+    type: tpl.type,
+    exercises: tpl.exercises.map(e => ({ ...e })),
+    createdAt: today(),
+    fromTemplate: tpl.id
+  });
+  save();
+  if (typeof renderWorkouts === 'function') renderWorkouts();
+  renderWorkoutTemplates();
+  toast(`💪 "${tpl.name}" qo'shildi`, 'success');
+  try { fx?.play('complete'); } catch {}
+  try { fx?.haptic([20, 30, 20]); } catch {}
+  try { window.confetti?.fire({ count: 30 }); } catch {}
+}
+
+// Hook into goPage to render templates
+{
+  const _origGo = window.goPage;
+  if (_origGo) {
+    window.goPage = function(page) {
+      _origGo(page);
+      if (page === 'workout') {
+        setTimeout(renderWorkoutTemplates, 100);
+      }
+    };
+  }
+}
+// Also render on initial nav click
+setTimeout(() => {
+  document.querySelectorAll('.nav-item[data-page="workout"]').forEach(n => {
+    n.addEventListener('click', () => setTimeout(renderWorkoutTemplates, 150));
+  });
+}, 2000);
+
+window.useWorkoutTemplate = useWorkoutTemplate;
+window.renderWorkoutTemplates = renderWorkoutTemplates;
+
+// Auto-render on page load if workout page is somehow active
+setTimeout(() => {
+  if (document.getElementById('page-workout')?.classList.contains('active')) {
+    renderWorkoutTemplates();
+  }
+}, 3000);
+
+
+
+// ════════════════════════════════════════════
+// ARTICLES — Ilmiy va kerakli mavzular
+// ════════════════════════════════════════════
+const ARTICLES = [
+  {
+    id: 'a1',
+    cat: 'science',
+    icon: '🧠',
+    iconBg: 'rgba(99,102,241,0.15)',
+    iconColor: '#6366f1',
+    title: 'Miya neyroplastikasi: o\'zingni o\'zgartirish kuchi',
+    summary: 'Miyaning yangi aloqalar yaratish qobiliyati va uni qanday rivojlantirish mumkin.',
+    readTime: 6,
+    content: `
+      <h2>Neyroplastika nima?</h2>
+      <p>Neyroplastika — bu inson miyasining yangi neyron aloqalar yaratish, eski aloqalarni qayta tashkillash va o'zini doimiy ravishda o'zgartirish qobiliyati. Bu hodisa hayot davomida davom etadi.</p>
+
+      <h2>Asosiy printsiplar</h2>
+      <ul>
+        <li><strong>Foydalanish printsipi:</strong> Doimo ishlatilayotgan neyron aloqalar kuchayadi</li>
+        <li><strong>Yo'qotish printsipi:</strong> Foydalanilmagan aloqalar zaiflashadi va yo'qoladi</li>
+        <li><strong>Birga ishlash printsipi:</strong> Bir vaqtda yonadigan neyronlar bog'lanadi</li>
+      </ul>
+
+      <h2>Qanday mashq qilish kerak?</h2>
+      <p>Miyangizni rivojlantirish uchun ushbu odatlarni qabul qiling:</p>
+      <ol>
+        <li>Yangi til o'rganing — bu eng kuchli mashq</li>
+        <li>Musiqa asbobini chaling</li>
+        <li>Boshqa qo'l bilan yozing (chap qo'l bo'lsa, o'ng)</li>
+        <li>Yangi marshrutlar bilan yuring</li>
+        <li>Meditatsiya qiling — kuniga 10 daqiqa</li>
+        <li>Sport bilan shug'ullaning</li>
+      </ol>
+
+      <blockquote>"Aql — bu paytlik narsa emas. Uni har kuni mashq qilish kerak, xuddi tana mushaklarini." — Doniel Goleman</blockquote>
+
+      <h2>Ilmiy isbotlangan natijalar</h2>
+      <p>2017-yilda Massachusetts Texnologiya Institutida o'tkazilgan tadqiqot shuni ko'rsatdiki, doimiy meditatsiya 8 hafta ichida miyaning hippokamp qismini fizik o'zgartiradi. Bu xotira va o'rganish uchun mas'ul bo'lgan qism.</p>
+
+      <p>Eng muhim xulosa: <strong>siz hech qachon o'zgarmoq uchun kech emassiz</strong>. Miya 80-90 yoshda ham yangi narsalar o'rganishi mumkin.</p>
+    `
+  },
+  {
+    id: 'a2',
+    cat: 'productivity',
+    icon: '⚡',
+    iconBg: 'rgba(245,158,11,0.15)',
+    iconColor: '#f59e0b',
+    title: 'Pomodoro texnikasi: 25 daqiqa qanday hayotni o\'zgartiradi',
+    summary: '1980-yillarda yaratilgan oddiy texnika butun dunyoda mahsuldorlik standarti bo\'ldi.',
+    readTime: 5,
+    content: `
+      <h2>Pomodoro nima?</h2>
+      <p>Pomodoro texnikasi — italyan studenti Francesco Cirillo tomonidan 1980-yillarda yaratilgan vaqtni boshqarish usuli. "Pomodoro" italyancha "pomidor" degan ma'noni anglatadi — bu Cirilloning oshxona taymeri shaklida edi.</p>
+
+      <h2>Qanday ishlaydi?</h2>
+      <ol>
+        <li><strong>25 daqiqa</strong> bir vazifaga to'liq fokus</li>
+        <li><strong>5 daqiqa</strong> dam olish (turing, suv iching)</li>
+        <li>4 ta sikldan keyin <strong>15-30 daqiqa</strong> uzoq dam</li>
+        <li>Takrorlash</li>
+      </ol>
+
+      <h2>Nima uchun ishlaydi?</h2>
+      <p><strong>1. Miya doimo fokus tutomaydi.</strong> Tadqiqotlar shuni ko'rsatdiki, inson miyasi 25-90 daqiqa siklda eng yaxshi ishlaydi. Bundan keyin samaradorlik tushadi.</p>
+
+      <p><strong>2. Stress kamayadi.</strong> Tugatish kerak bo'lgan katta vazifani 25 daqiqalik bo'laklarga bo'lganda, miya stress qilmasdan ish qiladi.</p>
+
+      <p><strong>3. Procrastination yengiladi.</strong> "Hech bo'lmaganda 25 daqiqa qilaman" — bu psixologik to'siqni buzadi.</p>
+
+      <h2>Maslahatlar</h2>
+      <ul>
+        <li>Telefon ovozsiz rejimda — bildirishnomalar yo'q</li>
+        <li>Brauzer'ni yoping — faqat ish</li>
+        <li>Suv stakaningizni yonida tutib turing</li>
+        <li>5 daqiqalik dam'da telefon olmang — turing va yuring</li>
+        <li>Lo-fi yoki klassik musiqa qo'ying</li>
+      </ul>
+
+      <blockquote>"Bir sikl yetadi. Uni boshlang. Qolgani o'zi keladi."</blockquote>
+
+      <p>Lumio'da Fokus rejim mavjud — bir tugma bilan Pomodoro boshlang!</p>
+    `
+  },
+  {
+    id: 'a3',
+    cat: 'health',
+    icon: '💧',
+    iconBg: 'rgba(14,165,233,0.15)',
+    iconColor: '#0ea5e9',
+    title: 'Suv ichish: tana va miya uchun eng oson dori',
+    summary: 'Tana 60% suvdan iborat. Lekin biz ko\'pchilik kerakli miqdordan ozroq ichamiz.',
+    readTime: 4,
+    content: `
+      <h2>Suv nega bunchalik muhim?</h2>
+      <p>Tananing har bir hujayrasi suv kerak. Miya 75%, qon 92%, mushaklar 75%, hatto suyaklar ham 31% suvdan iborat.</p>
+
+      <h2>Suv yetishmasligining belgilari</h2>
+      <ul>
+        <li>🤕 Bosh og'riq</li>
+        <li>😴 Charchoq va energiya yo'qligi</li>
+        <li>🧠 Konsentratsiya pasayishi</li>
+        <li>🍽️ Ochlik hissi (aslida tashnalik)</li>
+        <li>💀 Quruq teri va lablar</li>
+        <li>😤 Asabiylik</li>
+      </ul>
+
+      <h2>Qancha suv ichish kerak?</h2>
+      <p>Universal qoida: <strong>30 ml × tana vazni (kg)</strong>. Masalan, 70 kg odam uchun 2.1 litr.</p>
+
+      <p>Lekin sport, issiq havo va kasallik holatida ko'proq kerak.</p>
+
+      <h2>Sog'lom odat qilish</h2>
+      <ol>
+        <li><strong>Ertalab uyg'ongan zahoti</strong> — 1-2 stakan suv (tana 8 soat suvsiz qoldi)</li>
+        <li><strong>Har ovqatdan 30 daqiqa oldin</strong> — 1 stakan</li>
+        <li><strong>Sport oldidan</strong> — 1 stakan</li>
+        <li><strong>Sport vaqtida</strong> — har 15 daqiqada 100-200 ml</li>
+        <li><strong>Yotishdan 1 soat oldin</strong> — 1 stakan</li>
+      </ol>
+
+      <blockquote>"Ko'pchilik xronik suvsizlikda yashaydi va bunday hayotni odat deb biladi." — Dr. F. Batmanghelidj</blockquote>
+
+      <h2>Maslahat</h2>
+      <p>Lumio'da Suv tracker bor — har stakanni belgilab boring. 8 ta stakan = mukammal kun!</p>
+    `
+  },
+  {
+    id: 'a4',
+    cat: 'psychology',
+    icon: '😌',
+    iconBg: 'rgba(34,197,94,0.15)',
+    iconColor: '#22c55e',
+    title: 'Stress va uni yengish — minnetmindfulness yo\'li',
+    summary: 'Stress hayotning bir qismi, lekin uni boshqarish — mahorat.',
+    readTime: 7,
+    content: `
+      <h2>Stress nima?</h2>
+      <p>Stress — bu tananing tashqi yoki ichki bosimga javob reaksiyasi. U "fight or flight" (jang yoki qoch) holatini keltirib chiqaradi.</p>
+
+      <h2>Stressning 3 turi</h2>
+      <ol>
+        <li><strong>Akkut stress</strong> — qisqa muddatli, foydali ham bo'lishi mumkin</li>
+        <li><strong>Surunkali stress</strong> — uzoq davom etadi, salomatlikga zarar</li>
+        <li><strong>Travmatik stress</strong> — katta voqealardan keyin</li>
+      </ol>
+
+      <h2>Surunkali stressning oqibatlari</h2>
+      <ul>
+        <li>Yurak kasalliklari</li>
+        <li>Yuqori bosim</li>
+        <li>Diabet</li>
+        <li>Depressiya va anksietety</li>
+        <li>Immunitet pasayishi</li>
+        <li>Xotira muammolari</li>
+      </ul>
+
+      <h2>Mindfulness — eng kuchli qarshi vosita</h2>
+      <p>Mindfulness (mindfulness) — bu hozirgi daqiqada to'liq mavjud bo'lish san'ati. Ilmiy tadqiqotlar shuni ko'rsatdiki, kuniga 10 daqiqa meditatsiya:</p>
+      <ul>
+        <li>Cortizol (stress gormoni) ni 25% kamaytiradi</li>
+        <li>Anksietety belgilarini yarmi qisqartiradi</li>
+        <li>Konsentratsiyani 30% oshiradi</li>
+        <li>Uyqu sifatini yaxshilaydi</li>
+      </ul>
+
+      <h2>4-7-8 nafas texnikasi</h2>
+      <p>Stress paytida darhol ishlaydigan oddiy mashq:</p>
+      <ol>
+        <li>4 sekund <strong>nafas oling</strong> (burun bilan)</li>
+        <li>7 sekund <strong>ushlab turing</strong></li>
+        <li>8 sekund <strong>chiqaring</strong> (og'iz bilan)</li>
+        <li>4 marta takrorlang</li>
+      </ol>
+
+      <blockquote>"Siz to'lqinlarni to'xtata olmaysiz, lekin sërfingni o'rganishingiz mumkin." — Jon Kabat-Zinn</blockquote>
+
+      <h2>Lumio bilan stress kamaytirish</h2>
+      <ul>
+        <li>Meditatsiya sahifasini ishlating — 4-7-8 mavjud</li>
+        <li>Kayfiyat tracker — pattern'larni ko'ring</li>
+        <li>Kundalik yozing — fikrlarni qog'ozga tushiring</li>
+      </ul>
+    `
+  },
+  {
+    id: 'a5',
+    cat: 'growth',
+    icon: '🎯',
+    iconBg: 'rgba(168,85,247,0.15)',
+    iconColor: '#a855f7',
+    title: 'Atomic Habits: Kichik harakatlardan ulkan natijalar',
+    summary: 'James Clearning bestseller kitobidan asosiy g\'oyalar va ularni hayotga qanday tatbiq qilish.',
+    readTime: 8,
+    content: `
+      <h2>1% qoidasi</h2>
+      <p>Agar har kuni 1% yaxshilansangiz, bir yilda <strong>37 marta yaxshi</strong> bo'lasiz. Aksincha, har kuni 1% yomonlashsangiz, deyarli nolga tushasiz.</p>
+
+      <p>Mukammallik bir kunlik harakat emas — bu kichik harakatlar yig'indisi.</p>
+
+      <h2>Odat shakllantirishning 4 qonuni</h2>
+
+      <h3>1. Aniq qiling (Make it obvious)</h3>
+      <ul>
+        <li>"Har kuni soat 7:00 da, oshxonada, 1 stakan suv ichaman"</li>
+        <li>Habit stacking: "X dan keyin Y qilaman"</li>
+        <li>Muhitni o'zgartiring — kitob diqqatga ko'rinadigan joyda</li>
+      </ul>
+
+      <h3>2. Jozibali qiling (Make it attractive)</h3>
+      <ul>
+        <li>Yoqimli narsa bilan birlashtiring</li>
+        <li>Sevimli musiqani faqat sport vaqtida tinglang</li>
+        <li>Identifikatsiya: "Men sport qilaman" emas, "Men sportchiman"</li>
+      </ul>
+
+      <h3>3. Oson qiling (Make it easy)</h3>
+      <ul>
+        <li>2 daqiqa qoidasi: yangi odat 2 daqiqadan oshmasin</li>
+        <li>"Kitob o'qish" emas, "1 sahifa o'qish"</li>
+        <li>"Sport zaliga borish" emas, "sport kiyimini kiyish"</li>
+      </ul>
+
+      <h3>4. Qoniqarli qiling (Make it satisfying)</h3>
+      <ul>
+        <li>Darhol mukofot — masalan, belgilash (✓)</li>
+        <li>Streak yaratish va saqlash</li>
+        <li>Progressni ko'rinarli qilish</li>
+      </ul>
+
+      <h2>Identity-based habits</h2>
+      <blockquote>"Maqsadingiz emas, maqsadlaringiz darajangizning asosi." — James Clear</blockquote>
+
+      <p>Yutuqqa erishish uchun avval o'zingiz haqida fikringizni o'zgartiring:</p>
+      <ul>
+        <li>"Men chekishni tashlamoqchiman" → "Men chekmaydigan odamman"</li>
+        <li>"Men sport qilishni xohlayman" → "Men sportchi turidagi odam"</li>
+        <li>"Men kitob o'qishni xohlayman" → "Men kitobxonman"</li>
+      </ul>
+
+      <h2>Lumio bilan tatbiq</h2>
+      <p>Lumio'da bu printsiplarning hammasi:</p>
+      <ul>
+        <li>✅ Aniq odatlar - vaqt va jadval</li>
+        <li>✅ Streak — qoniqarli</li>
+        <li>✅ Heatmap — ko'rinarli progress</li>
+        <li>✅ XP va daraja — mukofot tizimi</li>
+        <li>✅ Pet evolutsiyasi — identifikatsiya</li>
+      </ul>
+    `
+  },
+  {
+    id: 'a6',
+    cat: 'health',
+    icon: '😴',
+    iconBg: 'rgba(99,102,241,0.15)',
+    iconColor: '#6366f1',
+    title: 'Sog\'lom uyqu: hayotning yashirin asosi',
+    summary: 'Uyqu — bu shunchaki dam emas. Bu miyaning yangidan ishga tushishi.',
+    readTime: 6,
+    content: `
+      <h2>Uyqu nima uchun zarur?</h2>
+      <p>Uyqu vaqtida sizning miyangiz va tananingiz juda muhim ishlarni amalga oshiradi:</p>
+      <ul>
+        <li><strong>Toksinlarni tozalash</strong> — glymphatic system ishlaydi</li>
+        <li><strong>Xotirani mustahkamlash</strong> — kunlik bilim doimiy xotiraga ko'chiriladi</li>
+        <li><strong>Mushaklarni tiklash</strong> — o'sish gormoni ajraladi</li>
+        <li><strong>Immunitetni tiklash</strong> — kasalliklarga qarshi himoya</li>
+        <li><strong>Hissiy qayta ishlov</strong> — kun voqealarini qabul qilish</li>
+      </ul>
+
+      <h2>Qancha uxlash kerak?</h2>
+      <ul>
+        <li>👶 Chaqaloqlar (0-1 yosh): 14-17 soat</li>
+        <li>🧒 Bolalar (6-13): 9-11 soat</li>
+        <li>🧑 O'smirlar (14-17): 8-10 soat</li>
+        <li>👨 Kattalar (18-64): <strong>7-9 soat</strong></li>
+        <li>👴 Keksalar (65+): 7-8 soat</li>
+      </ul>
+
+      <h2>Sog'lom uyqu uchun 7 qoida</h2>
+      <ol>
+        <li><strong>Doimiy jadval</strong> — har kuni bir vaqtda yotish va turish</li>
+        <li><strong>Yotishdan 1 soat oldin telefon yo'q</strong> — ko'k yorug'lik melatonin'ni bostiradi</li>
+        <li><strong>Xona qorong'i va salqin</strong> — 18-20°C ideal</li>
+        <li><strong>Yotishdan 4 soat oldin kofeini yo'q</strong></li>
+        <li><strong>Sport, lekin yotishdan 3 soat oldin emas</strong></li>
+        <li><strong>Kechki yengil ovqat</strong> — og'ir ovqat uyquni buzadi</li>
+        <li><strong>Yotishdan oldin meditatsiya yoki kitob</strong></li>
+      </ol>
+
+      <blockquote>"Kim yaxshi uxlamasa, yaxshi yashay olmaydi." — Dr. Matthew Walker</blockquote>
+
+      <h2>Uyqusizlik xavfi</h2>
+      <p>5 soatdan kam uxlash:</p>
+      <ul>
+        <li>Yurak kasalliklari xavfini 200% oshiradi</li>
+        <li>Diabet xavfini 50% oshiradi</li>
+        <li>Alzheimer xavfini 30% oshiradi</li>
+        <li>Depressiyaga olib keladi</li>
+        <li>Avtohalokat xavfini 4 marta oshiradi</li>
+      </ul>
+
+      <h2>Lumio yordami</h2>
+      <p>Lumio'da Uyqu tracker bor — har kuni nechcha soat va sifatini belgilang. Patternni ko'rasiz!</p>
+    `
+  },
+  {
+    id: 'a7',
+    cat: 'psychology',
+    icon: '🎭',
+    iconBg: 'rgba(236,72,153,0.15)',
+    iconColor: '#ec4899',
+    title: 'Tasalli zonasidan chiqish: o\'sishning yagona yo\'li',
+    summary: 'Qulaylik dushman emas, lekin u sizni rivojlantirmaydi.',
+    readTime: 5,
+    content: `
+      <h2>Tasalli zonasi nima?</h2>
+      <p>Tasalli zonasi (comfort zone) — bu siz o'zingizni xavfsiz va boshqaruvda his qiladigan psixologik holat. Hech qanday qiyinchilik yo'q, lekin... hech qanday o'sish ham yo'q.</p>
+
+      <h2>3 ta zona</h2>
+      <ol>
+        <li><strong>🛋️ Tasalli zonasi</strong> — qulay, oddiy, bekor</li>
+        <li><strong>📈 O'sish zonasi</strong> — qiyin, lekin imkoniyatli — bu sizga kerak!</li>
+        <li><strong>😱 Panika zonasi</strong> — juda qiyin, foydali emas</li>
+      </ol>
+
+      <h2>Belgilar — sizda problema bor</h2>
+      <ul>
+        <li>Har kun bir xil kunlar</li>
+        <li>Yangi narsa qilishdan qo'rqasiz</li>
+        <li>Mahalliy oddiyligingizni "muvaffaqiyat" deb hisoblaysiz</li>
+        <li>Uzoq vaqt bir xil ishda qolasiz</li>
+        <li>Bashoratli, lekin zerikkansiz</li>
+      </ul>
+
+      <h2>Qadamma-qadam chiqish</h2>
+      <p>To'liq tashlamang — kichik qadamlarda chiqing:</p>
+
+      <h3>Kuniga 1 ta yangi narsa</h3>
+      <ul>
+        <li>Yangi yo'l bilan ishga boring</li>
+        <li>Notanish odam bilan suhbatlashing</li>
+        <li>Yangi taom yeb ko'ring</li>
+        <li>Boshqa qo'l bilan tishingizni tozalang</li>
+        <li>Yangi maqola o'qing</li>
+      </ul>
+
+      <h3>Haftalik 1 ta katta qadam</h3>
+      <ul>
+        <li>Yangi sport turi sinab ko'ring</li>
+        <li>Sahnaga chiqing (gapiring)</li>
+        <li>Yangi do'st orttiring</li>
+        <li>Loyihani boshlang</li>
+      </ul>
+
+      <h3>Oylik 1 ta katta tajriba</h3>
+      <ul>
+        <li>Yangi joyga sayohat</li>
+        <li>Kursga yoziling</li>
+        <li>Kitob yozing/blog boshlang</li>
+        <li>Yangi til boshlang</li>
+      </ul>
+
+      <blockquote>"Hayotning aroming siz uchun qulay bo'lgan joydan tashqarida boshlanadi." — Niel Donald Walsh</blockquote>
+
+      <h2>Qo'rquvni boshqarish</h2>
+      <p>Qo'rquv tabiy. Maslahat: <strong>"5 sekund qoidasi"</strong> (Mel Robbins):</p>
+      <ol>
+        <li>Yangi narsa qilish kerakligini his qildingizmi?</li>
+        <li>5...4...3...2...1 — sanang</li>
+        <li>QILING. Fikrlamang, faqat qiling</li>
+      </ol>
+
+      <p>5 sekund — miya hali "yo'q" demaganida.</p>
+    `
+  },
+  {
+    id: 'a8',
+    cat: 'science',
+    icon: '🧬',
+    iconBg: 'rgba(34,197,94,0.15)',
+    iconColor: '#22c55e',
+    title: 'Dofamin: motivatsiya va baxtning kalitsi',
+    summary: 'Bu kichik molekula sizning hayotiz qanday yashashingizni belgilaydi.',
+    readTime: 6,
+    content: `
+      <h2>Dofamin nima?</h2>
+      <p>Dofamin — bu miya neyrotransmitteri. U nega mas'ul:</p>
+      <ul>
+        <li>Motivatsiya va xohish</li>
+        <li>Mukofot hissi</li>
+        <li>O'rganish va xotira</li>
+        <li>Diqqat</li>
+        <li>Harakat boshqaruvi</li>
+      </ul>
+
+      <h2>Dofamin "tuzog'i"</h2>
+      <p>Hozirgi dunyoda biz <strong>tezkor dofamin</strong> bilan bombardimon qilinmoqdamiz:</p>
+      <ul>
+        <li>📱 Sotsial tarmoqlardagi like va xabar</li>
+        <li>🍔 Tez ovqat</li>
+        <li>🎮 Video o'yinlar</li>
+        <li>🎬 Netflix binge-watching</li>
+        <li>📺 Qisqa videolar (TikTok)</li>
+      </ul>
+
+      <p>Bu narsalar miyani <strong>doimo dofamin oqibat</strong> qiladi. Natijada normal hayot zerikkan tuyiladi.</p>
+
+      <h2>Dofamin detoksiyasi</h2>
+      <p>Doktor Anna Lembke (Stanford) tavsiya etadi:</p>
+      <ol>
+        <li><strong>30 kun "dofamin pasti"</strong> — bir narsani butunlay tark eting</li>
+        <li>Birinchi 1-2 hafta og'ir bo'ladi (lomka)</li>
+        <li>3-4 hafta — yangi normal his bo'la boshlaydi</li>
+        <li>30 kundan keyin — qaytarish, lekin kam miqdorda</li>
+      </ol>
+
+      <h2>Sog'lom dofamin manbalari</h2>
+      <ul>
+        <li>💪 <strong>Sport</strong> — eng kuchli tabiiy dofamin</li>
+        <li>🌅 <strong>Quyosh nuri</strong> — ertalab 10-15 daqiqa</li>
+        <li>🎯 <strong>Maqsadga erishish</strong> — kichik yutuqlar</li>
+        <li>🤗 <strong>Quchoqlash, sevish</strong></li>
+        <li>📚 <strong>O'rganish</strong> — yangi narsa</li>
+        <li>🥦 <strong>Sog'lom ovqat</strong> — turshi ovqat</li>
+        <li>💧 <strong>Sovuq dush</strong> — dofamin 250% oshadi</li>
+        <li>😴 <strong>Yetarli uyqu</strong></li>
+        <li>🎵 <strong>Musiqa tinglash</strong></li>
+        <li>🧘 <strong>Meditatsiya</strong></li>
+      </ul>
+
+      <blockquote>"Hozirgi davrda eng katta motivatsion buzilish — biz juda ko'p mukofot olamiz va kam ishchanamiz." — Dr. Anna Lembke</blockquote>
+
+      <h2>Lumio bu yerda yordam beradi</h2>
+      <p>Lumio sizga <strong>sog'lom dofamin manbalari</strong>ni beradi:</p>
+      <ul>
+        <li>Vazifani bajarish — kichik mukofot</li>
+        <li>Streak — uzoq muddatli motivatsiya</li>
+        <li>Daraja oshish — yutuq hissi</li>
+        <li>Pet evolutsiyasi — ko'rinarli o'sish</li>
+      </ul>
+    `
+  },
+  {
+    id: 'a9',
+    cat: 'productivity',
+    icon: '🌅',
+    iconBg: 'rgba(245,158,11,0.15)',
+    iconColor: '#f59e0b',
+    title: 'Ertalabki rituallar: dunyoning eng muvaffaqiyatli odamlari sirri',
+    summary: "Bill Gates, Elon Musk, Tim Cook — barchasi ertalab nimadir alohida qiladi.",
+    readTime: 5,
+    content: `
+      <h2>Nega ertalab muhim?</h2>
+      <p>Ertalab — bu kun davomida eng kuchli iroda kuchi vaqti. Quyidagi sabablar bor:</p>
+      <ul>
+        <li>Kortizol darajasi yuqori — diqqat yaxshi</li>
+        <li>Hech kim sizni bezovta qilmaydi</li>
+        <li>Kun boshlanmagan — chalg'itish yo'q</li>
+        <li>Bir kun davomida pozitiv kayfiyat</li>
+      </ul>
+
+      <h2>Mashhur odamlarning ertalabki rituallari</h2>
+
+      <h3>🍎 Tim Cook (Apple CEO)</h3>
+      <ul>
+        <li>3:45 da uyg'onadi</li>
+        <li>1 soat email o'qiydi</li>
+        <li>Sport zaliga boradi (45 daq)</li>
+        <li>Kofe ichadi</li>
+      </ul>
+
+      <h3>💻 Bill Gates</h3>
+      <ul>
+        <li>1 soat sport (kardio + kuch)</li>
+        <li>Kitob o'qiydi yarim soat</li>
+        <li>Ish boshlashdan oldin yangiliklar</li>
+      </ul>
+
+      <h3>🚀 Elon Musk</h3>
+      <ul>
+        <li>7:00 da uyg'onadi</li>
+        <li>Email tekshiradi (30 daq)</li>
+        <li>Du-shi yeydi</li>
+        <li>Bolalari bilan vaqt o'tkazadi</li>
+      </ul>
+
+      <h2>Sizning oddiy ertalabki ritualingiz</h2>
+      <p><strong>5-8-10 formulasi</strong>:</p>
+
+      <h3>5 daqiqa — Tana</h3>
+      <ul>
+        <li>2 stakan suv iching</li>
+        <li>Yengil cho'zilish</li>
+        <li>Yuvinish</li>
+      </ul>
+
+      <h3>8 daqiqa — Aql</h3>
+      <ul>
+        <li>5 daqiqa meditatsiya</li>
+        <li>3 daqiqa kundalik (3 ta minnatdor narsa)</li>
+      </ul>
+
+      <h3>10 daqiqa — Reja</h3>
+      <ul>
+        <li>Bugungi 3 ta MIT (Most Important Tasks)</li>
+        <li>Maqsadlarni ko'rib chiqish</li>
+        <li>Birinchi vazifaga kirishish</li>
+      </ul>
+
+      <h2>Nima qilish KERAK EMAS?</h2>
+      <ul>
+        <li>📱 Telefon olish (eng birinchi 30 daq ichida)</li>
+        <li>📧 Email tekshirish (boshqa odamlar prioriteti)</li>
+        <li>🎬 Sotsial tarmoqlar</li>
+        <li>📺 Yangiliklar (negativ kayfiyat)</li>
+      </ul>
+
+      <blockquote>"Ertalab qanday boshlasangiz, kun shunday bo'ladi." — Hal Elrod, "Miracle Morning"</blockquote>
+
+      <h2>Kichik kichikdan boshlang</h2>
+      <p>Hozir 7-da turuasizmi? Ertaga 6:50 da turing. Keyingi hafta 6:40. Sekin-asta 1 soat oldin uyg'onasiz.</p>
+
+      <p>Lumio'da ertalabki odatlarni kuzating — har kun bir xil vaqtda eslatma keladi!</p>
+    `
+  },
+  {
+    id: 'a10',
+    cat: 'growth',
+    icon: '📚',
+    iconBg: 'rgba(99,102,241,0.15)',
+    iconColor: '#6366f1',
+    title: 'Kitob o\'qish: xayrli odat va miyaning eng yaxshi mashqi',
+    summary: "5 daqiqa kitob o'qish — bu bir kun stress kamaytiradi 68%.",
+    readTime: 6,
+    content: `
+      <h2>Kitob o'qishning kuchi</h2>
+      <p>Kitob o'qish — bu eng yaxshi miya mashqi. U nega zo'r:</p>
+      <ul>
+        <li>🧠 Miyaga yangi neyron aloqalar</li>
+        <li>📚 Dunyoning eng aqlli odamlari bilan suhbat</li>
+        <li>🎯 Diqqatni rivojlantiradi</li>
+        <li>💭 Tasavvurni boyitadi</li>
+        <li>😌 Stress kamaytiradi</li>
+        <li>📝 So'z boyligini kengaytiradi</li>
+      </ul>
+
+      <h2>Ilmiy isbotlangan foydalar</h2>
+      <p>Yale Universitetining 12 yillik tadqiqoti shuni ko'rsatdi: kuniga 30 daqiqa kitob o'qiganlar:</p>
+      <ul>
+        <li>O'qimaganlardan o'rtacha <strong>23 oy ortiq yashaydi</strong></li>
+        <li>Alzheimer xavfini 32% kamaytiradi</li>
+        <li>Empatiya darajasi yuqoriroq</li>
+        <li>Ish samaradorligi 25% yuqoriroq</li>
+      </ul>
+
+      <h2>Kitobxonlik problemasi</h2>
+      <p>Ko'p odamlar kitob o'qishni tark qilishadi chunki:</p>
+      <ul>
+        <li>"Vaqtim yo'q" (lekin Instagram'ga 3 soat sarflashadi)</li>
+        <li>"Zerikarli" (kitob noto'g'ri tanlangan)</li>
+        <li>"Tushunmayman" (juda murakkab kitob bilan boshlangan)</li>
+        <li>"Diqqatim yo'q" (telefon bilan parallel o'qiydi)</li>
+      </ul>
+
+      <h2>Kitobxon bo'lish — 5 qadam</h2>
+
+      <h3>1. Sevimli janrni toping</h3>
+      <p>Roman, biografiya, ilmiy, fantastika, tarix... — birini sinab ko'ring.</p>
+
+      <h3>2. 25 sahifalik qoida</h3>
+      <p>Birinchi 25 sahifa zerikkan tuyilsa — kitobni almashtiring. Hayot juda qisqa yoqmaydigan kitob uchun.</p>
+
+      <h3>3. Telefon boshqa xonada</h3>
+      <p>Diqqat — toza bo'lishi kerak. Telefon yonida bo'lsa, miya darhol uni o'ylaydi.</p>
+
+      <h3>4. Doimiy vaqt</h3>
+      <p>Yotishdan oldin 30 daqiqa, ertalab kofe bilan, transportda...</p>
+
+      <h3>5. Kitobxonlik klubiga qo'shiling</h3>
+      <p>Birgalikda o'qish — motivatsiya beradi.</p>
+
+      <h2>Tavsiya etilgan kitoblar</h2>
+
+      <h3>O'zini rivojlantirish</h3>
+      <ul>
+        <li>"Atomic Habits" — James Clear</li>
+        <li>"Deep Work" — Cal Newport</li>
+        <li>"The 7 Habits..." — Stephen Covey</li>
+        <li>"Mindset" — Carol Dweck</li>
+      </ul>
+
+      <h3>Psixologiya</h3>
+      <ul>
+        <li>"Thinking, Fast and Slow" — Daniel Kahneman</li>
+        <li>"Man's Search for Meaning" — Viktor Frankl</li>
+        <li>"The Power of Now" — Eckhart Tolle</li>
+      </ul>
+
+      <h3>Klassika</h3>
+      <ul>
+        <li>"Meditations" — Marcus Aurelius</li>
+        <li>"Tao Te Ching" — Lao Tzu</li>
+        <li>"Sapiens" — Yuval Harari</li>
+      </ul>
+
+      <blockquote>"Bir yilda 1 ta kitob o'qigan odam, 1 yilda 0 ta o'qigan odamdan ulkan farqda bo'ladi. 1 oyda 1 ta kitob — bu boshqa daraja." — Charlie Munger</blockquote>
+
+      <p><strong>Lumio'da</strong> Kitoblar sahifasi bor — o'qilayotgan kitoblar va ularning progressini kuzating!</p>
+    `
+  },
+  {
+    id: 'a11',
+    cat: 'health',
+    icon: '🏃',
+    iconBg: 'rgba(239,68,68,0.15)',
+    iconColor: '#ef4444',
+    title: 'Sport: tana, miya va kayfiyat uchun yagona dori',
+    summary: "Hech bir dori sport kabi ko'p kasalliklarga qarshi ishlay olmaydi.",
+    readTime: 5,
+    content: `
+      <h2>Sportning hayratlanarli foydalari</h2>
+      <p>Tadqiqotlarda sport quyidagilarni ko'rsatadi:</p>
+      <ul>
+        <li><strong>Antidepressant</strong> — Prozac kabi samaradorlik (lekin yon ta'sirsiz)</li>
+        <li><strong>Yurak kasalliklari</strong> — 30% kamayadi</li>
+        <li><strong>Diabet</strong> — 50% kamayadi</li>
+        <li><strong>Saraton</strong> — ba'zi turlari 25% kamayadi</li>
+        <li><strong>Alzheimer</strong> — 40% kamayadi</li>
+        <li><strong>Uyqu sifati</strong> — 65% yaxshi</li>
+        <li><strong>Energiya</strong> — 65% oshadi</li>
+        <li><strong>Diqqat va xotira</strong> — sezilarli yaxshi</li>
+      </ul>
+
+      <h2>Hech bir dori bunday ko'p ish qila olmaydi!</h2>
+
+      <h2>Qancha sport kerak?</h2>
+      <p>Jahon Sog'liqni saqlash tashkiloti tavsiyalari:</p>
+      <ul>
+        <li><strong>Haftada 150 daqiqa</strong> o'rta intensiv sport (yurish, yengil yugurish)</li>
+        <li>Yoki <strong>haftada 75 daqiqa</strong> qattiq intensiv (yugurish, HIIT)</li>
+        <li>Plus <strong>haftada 2 marta</strong> kuch mashqlari</li>
+      </ul>
+
+      <p>Bu ko'p tuyiladimi? <strong>Kuniga 22 daqiqa</strong> — bu hammasi.</p>
+
+      <h2>Eng oson boshlash uslubi</h2>
+
+      <h3>1-hafta: Yurish</h3>
+      <p>Kuniga 10 daqiqa yuring. Hech narsa kerak emas — faqat ko'cha va eski krossovkalar.</p>
+
+      <h3>2-hafta: 20 daqiqa</h3>
+      <p>Yurishni 20 daqiqaga oshiring. Tezroq qadam bilan.</p>
+
+      <h3>3-hafta: Yugurish-yurish</h3>
+      <p>1 daqiqa yugurish, 2 daqiqa yurish. 5 marta takrorlang.</p>
+
+      <h3>4-hafta: Aralashtirish</h3>
+      <p>3 kun yurish/yugurish, 2 kun uy mashqlari (Lumio'da shablonlar bor!)</p>
+
+      <h2>Uy mashqlari</h2>
+      <p>Sport zaliga bormaslik mumkin! Uyda:</p>
+      <ul>
+        <li>Push-ups, squats, lunges</li>
+        <li>Plank, burpees</li>
+        <li>YouTube'da bepul videolar</li>
+        <li>Lumio Sport bo'limi - 10 ta tayyor shablon</li>
+      </ul>
+
+      <h2>Eng katta xatolar</h2>
+      <ul>
+        <li>❌ Hammasini bir kunda qilmoqchi bo'lish — charchashlik</li>
+        <li>❌ Ko'p maqsad qo'yish — "Tomarrow yana boshlayman"</li>
+        <li>❌ Faqat tarozi raqamiga qarash — natijalar boshqa joylarda</li>
+        <li>❌ Yetarli dam olmaslik — mushaklar dam'da o'sadi</li>
+      </ul>
+
+      <blockquote>"Sport sizni yengmaydi — siz yenggandagina jiddiy ishlaydi." — Nelson Mandela</blockquote>
+
+      <h2>Lumio bilan</h2>
+      <p>Lumio'da Sport sahifasi:</p>
+      <ul>
+        <li>10 ta tayyor uy mashqlari shablonlari</li>
+        <li>Workout streak — motivatsiya</li>
+        <li>Eslatmalar — sport vaqti unutilmasin</li>
+      </ul>
+    `
+  },
+  {
+    id: 'a12',
+    cat: 'psychology',
+    icon: '💎',
+    iconBg: 'rgba(168,85,247,0.15)',
+    iconColor: '#a855f7',
+    title: 'Minnatdorlik kuchi: oddiy odat, ulkan natija',
+    summary: "Har kuni 3 ta minnatdor narsa yozish — hayotni o'zgartiradi.",
+    readTime: 4,
+    content: `
+      <h2>Minnatdorlik nima?</h2>
+      <p>Minnatdorlik (gratitude) — bu hayotdagi yaxshi narsalarni ko'rish va qadrlash qobiliyati.</p>
+
+      <h2>Ilmiy isbotlangan foydalari</h2>
+      <p>Pennsylvania Universitetida 10 yillik tadqiqot natijasi:</p>
+      <ul>
+        <li><strong>Baxt darajasi</strong> 25% yuqori</li>
+        <li><strong>Depressiya</strong> 35% kamroq</li>
+        <li><strong>Yaxshiroq uyqu</strong> — 8% chuqurroq</li>
+        <li><strong>Immunitet</strong> kuchliroq</li>
+        <li><strong>Munosabatlar</strong> chuqurroq</li>
+        <li><strong>Mahsuldorlik</strong> 12% yuqori</li>
+        <li><strong>Empatiya</strong> rivojlanadi</li>
+      </ul>
+
+      <h2>Minnatdorlik mashqi — 3 ta yaxshi narsa</h2>
+      <p>Eng oddiy va eng kuchli mashq:</p>
+      <ol>
+        <li>Har kuni (kechqurun) <strong>3 ta yaxshi narsani yozing</strong></li>
+        <li>Ular kichik bo'lishi mumkin: "Quyoshli kun edi", "Onam qo'ng'iroq qildi"</li>
+        <li>Har biri uchun <strong>"Nega bu yaxshi?"</strong> deb javob bering</li>
+        <li>Bunda 5-7 daqiqa ketadi</li>
+      </ol>
+
+      <p>Tadqiqot: bu odat 30 kundan keyin <strong>baxt darajasini doimiy 12% oshiradi</strong>.</p>
+
+      <h2>Minnatdorlik xati</h2>
+      <p>Ko'proq kuchli mashq:</p>
+      <ol>
+        <li>Sizga ta'sir o'tkazgan odamni eslang</li>
+        <li>Unga xat yozing — uni qanday ta'sir qilgani haqida</li>
+        <li>Ko'p tafsilot bering, samimiy bo'ling</li>
+        <li>Imkon bo'lsa — yuzma-yuz o'qib bering</li>
+      </ol>
+
+      <p>Tadqiqotda: bu 1 marta qiling — natija <strong>1 oy davom etadi</strong>.</p>
+
+      <h2>Minnatdorlik xayolan</h2>
+      <p>Ertalab uyg'onganda 1 daqiqa:</p>
+      <ol>
+        <li>Tana uchun minnatdorlik (sog'liq, ko'rish, eshitish)</li>
+        <li>Aql uchun minnatdorlik (fikrlay olish, his qilish)</li>
+        <li>Atrof uchun minnatdorlik (oila, do'stlar, uy)</li>
+      </ol>
+
+      <h2>Eng katta minnatdorlik manzili</h2>
+
+      <h3>"Negatif vizualizatsiya" — stoik usuli</h3>
+      <p>Marcus Aurelius o'rgatgan:</p>
+      <ol>
+        <li>Sizdagi narsalar yo'q bo'lsa, qanday bo'lardi?</li>
+        <li>Ko'zingiz ko'rmasa? Oilangiz yo'q bo'lsa?</li>
+        <li>Bu narsalar borligini hozir minnatdor bo'ling</li>
+      </ol>
+
+      <p>Bu sizni bor narsalarga qaytaradi.</p>
+
+      <blockquote>"Mavjud bo'lgan narsalarning qadrini bilmasangiz, kelgusi narsalar sizni baxtli qila olmaydi." — Buddha</blockquote>
+
+      <h2>Lumio'da minnatdorlik</h2>
+      <ul>
+        <li>Kundalik bo'limi — 3 ta minnatdor narsa</li>
+        <li>Kayfiyat tracker — pattern'larni ko'rasiz</li>
+        <li>Eslatma — har kechqurun yodga solinadi</li>
+      </ul>
+
+      <p>Bu eng oson, lekin eng kuchli o'zgarish — bugundan boshlang!</p>
+    `
+  }
+];
+
+const ARTICLE_CATS = {
+  all: { name: 'Hammasi', icon: '📚' },
+  science: { name: 'Ilm-fan', icon: '🔬' },
+  psychology: { name: 'Psixologiya', icon: '🧠' },
+  health: { name: 'Salomatlik', icon: '💪' },
+  growth: { name: 'Rivojlanish', icon: '🌱' },
+  productivity: { name: 'Mahsuldorlik', icon: '⚡' }
+};
+
+let _currentArticleCat = 'all';
+
+function setArticleCategory(cat) {
+  _currentArticleCat = cat;
+  document.querySelectorAll('#articleTabs .tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.cat === cat);
+  });
+  renderArticles();
+}
+
+function renderArticles() {
+  const list = document.getElementById('articlesList');
+  if (!list) return;
+  let filtered = ARTICLES;
+  if (_currentArticleCat !== 'all') {
+    filtered = ARTICLES.filter(a => a.cat === _currentArticleCat);
+  }
+  list.innerHTML = filtered.map(a => `
+    <button class="article-card" onclick="openArticle('${a.id}')">
+      <div class="article-card-header">
+        <div class="article-icon" style="background:${a.iconBg};color:${a.iconColor}">${a.icon}</div>
+        <div class="article-cat-badge">${ARTICLE_CATS[a.cat]?.icon || ''} ${ARTICLE_CATS[a.cat]?.name || a.cat}</div>
+      </div>
+      <div class="article-title">${a.title}</div>
+      <div class="article-summary">${a.summary}</div>
+      <div class="article-meta">
+        <span class="article-read-time"><i class="fa-regular fa-clock"></i> ${a.readTime} daq o'qish</span>
+        <span><i class="fa-solid fa-arrow-right"></i></span>
+      </div>
+    </button>
+  `).join('');
+}
+
+function openArticle(id) {
+  const article = ARTICLES.find(a => a.id === id);
+  if (!article) return;
+  const c = document.getElementById('modalContent');
+  if (!c) return;
+  c.innerHTML = `
+    <div class="article-reader">
+      <div class="modal-head">
+        <div class="modal-title">${ARTICLE_CATS[article.cat]?.icon || ''} ${ARTICLE_CATS[article.cat]?.name || article.cat}</div>
+        <button class="icon-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="article-reader-header">
+        <div class="article-icon" style="background:${article.iconBg};color:${article.iconColor};width:56px;height:56px;font-size:1.7rem">${article.icon}</div>
+        <div>
+          <h1>${article.title}</h1>
+          <div class="muted" style="font-size:.82rem"><i class="fa-regular fa-clock"></i> ${article.readTime} daq o'qish</div>
+        </div>
+      </div>
+      <div class="article-content">${article.content}</div>
+      <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);text-align:center">
+        <p class="muted" style="font-size:.82rem;margin-bottom:1rem">O'qishni tugatdingizmi?</p>
+        <button class="btn btn-primary" onclick="closeModal();markArticleRead('${article.id}')">
+          <i class="fa-solid fa-check"></i> Tugatdim! (+10 XP)
+        </button>
+      </div>
+    </div>
+  `;
+  document.getElementById('modalOverlay').classList.add('open');
+  // Track read
+  if (!state.articleViews) state.articleViews = {};
+  state.articleViews[id] = (state.articleViews[id] || 0) + 1;
+  save();
+}
+
+function markArticleRead(id) {
+  if (!state.articlesRead) state.articlesRead = [];
+  if (!state.articlesRead.includes(id)) {
+    state.articlesRead.push(id);
+    if (typeof addXp === 'function') addXp(10, 'Maqola o\'qish');
+    try { fx?.play('complete'); } catch {}
+    save();
+    if (state.articlesRead.length === 1) {
+      setTimeout(() => toast('🎉 Birinchi maqolani tugatdingiz!', 'success'), 600);
+    } else if (state.articlesRead.length === 5) {
+      setTimeout(() => toast('🌟 5 ta maqola — chinakam o\'quvchisiz!', 'success'), 600);
+    } else if (state.articlesRead.length === ARTICLES.length) {
+      setTimeout(() => {
+        toast('🏆 Hammasini o\'qidingiz! Ajoyib!', 'success');
+        try { window.confetti?.celebrate(); } catch {}
+      }, 600);
+    }
+  } else {
+    toast('✅ Tugatildi', 'info');
+  }
+}
+
+// Hook into navigation
+{
+  const _origGoArt = window.goPage;
+  if (_origGoArt) {
+    window.goPage = function(page) {
+      _origGoArt(page);
+      if (page === 'articles') {
+        setTimeout(renderArticles, 100);
+      }
+    };
+  }
+}
+setTimeout(() => {
+  document.querySelectorAll('.nav-item[data-page="articles"]').forEach(n => {
+    n.addEventListener('click', () => setTimeout(renderArticles, 150));
+  });
+}, 2000);
+
+window.setArticleCategory = setArticleCategory;
+window.renderArticles = renderArticles;
+window.openArticle = openArticle;
+window.markArticleRead = markArticleRead;
+
+// Auto-render if articles page is somehow active
+setTimeout(() => {
+  if (document.getElementById('page-articles')?.classList.contains('active')) {
+    renderArticles();
+  }
+}, 3000);
+
+console.log('📚 Lumio v1.3 — 12 articles + 10 workout templates loaded');
