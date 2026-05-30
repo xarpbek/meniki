@@ -7911,3 +7911,110 @@ setTimeout(() => {
 }, 3000);
 
 console.log('📚 Lumio v1.3 — 12 articles + 10 workout templates loaded');
+
+
+
+// ════ YANGI MAQOLALAR (v1.4) — Uzun, O'rtacha, Qisqa ════
+ARTICLES.push(
+  // ⚡ QISQA (2-3 daq)
+  {
+    id:'a25', cat:'science', icon:'🧪', iconBg:'rgba(99,102,241,0.15)', iconColor:'#6366f1',
+    title:'5 ta ilmiy fakt: miya haqida bilmagan narsalaringiz',
+    summary:'Miyangiz haqida hayratlanarli faktlar — 2 daqiqada.',
+    readTime: 2,
+    content:`<h2>1. Miya og'riqni his qilmaydi</h2><p>Miyada og'riq retseptorlari yo'q. Bosh og'rig'i — miya atrofidagi to'qimalardan keladi.</p><h2>2. Miya 20% energiya sarflaydi</h2><p>Tana vaznining 2% bo'lsa ham, butun energiyaning 20% ni oladi.</p><h2>3. Miya tezligi — 430 km/soat</h2><p>Neyron signallari sekundiga 120 m tezlikda harakatlanadi.</p><h2>4. 86 milliard neyron</h2><p>Har biri 10,000 gacha aloqaga ega — Yer sayyorasidagi yulduzlardan ko'p.</p><h2>5. Uyqu paytida miya tozalanadi</h2><p>Glymphatic tizim toksinlarni faqat uyqu paytida tozalaydi. Shuning uchun uyqu muhim!</p>`
+  },
+  {
+    id:'a26', cat:'health', icon:'🥶', iconBg:'rgba(14,165,233,0.15)', iconColor:'#0ea5e9',
+    title:'Sovuq dush: 3 daqiqada sog\'liq va energiya',
+    summary:'Wim Hof usuli — nega millionlab odam har kuni sovuq suvga kiradi.',
+    readTime: 2,
+    content:`<h2>Nima uchun?</h2><p>Sovuq dush (30-90 sekund) quyidagilarni beradi:</p><ul><li>Dofamin <strong>250% oshadi</strong> (2.5 soat davomida)</li><li>Noradrenalin oshadi → diqqat va energiya</li><li>Immunitet kuchayadi</li><li>Yalqovlik yo'qoladi</li><li>Teri va soch sog'lomlashadi</li></ul><h2>Qanday boshlash?</h2><ol><li>Oddiy issiq dush bilan boshlang</li><li>Oxirgi <strong>30 sekund</strong> sovuq suvga aylantiring</li><li>Har hafta 10 sekund qo'shing</li><li>2 haftada 1-2 daqiqaga yetasiz</li></ol><blockquote>"Qulaylik zonangiz suvning haroratida boshlanadi." — Wim Hof</blockquote>`
+  },
+  {
+    id:'a27', cat:'productivity', icon:'📵', iconBg:'rgba(239,68,68,0.15)', iconColor:'#ef4444',
+    title:'Telefon addiction: 3 ta tezkor yechim',
+    summary:'O\'rtacha odam kuniga 96 marta telefonni oladi. 3 ta oddiy qoida bilan kamaytiring.',
+    readTime: 2,
+    content:`<h2>Muammo</h2><p>O'rtacha odam kuniga <strong>4-7 soat</strong> telefonda. Bu yiliga 60+ kun!</p><h2>3 ta tezkor yechim</h2><h3>1. 📵 Birinchi 1 soat — telefonsiz</h3><p>Uyg'onganda birinchi soat telefon olmang. Miya ertalab eng kuchli — uni telefonga berib yubormang.</p><h3>2. 🔕 Bildirishnomalarni o'chiring</h3><p>Faqat qo'ng'iroq va SMS qoldiring. Qolgan hammasi — o'chiq. Siz tanlaysiz qachon ko'rish.</p><h3>3. 📱 Ekranni kulrang qiling</h3><p>Settings → Accessibility → Color filters → Grayscale. Rangsiz telefon — zerikarli. Kam ishlatasiz.</p><blockquote>"Telefon — asbob, xo'jayin emas." — Cal Newport</blockquote>`
+  }
+);
+
+
+ARTICLES.push(
+  // 📄 O'RTACHA (4-6 daq)
+  {
+    id:'a28', cat:'psychology', icon:'🪞', iconBg:'rgba(168,85,247,0.15)', iconColor:'#a855f7',
+    title:'Imposter sindrom: nega siz o\'zingizga ishonmaysiz',
+    summary:'70% odamlar buni boshidan kechirgan. Bu normal — va yengsa bo\'ladi.',
+    readTime: 5,
+    content:`<h2>Nima bu?</h2><p>Imposter sindrom — bu o'z yutuqlaringizni "tasodif" yoki "omad" deb hisoblash. "Meni tez orada fosh qilishadi" degan his.</p><h2>Kim qiynalyapti?</h2><ul><li>Albert Eynshteyn: "Men haqiqiy odam emasman"</li><li>Maya Angelou: "Yana bir kitob yozsam ham, 'buni men yozmadim' deb o'ylayman"</li><li>Sheryl Sandberg, Tom Hanks, va 70% professional odamlar</li></ul><h2>5 turi</h2><ol><li><strong>Mukammalchi</strong> — 99% yetmaydi, 100% kerak</li><li><strong>Super-qahramonchi</strong> — eng ko'p ishlaydigan bo'lishi kerak</li><li><strong>Tug'ma genius</strong> — "agar o'rganishim kerak bo'lsa, demak men aqlli emasman"</li><li><strong>Yolg'iz ishlachi</strong> — yordam so'rash = zaiflik</li><li><strong>Ekspert</strong> — "hali yetarlicha bilmayman"</li></ol><h2>Yengish yo'llari</h2><ul><li><strong>Yutuqlar jurnali</strong> — har hafta 3 ta yutuqni yozing</li><li><strong>Gapiring</strong> — ishonchli odamga ayting. Ko'pchilik xuddi shunday his qiladi</li><li><strong>Mukammallikni tark eting</strong> — "yetarlicha yaxshi" = zo'r</li><li><strong>His vs Fakt</strong> — "Men bilmayman" hissi ≠ haqiqat</li><li><strong>Kichik qadamlar</strong> — har qadamda o'zingizni maqtang</li></ul><blockquote>"Siz o'zingiz o'ylaganingizdan ancha ko'proq bilasiz va ancha ko'proq qila olasiz." — Benjamin Spock</blockquote>`
+  },
+  {
+    id:'a29', cat:'growth', icon:'🧱', iconBg:'rgba(245,158,11,0.15)', iconColor:'#f59e0b',
+    title:'Odat o\'rnatishning ilmiy usuli: 66 kun qoidasi',
+    summary:'21 kun emas — haqiqiy odat 66 kunda shakllanadi. Mana ilmiy yondashuv.',
+    readTime: 5,
+    content:`<h2>21 kun yolg'on</h2><p>1960-yilda plastik jarroh Maxwell Maltz "21 kun kerak" degan. Bu noto'g'ri tarqaldi. 2009-yilda London Universitetining tadqiqoti:</p><blockquote>"O'rtacha odat shakllanish vaqti — 66 kun. Lekin 18 dan 254 kungacha o'zgarishi mumkin."</blockquote><h2>Nima ta'sir qiladi?</h2><ul><li><strong>Oddiy odatlar</strong> (suv ichish) → 18-30 kun</li><li><strong>O'rta</strong> (sport) → 60-90 kun</li><li><strong>Murakkab</strong> (meditatsiya, til) → 150-250 kun</li></ul><h2>3 bosqichli model</h2><h3>1-bosqich: Xoneymoon (1-10 kun)</h3><p>Hamma narsa yangi va qiziq. Motivatsiya yuqori. Oson.</p><h3>2-bosqich: Jang (11-40 kun)</h3><p>Motivatsiya tushadi. "Bugun qilmasam ham bo'ladi" fikri. <strong>Bu eng muhim bosqich!</strong></p><h3>3-bosqich: Avtomatik (40-66+ kun)</h3><p>Endi fikrlamasdan qilasiz. Miya yangi "default" holatga kirdi.</p><h2>2-bosqichni yengish</h2><ul><li><strong>Hech qachon 2 kun ketma-ket tashlamang</strong></li><li>Hajmini kamaytiring (10 daq sport → 2 daq cho'zilish) — lekin QILING</li><li>Muhitni sozlang — odat uchun barcha to'siqlarni olib tashlang</li><li>Birovga aytib qo'ying (accountability)</li><li>Lumio streak sizni kuzatib turadi!</li></ul><h2>Streak nima uchun ishlaydi?</h2><p>Miya "zanjirni uzmaslik" instinkti bor. 10 kunlik streak — 11-kuni qilish uchun motivatsiya. Bu <strong>Seinfeld usuli</strong> — "Don't break the chain".</p><blockquote>"Siz odatlaringiz mahsulisiniz, niyatlaringiz emas." — James Clear</blockquote>`
+  },
+  {
+    id:'a30', cat:'finance', icon:'🪙', iconBg:'rgba(34,197,94,0.15)', iconColor:'#22c55e',
+    title:'Pulni boshqarish: 20 yoshda bilishim kerak bo\'lgan 5 ta haqiqat',
+    summary:'Maktabda o\'rgatilmagan, lekin hayotni o\'zgartiradigan moliyaviy bilimlar.',
+    readTime: 4,
+    content:`<h2>1. Inflyatsiya pulingizni yeydi</h2><p>Yiliga 10-15% inflyatsiya bo'lsa, 5 yilda pulingiz <strong>yarmi qimmatini yo'qotadi</strong>. Shuning uchun jamg'arma QILMASLIK ham xavfli.</p><h2>2. Daromadni oshirish > xarajatni kamaytirish</h2><p>Xarajatni cheksiz kamaytira olmaysiz (minimum kerak). Lekin daromadni <strong>cheksiz</strong> oshirsa bo'ladi. Investitsiya qiling — o'zingizga va ko'nikmalaringizga.</p><h2>3. Favqulodda fond — BIRINCHI qadam</h2><p>3-6 oylik xarajatlaringiz miqdorida pul saqlang. Bu "xavfsizlik yostig'i" — ish yo'qolsa, kasal bo'lsangiz.</p><h2>4. Qarz — eng yomon "investitsiya"</h2><p>Foizli qarz olsangiz — compound interest SIZGA qarshi ishlaydi. Avval qarzlardan qutuling, keyin investitsiya.</p><h2>5. Vaqt — eng katta boylik</h2><p>20 yoshda 100,000/oy investitsiya = 50 yoshda ~500 mln.<br>30 yoshda 200,000/oy investitsiya = 50 yoshda ~200 mln.<br>10 yil kechikish = 2.5 marta kam natija!</p><blockquote>"Eng yaxshi vaqt investitsiya boshlash uchun — 20 yil oldin edi. Ikkinchi eng yaxshi — bugun." — Xitoy maqoli</blockquote>`
+  }
+);
+
+
+ARTICLES.push(
+  // 📖 UZUN (8-12 daq)
+  {
+    id:'a31', cat:'learning', icon:'🧩', iconBg:'rgba(99,102,241,0.15)', iconColor:'#6366f1',
+    title:'Feynman texnikasi: haqiqiy tushunishning 4 bosqichi',
+    summary:'Nobel mukofotchisi fizik Feynman: "Agar bolaga tushuntira olmasangiz, o\'zingiz tushunmagan bo\'lasiz."',
+    readTime: 8,
+    content:`<h2>Muammo: biz tushunganmiz deb o'ylaymiz</h2><p>Ko'pchilik "o'qidim = tushundim" deb hisoblaydi. Lekin imtihonda yoki amaliyotda — bo'sh. Bu <strong>illusion of competence</strong> — tushunish illyuziyasi.</p><h2>Richard Feynman kim?</h2><p>Fizika bo'yicha Nobel mukofoti sohibi, NASA muhandisi, "eng yaxshi o'qituvchi" laqabi. U murakkab narsalarni oddiy tushuntira olardi.</p><h2>4 bosqichli texnika</h2><h3>1-bosqich: Tanlang</h3><p>O'rganmoqchi bo'lgan mavzuni tanlang. Qog'ozning tepasiga yozing.</p><h3>2-bosqich: 10 yoshli bolaga tushuntiring</h3><p>Mavzuni <strong>oddiy so'zlar bilan</strong>, hech qanday texnik termin ishlatmasdan yozing. Xuddi 10 yoshli bolaga gapirgandek. Bu eng muhim qadam!</p><p>Qoidalar:</p><ul><li>Ilmiy terminlardan foydalanmang</li><li>Qisqa jumlalar</li><li>Misollar bilan</li><li>Analogiyalar bilan</li></ul><h3>3-bosqich: Bo'shliqlarni toping</h3><p>2-bosqichda qayerda to'xtab qoldingiz? Qaerda "hmm, buni qanday tushuntiraman" dedingiz? <strong>Ana o'sha joy — siz tushunmagan joy.</strong></p><p>Qaytadan material'ga boring. Faqat shu bo'sh joylarni o'rganing.</p><h3>4-bosqich: Soddalang va analogiya toping</h3><p>Endi tushuntirishni yana soddaroq qiling. Eng yaxshi analogiyani toping.</p><p><strong>Misol:</strong></p><ul><li>"Elektr toki" → "Suvning trubada oqishi"</li><li>"DNA" → "Tananing qurilish rejalari kitobi"</li><li>"Compound interest" → "Qorbobo — kichik qor to'pi pastga dumalab, katta bo'lib boradi"</li></ul><h2>Nima uchun ishlaydi?</h2><ol><li><strong>Active recall</strong> — o'qish emas, eslash. Bu 3x samaraliroq</li><li><strong>Elaboration</strong> — o'z so'zlaringiz bilan qayta ishlash</li><li><strong>Bo'shliq aniqlash</strong> — bilmasligingizni bilish</li><li><strong>Transfer</strong> — analogiya topish = chuqur tushunish</li></ol><h2>Amaliy misollar</h2><h3>Misol 1: Gravitatsiya</h3><p><strong>Murakkab:</strong> "Massa bir-birini tortadi, kuch F = Gm1m2/r2 formulasi bo'yicha."</p><p><strong>Feynman usuli:</strong> "Imaginatsiya qiling — Yer katta magnitdek. Siz temir parchasideksiz. U sizni o'ziga tortadi. Qanchalik yaqin bo'lsangiz — shunchalik kuchli."</p><h3>Misol 2: Inflyatsiya</h3><p><strong>Murakkab:</strong> "Pul massasining tovarlar hajmiga nisbatan oshishi natijasida narxlarning umumiy darajasi ko'tariladi."</p><p><strong>Feynman:</strong> "Imaginatsiya qiling — 100 ta bola va 100 ta konfet. Endi 200 ta bola bo'ldi, lekin konfet hali 100 ta. Endi har bir konfet 2 marta qimmat. Mana shu — inflyatsiya."</p><h2>Qachon ishlatish?</h2><ul><li>📚 Yangi mavzu o'rganayotganda</li><li>📝 Imtihonga tayyorlanayotganda</li><li>🎤 Kimgadir tushuntirish kerak bo'lganda</li><li>💡 Murakkab g'oyani soddalashtirish uchun</li></ul><h2>Xulosa</h2><p>Agar biror narsani bolaga tushuntira olmasangiz — siz uni hali to'liq tushunmagansiz. Qaytadan o'rganing.</p><blockquote>"Bilimning haqiqiy o'lchovi — uni oddiy tushuntira olishdir." — Albert Eynshteyn</blockquote><p><strong>Bugungi vazifa:</strong> Oxirgi o'rgangan narsangizni 10 yoshli bolaga tushuntirib ko'ring. Qaerda to'xtadingiz?</p>`
+  },
+  {
+    id:'a32', cat:'philosophy', icon:'⏳', iconBg:'rgba(245,158,11,0.15)', iconColor:'#f59e0b',
+    title:'Vaqt falsafasi: hayotdagi eng qimmat resurs haqida',
+    summary:'Seneca 2000 yil oldin yozgan — vaqt haqidagi eng muhim darslar hozir ham dolzarb.',
+    readTime: 9,
+    content:`<h2>"Hayot qisqa emas — biz uni isrof qilamiz"</h2><p>Bu Seneca'ning eng mashhur kitobining sarlavhasi. 2000 yil oldin yozilgan, lekin hozir har qachongidan dolzarb.</p><h2>Seneca'ning asosiy fikri</h2><blockquote>"Hayot juda uzun — agar uni qanday yashashni bilsangiz. Lekin ko'pchilik yaxshi yashashga emas, faqat uzoq yashashga harakat qiladi."</blockquote><p>Biz 80 yil yashaymiz. Bu <strong>29,200 kun</strong>. Lekin qanchasi haqiqatan ham "yashangan"?</p><h2>Vaqt qanday isrof bo'ladi</h2><p>Seneca hisoblaydi — ko'pchilik vaqtni shu narsalarga beradi:</p><ul><li>Boshqalarning ishlariga aralashish</li><li>Keraksiz uchrashuvlar</li><li>Maqsadsiz ko'ngilochar</li><li>"Band"lik illyuziyasi (busy ≠ productive)</li><li>Kelajak haqida tashvishlanish (hozirni yo'qotish)</li><li>O'tmish haqida afsuslanish</li></ul><h2>Memento Mori — "O'limni esla"</h2><p>Bu g'amgin emas — bu <strong>ozodlik</strong>. Agar bugun oxirgi kuningiz bo'lsa:</p><ul><li>Kimga qo'ng'iroq qilardingiz?</li><li>Nima qilardingiz?</li><li>Nima haqida afsuslanardingiz?</li></ul><p>Bu savollarning javoblari — sizning <strong>haqiqiy ustuvorliklaringiz</strong>.</p><h2>Vaqtni qaytarib bo'lmaydi</h2><p>Pulni yo'qotsangiz — qaytarishingiz mumkin. Sog'liqni yo'qotsangiz — ba'zan tiklash mumkin. Lekin vaqtni? <strong>HECH QACHON.</strong></p><p>Siz hozir bu maqolani o'qiyotganingizda hayotingizning bir qismi o'tmoqda. Bu qaror — to'g'ri tanlov (o'rganish). Lekin sotsial tarmoq scrolling? Bu — isrof.</p><h2>Amaliy saboqlar</h2><h3>1. "Ha" deyishdan oldin o'ylang</h3><p>Har bir "ha" — bu boshqa narsaga "yo'q" demak. Vaqtingiz cheklangan. Uni himoya qiling.</p><h3>2. Death calendar</h3><p>Bir sahifaga 4,160 ta kichik doira chizing (80 yil × 52 hafta). Yashagan haftalaringizni bo'yang. <strong>Qolganini ko'ring.</strong></p><h3>3. Haftalik audit</h3><p>Har yakshanba sorasiz:</p><ul><li>"Bu hafta eng muhim narsaga qancha vaqt berdim?"</li><li>"Nima vaqtimni isrof qildi?"</li><li>"Keyingi hafta nimani o'zgartiraman?"</li></ul><h3>4. 10/10/10 qoidasi</h3><p>Qaror qilishdan oldin sorang:</p><ul><li>10 daqiqadan keyin bu haqda qanday fikrda bo'laman?</li><li>10 oydan keyin?</li><li>10 yildan keyin?</li></ul><h2>Zamonaviy Seneca</h2><p>Bugungi kontekstda qo'shish:</p><ul><li>📵 Telefon vaqtini nazorat qilish (Screen Time)</li><li>📋 Muhim ishlarni <strong>birinchi</strong> qilish (Eisenhower)</li><li>🧘 Hozirda bo'lish (Mindfulness)</li><li>📝 Har kuni yozish — refleksiya</li></ul><blockquote>"Hammaga vaqt beramiz, o'zimizga — eng oxirida. Bu — hayotning eng katta xatosi." — Seneca</blockquote><h2>Oxirgi so'z</h2><p>Agar hozir 20 yoshda bo'lsangiz — sizda taxminan 3,000 hafta qoldi. Agar 30 da — 2,500. Har biri — qaror. Har biri — imkoniyat yoki isrof.</p><p><strong>Bu maqolani o'qib tugatdingiz.</strong> Endi — eng muhim ishingizni qiling. Hozir. Shu daqiqa.</p>`
+  }
+);
+
+
+ARTICLES.push(
+  // Yana qisqa va o'rtacha
+  {
+    id:'a33', cat:'health', icon:'🍎', iconBg:'rgba(239,68,68,0.15)', iconColor:'#ef4444',
+    title:'Intermittent fasting: 16:8 usuli haqida',
+    summary:'16 soat ovqatlanmaslik + 8 soat oyna. Dunyodagi eng mashhur diet usuli.',
+    readTime: 3,
+    content:`<h2>16:8 nima?</h2><p>Kunning 16 soatida hech narsa yemaysiz, 8 soatlik "oyna"da odatdagidek ovqatlanasiz.</p><h2>Masalan</h2><ul><li>Oxirgi ovqat: kechqurun 20:00</li><li>Ertasi birinchi ovqat: 12:00 (tushlik)</li><li>Oraliqda: faqat suv, choy, kofe (shakar/sutsiz)</li></ul><h2>Ilmiy foydalar</h2><ul><li>Insulin sezgirligi yaxshilanadi</li><li>Autophagy (hujayra tozalanishi) boshlanadi</li><li>Yog' yoqish tezlashadi</li><li>Miyaning neyrogenezis oshadi</li><li>Yallig'lanish kamayadi</li></ul><h2>Kimga mos emas?</h2><ul><li>Homilador ayollar</li><li>Diabet bemorlari (shifokor bilan)</li><li>18 yoshdan kichiklar</li><li>Ovqatlanish buzilishi bo'lganlar</li></ul><blockquote>"Ajdodlarimiz kuniga 3 mahal yemas edi — bu zamonaviy ixtiro." — Dr. Jason Fung</blockquote>`
+  },
+  {
+    id:'a34', cat:'relationships', icon:'🗣️', iconBg:'rgba(245,158,11,0.15)', iconColor:'#f59e0b',
+    title:'Tinglash san\'ati: haqiqiy aloqaning asosi',
+    summary:'Ko\'pchilik gapirishni biladi, lekin tinglashni — yo\'q. 3 ta oddiy qoida.',
+    readTime: 3,
+    content:`<h2>Muammo</h2><p>Ko'pchilik "tinglash" deyilganda — aslida "navbatimni kutish" qiladi. Biz javob o'ylab turamiz, eshitmaymiz.</p><h2>Haqiqiy tinglashning 3 qoidasi</h2><h3>1. Gapirishni to'xtating</h3><p>Butunlay. Telefonga qaramang. Ko'z kontakti saqlang. Bosh irg'ang.</p><h3>2. Tushunish uchun tinglang, javob berish uchun emas</h3><p>"Nima demochi bo'lyapti?" emas, "U nima HIS qilyapti?" deb tinglang.</p><h3>3. Qaytaring</h3><p>"Agar to'g'ri tushungan bo'lsam, sen ... demoqchisan?" — bu sehrli jumla. Odam o'zini eshitilgan his qiladi.</p><h2>Natija</h2><ul><li>Munosabatlar 50% yaxshilanadi</li><li>Ishonch o'sadi</li><li>Konfliktlar kamayadi</li><li>Siz ham yaxshiroq tushunilasiz</li></ul><blockquote>"Ko'p odam javob berish uchun tinglaydi, tushunish uchun emas." — Stephen Covey</blockquote>`
+  },
+  {
+    id:'a35', cat:'mindfulness', icon:'🌄', iconBg:'rgba(34,197,94,0.15)', iconColor:'#22c55e',
+    title:'Digital detox: 24 soat telefonsiz yashasangiz nima bo\'ladi?',
+    summary:'Tadqiqot: 24 soat detoxdan keyin odamlar ancha baxtli, tinch va diqqatli bo\'lishadi.',
+    readTime: 4,
+    content:`<h2>Eksperiment</h2><p>2019-yilda 1000 ta odam 24 soat telefonsiz yashadi. Natijalar:</p><ul><li>Birinchi 3 soat: <strong>stress, bezovtalik</strong> (FOMO — "nimani qoldiryapman?")</li><li>6-12 soat: <strong>tinchlik boshlanadi</strong>, atrofga e'tibor</li><li>12-24 soat: <strong>ijodkorlik, chuqur fikrlash, yaxshi uyqu</strong></li><li>Keyingi kun: 80% "yana qilaman" dedi</li></ul><h2>Nima uchun bu ishlaydi?</h2><p>Miya <strong>doimiy stimul</strong>dan charchagan. Telefon har 3-4 daqiqada diqqatni tortadi (notification yoki odat). 24 soat dam berganda — miya "tiklanadi".</p><h2>Haftalik mini-detox (osonroq)</h2><ol><li><strong>Shanba kechqurun 20:00</strong> dan <strong>yakshanba 12:00</strong> gacha — telefon off</li><li>Bu atigi 16 soat — lekin katta ta'sir</li><li>Alarm o'rniga oddiy budilnik ishlating</li></ol><h2>Nima qilish (telefon o'rniga)?</h2><ul><li>📖 Kitob o'qish</li><li>🚶 Yurish (boshqa manzara)</li><li>✍️ Yozish (fikrlar, g'oyalar)</li><li>🤝 Yuzma-yuz suhbat</li><li>🎨 Qo'l mehnati (chizish, tikish, pishirish)</li><li>🧘 Meditatsiya</li></ul><blockquote>"Biz texnologiyani boshqarishimiz kerak, aksincha emas." — Tristan Harris</blockquote><p><strong>Sinab ko'ring:</strong> Bu hafta oxiri 16 soatlik mini-detox qiling. Lumio'da buni odat sifatida kuzating!</p>`
+  },
+  {
+    id:'a36', cat:'science', icon:'⚛️', iconBg:'rgba(14,165,233,0.15)', iconColor:'#0ea5e9',
+    title:'Kvant fizikasi: kuzatuvchi effekti oddiy tilda',
+    summary:'Siz biror narsani kuzatganingizda — u o\'zini o\'zgartiradi. Bu faqat fizikada emas.',
+    readTime: 3,
+    content:`<h2>Ikki tirqish eksperimenti</h2><p>Zarralar devordagi 2 tirqishdan o'tadi. Kuzatmasangiz — <strong>to'lqin</strong> kabi. Kuzatsangiz — <strong>zarracha</strong> kabi.</p><p>Ya'ni: <strong>kuzatish natijani o'zgartiradi.</strong></p><h2>Bu hayotda ham ishlaydi</h2><ul><li>🏋️ <strong>Sport:</strong> Oyna oldida mashq qilganlar 12% ko'proq harakat qiladi (kuzatilmoqda)</li><li>📊 <strong>Ishda:</strong> Xodimlar nazorat ostida 23% samaraliroq ("Hawthorne effekti")</li><li>✅ <strong>Odatlar:</strong> Streak kuzatish — bajarish ehtimolini 40% oshiradi</li><li>💰 <strong>Pul:</strong> Xarajatni yozib yurishni boshlaganlar 15-20% tejaydi</li></ul><h2>Xulosa</h2><p>O'lchash = yaxshilanish. <strong>Kuzatilgan narsa — o'zgaradi.</strong></p><p>Shuning uchun Lumio'da hamma narsa <strong>tracklanadi</strong> — odatlar, vazifalar, streak, kayfiyat. Kuzatsangiz — o'sasiz.</p><blockquote>"Nima o'lchanadi — o'sha boshqariladi." — Peter Drucker</blockquote>`
+  }
+);
+console.log('📚 Lumio v1.4: Jami ' + ARTICLES.length + ' maqola');
