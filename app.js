@@ -398,8 +398,16 @@ const PAGE_META = {
   study: { title: "O'qish", sub: 'Bilim — sarmoya' },
   goals: { title: 'Maqsadlar', sub: 'Hayotni shakllantiring' },
   notes: { title: 'Qaydlar', sub: 'Fikrlaringiz' },
+  calendar: { title: 'Taqvim', sub: 'Hammasi bir joyda' },
+  workout: { title: 'Sport', sub: "Tana sog'lom — fikr tiniq" },
+  meals: { title: 'Ovqatlanish', sub: "Sog'lom ovqat — sog'lom hayot" },
+  meditation: { title: 'Meditatsiya', sub: 'Nafas — hozirgi daqiqaga qaytish' },
+  reading: { title: 'Kitoblar', sub: 'Bilim — eng yaxshi sarmoya' },
+  articles: { title: 'Maqolalar', sub: "Ilm-fan, psixologiya, salomatlik va o'zini rivojlantirish" },
+  analytics: { title: 'Statistika', sub: 'Sizning produktivlik tarixi' },
   apps: { title: 'Mini ilovalar', sub: 'Foydali asboblar' },
   achievements: { title: 'Yutuqlar', sub: 'Sizning safaringiz' },
+  reminders: { title: 'Eslatmalar', sub: 'Vaqtida eslatmalar' },
   settings: { title: 'Sozlamalar', sub: 'Moslashtirish' },
 };
 function goPage(page) {
@@ -423,6 +431,14 @@ function renderPageContent(page) {
   else if (page === 'notes') { renderNotes(); }
   else if (page === 'achievements') { refreshUserUI(); renderAchievements(); }
   else if (page === 'settings') renderSettings();
+  // v2 pages (guarded — funksiyalar keyinroq aniqlangani uchun)
+  else if (page === 'articles') { try { renderArticles(); } catch(e){ console.warn('articles:', e); } }
+  else if (page === 'calendar') { try { renderFullCalendar(); } catch(e){} }
+  else if (page === 'workout') { try { renderWorkouts(); renderWorkoutTemplates(); } catch(e){} }
+  else if (page === 'meals') { try { renderMeals(); } catch(e){} }
+  else if (page === 'meditation') { try { resetBreath(); } catch(e){} }
+  else if (page === 'reading') { try { renderReading(); } catch(e){} }
+  else if (page === 'analytics') { try { renderAdvancedAnalytics(); } catch(e){} }
 }
 function toggleSidebar() { $('#sidebar').classList.toggle('open'); }
 function closeSidebar() { $('#sidebar').classList.remove('open'); }
@@ -3560,11 +3576,11 @@ async function enhancedInit() {
     const v2Renderers = {
       dashboard: () => { setDynamicWallpaper(); renderPet(); renderQuests(); },
       calendar: () => renderFullCalendar(),
-      workout: () => renderWorkouts(),
+      workout: () => { renderWorkouts(); renderWorkoutTemplates(); },
       meals: () => renderMeals(),
       meditation: () => resetBreath(),
       reading: () => renderReading(),
-      insights: () => renderInsights(),
+      articles: () => renderArticles(),
       analytics: () => { try { renderAdvancedAnalytics(); } catch(e){ console.warn('analytics:', e); } },
     };
     // v2 page meta titles
@@ -3574,7 +3590,7 @@ async function enhancedInit() {
       meals: { title: 'Ovqatlanish', sub: 'Sog\'lom ovqat — sog\'lom hayot' },
       meditation: { title: 'Meditatsiya', sub: 'Nafas — hozirgi daqiqaga qaytish' },
       reading: { title: 'Kitoblar', sub: 'Bilim — eng yaxshi sarmoya' },
-      insights: { title: 'AI Maslahatlar', sub: 'Sizning produktivligingiz haqida' },
+      articles: { title: 'Maqolalar', sub: 'Ilm-fan, psixologiya, salomatlik va o\'zini rivojlantirish' },
       analytics: { title: 'Statistika', sub: 'Sizning produktivlik tarixi' },
     };
 
