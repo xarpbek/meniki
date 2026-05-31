@@ -700,28 +700,46 @@
           <div class="subjects-grid" id="subjectsGrid"></div>
         </div>
 
-        <div class="card">
+        <div class="card" id="flashCardBlock">
           <div class="card-head">
             <h2 class="h2">🎴 Flashcards</h2>
-            <button class="btn btn-secondary" onclick="openModal('flashcard')"><i class="fa-solid fa-plus"></i> Karta</button>
+            <div style="display:flex;gap:6px">
+              <button class="icon-btn" onclick="shuffleFlash()" title="Aralashtirish (S)"><i class="fa-solid fa-shuffle"></i></button>
+              <button class="btn btn-secondary" onclick="openModal('flashcard')"><i class="fa-solid fa-plus"></i> Karta</button>
+            </div>
           </div>
           <div class="flashcard-stage" id="flashStage">
-            <div class="flashcard" id="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard" id="flashcard" onclick="flipFlash()">
               <div class="flashcard-side flashcard-front">
                 <div class="flashcard-label">Savol</div>
+                <div class="flashcard-actions" id="flashFrontActions"></div>
                 <div id="flashFront">Birinchi flashcard'ni qo'shing</div>
+                <div class="flashcard-hint">Bosing yoki <kbd>Space</kbd> bilan aylantiring</div>
               </div>
               <div class="flashcard-side flashcard-back">
-                <div class="flashcard-label" style="color:var(--bg)">Javob</div>
+                <div class="flashcard-label flashcard-label-back">Javob</div>
                 <div id="flashBack">—</div>
               </div>
             </div>
           </div>
-          <div class="flex gap-1 mt-2" style="justify-content:center">
-            <button class="btn btn-ghost" onclick="prevFlash()"><i class="fa-solid fa-arrow-left"></i></button>
-            <span class="muted" id="flashCounter" style="display:flex;align-items:center;font-size:.8rem">0/0</span>
-            <button class="btn btn-ghost" onclick="nextFlash()"><i class="fa-solid fa-arrow-right"></i></button>
+          <div class="flash-controls">
+            <button class="btn btn-ghost flash-nav" onclick="prevFlash()" title="Oldingi (←)">
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <span class="muted flash-counter" id="flashCounter">0 / 0</span>
+            <button class="btn btn-ghost flash-nav" onclick="nextFlash()" title="Keyingi (→)">
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
           </div>
+          <div class="flash-rate" id="flashRateBlock" style="display:none">
+            <button class="flash-rate-btn flash-rate-bad" onclick="rateFlash(false)" title="Hali ham o'rganishim kerak (X)">
+              <i class="fa-solid fa-rotate-right"></i> Yana o'rganaman
+            </button>
+            <button class="flash-rate-btn flash-rate-good" onclick="rateFlash(true)" title="Bilaman! (V)">
+              <i class="fa-solid fa-check"></i> Bilaman
+            </button>
+          </div>
+          <div class="flash-stats" id="flashStats"></div>
         </div>
       </div>
 

@@ -1256,21 +1256,217 @@ function renderExams() {
     </div>`;
   }).join('');
 }
+// ════ FLASHCARDS — yaxshilangan ════
+function safeFlashIdx() {
+  const len = state.flashcards?.length || 0;
+  if (!len) return 0;
+  let i = state.flashIdx || 0;
+  if (typeof i !== 'number' || isNaN(i) || !isFinite(i)) i = 0;
+  i = ((i % len) + len) % len; // har doim 0..len-1
+  state.flashIdx = i;
+  return i;
+}
+
 function renderFlashcard() {
-  if (!state.flashcards.length) {
-    $('#flashFront').textContent = "Birinchi flashcard'ni qo'shing";
-    $('#flashBack').textContent = '—';
-    $('#flashCounter').textContent = '0/0';
+  const card = $('#flashcard');
+  const front = $('#flashFront');
+  const back = $('#flashBack');
+  const counter = $('#flashCounter');
+  const actions = $('#flashFrontActions');
+  const rateBlock = $('#flashRateBlock');
+  const stats = $('#flashStats');
+  if (!card || !front) return;
+
+  card.classList.remove('flipped', 'swipe-left', 'swipe-right');
+
+  if (!state.flashcards || !state.flashcards.length) {
+    front.textContent = "Birinchi flashcard'ni qo'shing 🎴";
+    back.textContent = '—';
+    if (counter) counter.textContent = '0 / 0';
+    if (actions) actions.innerHTML = '';
+    if (rateBlock) rateBlock.style.display = 'none';
+    if (stats) stats.innerHTML = '';
     return;
   }
-  const f = state.flashcards[state.flashIdx % state.flashcards.length];
-  $('#flashFront').textContent = f.front;
-  $('#flashBack').textContent = f.back;
-  $('#flashCounter').textContent = `${(state.flashIdx % state.flashcards.length) + 1}/${state.flashcards.length}`;
-  $('#flashcard').classList.remove('flipped');
+
+  const idx = safeFlashIdx();
+  const f = state.flashcards[idx];
+  front.textContent = f.front || '';
+  back.textContent = f.back || '';
+  if (counter) counter.textContent = `${idx + 1} / ${state.flashcards.length}`;
+
+  // Edit/Delete tugmalari
+  if (actions) {
+    actions.innerHTML = `
+      <button class="icon-btn" onclick="event.stopPropagation();editFlash('${f.id}')" title="Tahrirlash"><i class="fa-solid fa-pen"></i></button>
+      <button class="icon-btn del" onclick="event.stopPropagation();deleteFlash('${f.id}')" title="O'chirish"><i class="fa-solid fa-trash"></i></button>
+    `;
+  }
+
+  // Statistika
+  if (stats) {
+    const known = state.flashcards.filter(c => c.known).length;
+    const total = state.flashcards.length;
+    const reviewed = state.flashcards.filter(c => (c.reviews || 0) > 0).length;
+    stats.innerHTML = `
+      <span>📚 <strong>${total}</strong> jami</span>
+      <span>✅ <strong>${known}</strong> bilaman</span>
+      <span>🔁 <strong>${reviewed}</strong> ko'rib chiqildi</span>
+    `;
+  }
+  if (rateBlock) rateBlock.style.display = 'none';
 }
-function nextFlash() { state.flashIdx++; renderFlashcard(); }
-function prevFlash() { state.flashIdx = Math.max(0, state.flashIdx - 1); renderFlashcard(); }
+
+function flipFlash() {
+  const card = $('#flashcard');
+  if (!card || !state.flashcards?.length) return;
+  card.classList.toggle('flipped');
+  // Aylantirilgandan keyin baho tugmalarini ko'rsatish
+  const rateBlock = $('#flashRateBlock');
+  if (card.classList.contains('flipped') && rateBlock) {
+    setTimeout(() => { rateBlock.style.display = 'flex'; }, 300);
+  } else if (rateBlock) {
+    rateBlock.style.display = 'none';
+  }
+  try { window.fx?.haptic?.(15); } catch {}
+}
+
+function nextFlash() {
+  if (!state.flashcards?.length) return;
+  const card = $('#flashcard');
+  if (card) {
+    card.classList.add('swipe-left');
+    setTimeout(() => card.classList.remove('swipe-left'), 350);
+  }
+  state.flashIdx = (safeFlashIdx() + 1) % state.flashcards.length;
+  save();
+  setTimeout(renderFlashcard, 175);
+}
+
+function prevFlash() {
+  if (!state.flashcards?.length) return;
+  const card = $('#flashcard');
+  if (card) {
+    card.classList.add('swipe-right');
+    setTimeout(() => card.classList.remove('swipe-right'), 350);
+  }
+  const len = state.flashcards.length;
+  state.flashIdx = (safeFlashIdx() - 1 + len) % len;
+  save();
+  setTimeout(renderFlashcard, 175);
+}
+
+function shuffleFlash() {
+  if (!state.flashcards || state.flashcards.length < 2) {
+    if (typeof toast === 'function') toast("Aralashtirish uchun kamida 2 ta karta kerak", 'info');
+    return;
+  }
+  // Fisher-Yates shuffle
+  const arr = state.flashcards;
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  state.flashIdx = 0;
+  save();
+  renderFlashcard();
+  if (typeof toast === 'function') toast("Kartalar aralashtirildi 🔀", 'success');
+  try { window.fx?.haptic?.(20); } catch {}
+}
+
+function rateFlash(known) {
+  if (!state.flashcards?.length) return;
+  const idx = safeFlashIdx();
+  const f = state.flashcards[idx];
+  f.reviews = (f.reviews || 0) + 1;
+  f.known = !!known;
+  f.lastReviewedAt = today();
+  save();
+  if (known) {
+    if (typeof toast === 'function') toast("Ajoyib! 🎉", 'success');
+    if (typeof addXp === 'function') addXp(2, 'Flashcard');
+    try { window.fx?.play?.('complete'); } catch {}
+  } else {
+    if (typeof toast === 'function') toast("Yana takrorlaymiz 💪", 'info');
+  }
+  // Avtomatik keyingi kartaga
+  setTimeout(() => nextFlash(), 250);
+}
+
+function editFlash(id) {
+  if (typeof openModal === 'function') openModal('flashcard', state.flashcards.find(x => x.id === id));
+}
+
+function deleteFlash(id) {
+  if (!confirm("Bu flashcardni o'chirishni xohlaysizmi?")) return;
+  state.flashcards = state.flashcards.filter(x => x.id !== id);
+  if (state.flashIdx >= state.flashcards.length) state.flashIdx = 0;
+  save();
+  renderFlashcard();
+  if (typeof toast === 'function') toast("O'chirildi", 'info');
+}
+
+// Klaviatura va swipe
+(function initFlashControls() {
+  // Klaviatura
+  document.addEventListener('keydown', (e) => {
+    // Faqat Study sahifasida va modal yopiq
+    const studyActive = document.getElementById('page-study')?.classList.contains('active');
+    if (!studyActive) return;
+    if (document.querySelector('.modal-overlay.open')) return;
+    const tag = (document.activeElement?.tagName || '').toLowerCase();
+    if (['input', 'textarea', 'select'].includes(tag)) return;
+    if (!state.flashcards?.length) return;
+
+    if (e.key === ' ') { e.preventDefault(); flipFlash(); }
+    else if (e.key === 'ArrowRight') { e.preventDefault(); nextFlash(); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); prevFlash(); }
+    else if (e.key === 's' || e.key === 'S') { e.preventDefault(); shuffleFlash(); }
+    else if (e.key === 'v' || e.key === 'V') {
+      const flipped = document.getElementById('flashcard')?.classList.contains('flipped');
+      if (flipped) { e.preventDefault(); rateFlash(true); }
+    }
+    else if (e.key === 'x' || e.key === 'X') {
+      const flipped = document.getElementById('flashcard')?.classList.contains('flipped');
+      if (flipped) { e.preventDefault(); rateFlash(false); }
+    }
+  });
+
+  // Swipe (mobile)
+  let touchStartX = 0, touchStartY = 0, touchActive = false;
+  document.addEventListener('touchstart', (e) => {
+    const card = e.target.closest('#flashcard');
+    if (!card) return;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    touchActive = true;
+  }, { passive: true });
+
+  document.addEventListener('touchend', (e) => {
+    if (!touchActive) return;
+    touchActive = false;
+    const card = e.target.closest('#flashcard');
+    if (!card) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      // Gorizontal swipe — flipga to'sqinlik qilmaslik uchun click event'ni to'xtatish
+      e.preventDefault?.();
+      if (dx < 0) nextFlash();
+      else prevFlash();
+    }
+  }, { passive: false });
+})();
+
+// Globalga ochish
+window.flipFlash = flipFlash;
+window.nextFlash = nextFlash;
+window.prevFlash = prevFlash;
+window.shuffleFlash = shuffleFlash;
+window.rateFlash = rateFlash;
+window.editFlash = editFlash;
+window.deleteFlash = deleteFlash;
+window.renderFlashcard = renderFlashcard;
 
 
 
@@ -1595,26 +1791,37 @@ function saveExam(e) {
   toast("Imtihon qo'shildi", 'success');
 }
 
-function flashModalHTML() {
+function flashModalHTML(f) {
+  const isEdit = !!f;
   return `<div class="modal-head">
-    <div class="modal-title">Yangi flashcard</div>
+    <div class="modal-title">${isEdit ? 'Flashcardni tahrirlash' : 'Yangi flashcard'}</div>
     <button class="icon-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
   </div>
-  <form onsubmit="saveFlash(event)">
-    <div class="form-group"><label class="form-label">Savol</label><textarea class="textarea" name="front" required autofocus></textarea></div>
-    <div class="form-group"><label class="form-label">Javob</label><textarea class="textarea" name="back" required></textarea></div>
+  <form onsubmit="saveFlash(event,'${f?.id || ''}')">
+    <div class="form-group"><label class="form-label">Savol</label><textarea class="textarea" name="front" required autofocus rows="2">${f ? escape(f.front || '') : ''}</textarea></div>
+    <div class="form-group"><label class="form-label">Javob</label><textarea class="textarea" name="back" required rows="3">${f ? escape(f.back || '') : ''}</textarea></div>
     <div class="modal-foot">
+      ${isEdit ? `<button type="button" class="btn btn-danger" onclick="deleteFlash('${f.id}');closeModal()" style="margin-right:auto"><i class="fa-solid fa-trash"></i></button>` : ''}
       <button type="button" class="btn btn-secondary" onclick="closeModal()">Bekor</button>
-      <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Qo'shish</button>
+      <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> ${isEdit ? 'Saqlash' : "Qo'shish"}</button>
     </div>
   </form>`;
 }
-function saveFlash(e) {
+function saveFlash(e, id) {
   e.preventDefault();
   const f = e.target;
-  state.flashcards.push({ id: uid(), front: f.front.value.trim(), back: f.back.value.trim() });
+  const front = f.front.value.trim();
+  const back = f.back.value.trim();
+  if (!front || !back) return;
+  if (id) {
+    const card = state.flashcards.find(x => x.id === id);
+    if (card) { card.front = front; card.back = back; }
+    if (typeof toast === 'function') toast("Yangilandi", 'success');
+  } else {
+    state.flashcards.push({ id: uid(), front, back, reviews: 0, known: false, createdAt: today() });
+    if (typeof toast === 'function') toast("Karta qo'shildi 🎴", 'success');
+  }
   save(); closeModal(); renderFlashcard();
-  toast("Karta qo'shildi", 'success');
 }
 
 function quickAddHTML() {
